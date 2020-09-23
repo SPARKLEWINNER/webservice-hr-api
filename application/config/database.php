@@ -5,9 +5,9 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $hostname = "localhost";
-$database = "i6885298_wp1";
-$username = "i6885298_wp1";
-$password = "E.JXnFWSCMXKefxhhKG48";
+$database = "webapi_portal";
+$username = "webapi_livedev";
+$password = "qj5FHv6d4So2";
 
 
 $db['default'] = array(

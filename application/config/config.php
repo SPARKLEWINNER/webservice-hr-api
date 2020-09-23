@@ -24,7 +24,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 |
 */
 
-$curr_url = 'http://api.zupstars.com/';
+$curr_url = 'https://api.sparkles.com/';
 $config['base_url'] = $curr_url;
 
 /*
