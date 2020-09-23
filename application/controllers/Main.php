@@ -12,4 +12,8 @@ class Main extends Base_Controller
         parent::__construct();
         $this->load->view('default');
     }
+
+    public function deploy(){
+        $this->load->view('deploy');
+    }
 }
