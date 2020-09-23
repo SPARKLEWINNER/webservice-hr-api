@@ -32,7 +32,7 @@ class Main_mdl extends Base_Model {
 
     public function recordToken($id, $token){
         $this->db->where('id', $id);
-        $this->db->update('keys', $token);
+        $this->db->update('keys', array("keys" => $token));
     }
     
     /** Records **/
