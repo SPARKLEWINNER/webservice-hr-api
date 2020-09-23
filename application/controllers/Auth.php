@@ -35,6 +35,8 @@ class Auth extends Base_Controller
             $data = $response;
             $data['timestamp'] = now();
             $response['token'] = AUTHORIZATION::generateToken($data);
+
+            $this->Main_mdl->recordToken($data['id'],$recordToken);
             $this->set_response($response,  200);
         endif;
     }

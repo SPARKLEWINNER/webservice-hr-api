@@ -15,19 +15,24 @@ class Main_mdl extends Base_Model {
         $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('email', $email)->get()->row();
         if(!$acc) return $this->response_code(204,"User invalid", "");
 
-        if(password_verify($password,  $grab_password)):
+        if(password_verify($password,  $acc->password)):
             return array(
                 "id" => $acc->id,
                 "email" =>$acc->email,
                 "firstname" => $acc->first_name,
                 "lastname" => $acc->last_name,
-                "profile" => $acc->profile
+                "profile" => $acc->profile,
             );
             
         else:
           return false;
 
         endif;
+    }
+
+    public function recordToken($id, $token){
+        $this->db->where('id', $id);
+        $this->db->update('keys', $token);
     }
     
     /** Records **/
