@@ -10,5 +10,6 @@ class Main extends Base_Controller
     function __construct()
     {
         parent::__construct();
+        $this->load->view('default');
     }
 }

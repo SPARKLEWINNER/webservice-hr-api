@@ -13,31 +13,15 @@ class Main_mdl extends Base_Model {
 
     public function login($email, $password){
         $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('email', $email)->get()->row();
-        $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key','_price')->where('post_id',$acc->product_id)->get()->row();
-        $woocom_details = "SELECT p.*, ( SELECT guid FROM wp_posts WHERE id = m.meta_value ) AS imgurl,  (SELECT meta_value FROM wp_postmeta pm WHERE meta_key='_wp_attachment_metadata' AND pm.post_id=m.meta_value ) AS imgdetails FROM wp_posts p
-        LEFT JOIN  wp_postmeta m ON(p.id = m.post_id AND m.meta_key =  '_thumbnail_id' ) WHERE p.post_type =  'product' AND p.id= {$acc->product_id}";
-        $woo_details = $this->db->query($woocom_details);
-        
-        if($woo_details->num_rows() > 0){
-            $woo_details = $woo_details->result()[0];
-        }
-  
-       
-        $grab_password =  $acc->password;
-        $grab_email =  $acc->email;
-        $id = $acc->id;
-
         if(!$acc) return $this->response_code(204,"User invalid", "");
 
         if(password_verify($password,  $grab_password)):
             return array(
-                "id" => $id,
-                "email" => $grab_email,
-                "firstname" => $woo_details->post_title,
-                "lastname" => " ",
-                "profile" => $woo_details->imgurl,
-                "product_id" => $acc->product_id,
-                "rate" => $woocom_meta->meta_value,
+                "id" => $acc->id,
+                "email" =>$acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+            "profile" => $acc->profile
             );
             
         else:

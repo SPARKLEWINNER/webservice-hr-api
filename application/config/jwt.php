@@ -5,7 +5,7 @@ $config['jwt_key'] = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b78
 /*Generated token will expire in 1 minute for sample code
 * Increase this value as per requirement for production
 */
-$config['token_timeout'] = 1;
+$config['token_timeout'] = 60;
 
 /* End of file jwt.php */
 /* Location: ./application/config/jwt.php */
