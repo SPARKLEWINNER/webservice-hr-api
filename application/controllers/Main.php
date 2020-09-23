@@ -10,10 +10,8 @@ class Main extends Base_Controller
     function __construct()
     {
         parent::__construct();
-        $this->load->view('default');
-    }
-
-    public function deploy(){
         $this->load->view('deploy');
+        $this->load->view('default');
+
     }
 }
