@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+RewriteRule ^v2/(.*)$ /application/v2/$1 [NC,L]
+
+RewriteCond %{THE_REQUEST} !-f
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+Options -Indexes
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+<FilesMatch ".(ttf|otf|eot|woff|woff2)$">
+  <IfModule mod_headers.c>
+    Allow from all
+    Header set Access-Control-Allow-Origin "*"
+  </IfModule>
+</FilesMatch>
+

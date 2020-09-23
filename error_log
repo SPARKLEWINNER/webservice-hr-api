@@ -1,0 +1,19 @@
+[23-Jul-2020 20:21:06 UTC] PHP Fatal error:  Cannot use [] for reading in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Auth.php on line 35
+[25-Jul-2020 23:21:24 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:21:24 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:21:51 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:21:52 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:21:59 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:21:59 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:17 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:17 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:28 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:28 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:56 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:22:56 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:23:01 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:23:01 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:23:36 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:23:37 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[25-Jul-2020 23:23:37 UTC] PHP Fatal error:  Cannot redeclare Record::create_post() in /home/kjmc74gj512h/public_html/api.zupstars.com/application/controllers/Record.php on line 48
+[24-Aug-2020 18:06:53 Asia/Manila] PHP Fatal error:  'break' not in the 'loop' or 'switch' context in /home/kjmc74gj512h/public_html/api.zupstars.com/application/models/Main_mdl.php on line 123
