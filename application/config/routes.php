@@ -5,7 +5,7 @@ $route['default_controller'] = 'main';
 $route['404_override'] = 'main/error_html';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['internal/deploy'] = 'main/deploy';
+$route['internal/deploy']['get'] = 'main/deploy';
 
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
