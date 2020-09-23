@@ -33,6 +33,7 @@ class Auth extends Base_Controller
             return $this->set_response($response, 422);
         else:
             $data = $response;
+            $data['timestamp'] = now();
             $response['token'] = AUTHORIZATION::generateToken($data);
             $this->set_response($response,  200);
         endif;
