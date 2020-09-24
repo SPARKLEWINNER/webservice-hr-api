@@ -206,52 +206,14 @@ class Base_Controller extends REST_Controller{
 
         return false;
     }
-    
-    public function expo_notification($token,$message){
-  
-        $payload = array(
-            'to' => $token,
-            'title' => "Zupstars",
-            'sound' => 'default',
-            'body' => $message,
-        );
-    
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => "https://exp.host/--/api/v2/push/send",
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => json_encode($payload),
-          CURLOPT_HTTPHEADER => array(
-            "Accept: application/json",
-            "Accept-Encoding: gzip, deflate",
-            "Content-Type: application/json",
-            "cache-control: no-cache",
-            "host: exp.host"
-          ),
-        ));
-        
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        
-        curl_close($curl);
-        
-        if ($err) {
-          echo "cURL Error #:" . $err;
-        } else {
-          return true;
-        }
-    }
-    
+   
+    /* Email notification */
+
     public function send_email($email, $type, $subject, $receiver_email)
 	{
 		$data['info'] = $receiver_email;
-		$template = $this->load->view($type, $data, true);
+        $template = $this->load->view($type, $data, true);
+        
 		$curr_server = $_SERVER['HTTP_HOST'];
 		$config = array(
 			'protocol' => "smtp",
@@ -281,6 +243,50 @@ class Base_Controller extends REST_Controller{
 		} else {
 			return true;
 		}
-	}
+    }
+    
+    public function generate_password(){
+
+        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+        . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789)'); // and any other characters
+        shuffle($seed);
+        $rand = '';
+        foreach (array_rand($seed, 6) as $k) {
+            $rand .= $seed[$k];
+        }
+
+        $encrypt_password = password_hash($rand, PASSWORD_DEFAULT);
+        return array(
+            "hashed_password" => $encrypt_password,
+            "temp_password" => $rand,
+        );
+    }
+
+    /* Validate inputs */
+
+    public function validate_inpt($req, $method){
+        $data = array();
+
+        if($method == "patch"){
+            foreach($req as $r) {
+                if($this->patch($r) === NULL) {
+                    return false;
+                }else{
+                    $data[$r] = $this->patch($r);
+                }
+            }
+        }else{
+            foreach($req as $r) {
+                if($this->post($r) === NULL) {
+                    return false;
+                }else{
+                    $data[$r] = $this->post($r);
+                }
+            }
+        }
+
+        return $data;
+    }
     
 }

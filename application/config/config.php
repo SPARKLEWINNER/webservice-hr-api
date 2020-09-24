@@ -25,6 +25,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $curr_url = 'https://api.sparkles.com/';
+// $curr_url = 'http://localhost/webservice-hr-api/';
 $config['base_url'] = $curr_url;
 
 /*

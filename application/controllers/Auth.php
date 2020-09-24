@@ -9,6 +9,7 @@ class Auth extends Base_Controller
     public  $auth = false;
     public $method = "";
     public $params = [];
+    public $forgot_acc_path = 'emails/forgot-password';
 
     function __construct()
     {
@@ -53,7 +54,29 @@ class Auth extends Base_Controller
         
         return $this->response_return($response);
 
-	}
+    }
+    
+    public function forgot_post()
+    {
+        $data = $this->validate_inpt(array('email'), 'post');
+        if($data != FALSE):
+            
+            $data['temp'] = $this->generate_password()['temp_password'];
+            $data['hash'] = $this->generate_password()['hashed_password'];
+            
+            $data['id'] = $this->Main_mdl->retrieveUser($data['email'], $data['hash'])['id'];
+            $data['timestamp'] = date("Y-m-d H:i:s");
+            $data['token'] = AUTHORIZATION::generateToken($data);
+            
+            $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
+            $this->set_response($response,  200);
+
+        else:
+            $response = $this->response_code(400, "", "");
+            return $this->set_response($response, 400);
+            
+        endif;
+    }
 
     public function token_get()
     {

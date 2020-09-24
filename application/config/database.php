@@ -10,6 +10,11 @@ $username = "webapi_livedev";
 $password = "qj5FHv6d4So2";
 
 
+// $username = "root";
+// $password = "";
+// $hostname = "localhost";
+// $database = "sparkles";
+
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => $hostname,

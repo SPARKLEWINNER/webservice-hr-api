@@ -34,6 +34,18 @@ class Main_mdl extends Base_Model {
         $this->db->where('id', $id);
         $this->db->update('keys', array("key" => $token));
     }
+
+    public function retrieveUser($email, $password){
+        $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('email', $email)->get()->row();
+        if(!$acc) return $this->response_code(204,"User invalid", "");
+
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("password" => $password));
+
+        return array(
+            "id" => $acc->id,
+        );
+    }
     
     /** Records **/
     

@@ -84,19 +84,24 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('SITE_NAME','Zupstars');
-define('MAIN_SITE','http://zupstars.com');
+define('SITE_NAME','7 Star');
+define('MAIN_SITE','https://7star.com.ph');
 
 /* Default Settings */
-define('EMAIL_ADMIN','system@zupstars.com');
-define('EMAIL_FROM','system@zupstars.com');
-define('EMAIL_HOST', 'mail.zupstars.com');
+define('EMAIL_ADMIN','system@sparkles.com.ph');
+define('EMAIL_FROM','system@sparkles.com.ph');
+define('EMAIL_HOST', 'mail.api.sparkles.com.ph');
 define('EMAIL_PORT', '587');
 define('EMAIL_USERNAME', EMAIL_FROM);
 define('EMAIL_PASSWORD', 'devteam2020');
 
 /* Email Subjects */
 define('EMAIL_NEW_APPLICANT','Account Credentials');
+define('EMAIL_FORGOT_PASSWORD','Forgot Password');
 
 define('APPLE_STORE_LINK','#');
 define('PLAYSTORE_LINK','#');
+
+
+// define('PORTAL_LINK','https://portal.sparkles.com.ph/');
+define('PORTAL_LINK','http://localhost/webservice-hr-portal/');

@@ -11,7 +11,7 @@ class Accounts extends Base_Controller
     public $method = "";
     public $params = [];
     public $new_acc_path = 'emails/new-account';
-
+   
     function __construct()
     {
         parent::__construct();

@@ -10,6 +10,7 @@ $route['internal/deploy'] = 'main/deploy';
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/logout']['post'] = 'auth/logout';
+$route['internal/auth/forgot']['post'] = 'auth/forgot';
 
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
