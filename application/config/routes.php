@@ -11,6 +11,7 @@ $route['internal/deploy'] = 'main/deploy';
 $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
+$route['internal/auth/reset']['patch'] = 'auth/reset';
 
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';

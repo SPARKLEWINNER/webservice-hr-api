@@ -20,15 +20,9 @@ class Auth extends Base_Controller
     public function login_post(){
 
 
-        if(empty($this->post('email')) && empty($this->post('password'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
+        $data = $this->validate_inpt(array('email','password'), 'post');
 
-        $email = $this->post('email');
-        $password = $this->post('password');
-
-        $response = $this->Main_mdl->login($email,$password);
+        $response = $this->Main_mdl->login($data['email'],$data['password']);
         if($response === FALSE):
             $response = $this->response_code(422, "User Invalid", "");
             return $this->set_response($response, 422);
@@ -57,6 +51,28 @@ class Auth extends Base_Controller
     }
     
     public function forgot_post()
+    {
+        $data = $this->validate_inpt(array('email'), 'post');
+        if($data != FALSE):
+            
+            $data['temp'] = $this->generate_password()['temp_password'];
+            $data['hash'] = $this->generate_password()['hashed_password'];
+            
+            $data['id'] = $this->Main_mdl->retrieveUser($data['email'], $data['hash'])['id'];
+            $data['timestamp'] = date("Y-m-d H:i:s");
+            $data['token'] = AUTHORIZATION::generateToken($data);
+            
+            $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
+            $this->set_response($response,  200);
+
+        else:
+            $response = $this->response_code(400, "", "");
+            return $this->set_response($response, 400);
+            
+        endif;
+    }
+
+    public function reset_patch()
     {
         $data = $this->validate_inpt(array('email'), 'post');
         if($data != FALSE):

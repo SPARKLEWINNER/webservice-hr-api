@@ -4,16 +4,23 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$hostname = "localhost";
-$database = "webapi_portal";
-$username = "webapi_livedev";
-$password = "qj5FHv6d4So2";
+$connected = @fsockopen("www.google.com", 80);
+$hostname = "";
+$database = "";
+$username = "";
+$password = "";
 
-
-// $username = "root";
-// $password = "";
-// $hostname = "localhost";
-// $database = "sparkles";
+if ($_SERVER['HTTP_HOST'] == "localhost") :
+	$hostname = "localhost";
+	$database = "sparkles";
+	$username = "root";
+	$password = "";
+else:
+	$hostname = "localhost";
+	$database = "webapi_portal";
+	$username = "webapi_livedev";
+	$password = "qj5FHv6d4So2";
+endif;
 
 $db['default'] = array(
 	'dsn'	=> '',
