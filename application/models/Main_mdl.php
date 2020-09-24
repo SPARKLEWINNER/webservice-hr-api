@@ -21,7 +21,7 @@ class Main_mdl extends Base_Model {
                 "email" =>$acc->email,
                 "firstname" => $acc->first_name,
                 "lastname" => $acc->last_name,
-                "profile" => $acc->profile,
+                "profile" => $acc->profile
             );
             
         else:
