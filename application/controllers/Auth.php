@@ -27,17 +27,13 @@ class Auth extends Base_Controller
             $response = $this->response_code(422, "User Invalid", "");
             return $this->set_response($response, 422);
         else:
-            if($response['status'] == 204){
-                $reponse = $this->response_code(422, "User Invalid", "");
-                return $this->set_response($response, 422);                
-            }else{
+
                 $data = $response;
                 $response['timestamp'] = date("Y-m-d H:i:s");
                 $response['token'] = AUTHORIZATION::generateToken($data);
     
-                $this->Main_mdl->recordToken($data['id'],$response['token']);
+                // $this->Main_mdl->recordToken($data['id'],$response['token']);
                 $this->set_response($response,  200);
-            }
         endif;
     }
 
