@@ -214,9 +214,9 @@ class Base_Controller extends REST_Controller{
         
 		$data['info'] = $receiver_email;
         $template = $this->load->view($type, $data, true);
-
+        echo "mail 1";
 		$config = array(
-			'protocol' => "smtp",
+            'protocol' => "smtp",
 			'smtp_host' => EMAIL_HOST,
 			'smtp_port' =>  EMAIL_PORT,
 			'smtp_user' => EMAIL_USERNAME,
@@ -233,9 +233,12 @@ class Base_Controller extends REST_Controller{
 		$this->email->subject($subject);
 		$this->email->message($template);
         $mail = $this->email->send();
+        echo "mail 2";
         if($mail){
+            echo "mail 3";
             return true;
         }else{
+            echo "mail -1";
             show_error($this->email->print_debugger());
         }
     }

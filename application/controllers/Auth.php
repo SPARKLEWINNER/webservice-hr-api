@@ -62,21 +62,26 @@ class Auth extends Base_Controller
         $data = $this->validate_inpt(array('email'), 'post');
         $data['temp'] = $this->generate_password()['temp_password'];
         $data['hash'] = $this->generate_password()['hashed_password'];
-        
+        echo "process 1";
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['hash']);
         if(!array_key_exists("status",$result)){
+            echo "process 2";
             $data['id'] = $result['id'];
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
             
             $process = $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
+            echo "process 3";
             if(!$process){
+                echo "process -2";
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);
             }
             
+            echo "process 4";
             $this->set_response($data,  200);
         }else{
+            echo "process -1";
             $response = $this->response_code(422, "", "");
             return $this->set_response($response, 422);
             
