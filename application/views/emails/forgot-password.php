@@ -110,7 +110,7 @@
                   </tr>
                   <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                     <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                      <a href="<?= PORTAL_LINK; ?>request/reset-password/<?= $info[0]['email'];?>/<?= $info[0]['temp']; ?>" style="display:block;width: 200px;background:#ddd;text-decoration:none;text-align: center;padding:16px 8px;color:#000;">Reset Password</a>
+                      <a href="<?= PORTAL_LINK; ?>/reset-password/<?= $info[0]['email'];?>/<?= $info[0]['temp']; ?>" style="display:block;width: 200px;background:#ddd;text-decoration:none;text-align: center;padding:16px 8px;color:#000;">Reset Password</a>
                     </td>
                   </tr>
                   <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">

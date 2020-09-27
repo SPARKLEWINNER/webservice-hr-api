@@ -39,8 +39,8 @@ class Main_mdl extends Base_Model {
         $acc = $this->db->select('id,email,first_name,last_name,profile')->from('users')->where('email', $email)->get()->row();
         if(!$acc) return $this->response_code(204,"User invalid", "");
 
-        // $this->db->where('id', $acc->id);
-        // $this->db->update('users', array("password" => $password));
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("password" => $password));
 
         return array(
             "id" => $acc->id,
