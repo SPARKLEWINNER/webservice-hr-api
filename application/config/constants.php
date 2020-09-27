@@ -86,12 +86,13 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('SITE_NAME','7 Star');
 define('MAIN_SITE','https://7star.com.ph');
+define('VERSION', '1');
 
 /* Default Settings */
 define('EMAIL_ADMIN','system@sparkles.com.ph');
 define('EMAIL_FROM','system@api.sparkles.com.ph');
 define('EMAIL_HOST', 'mail.api.sparkles.com.ph');
-define('EMAIL_PORT', '587');
+define('EMAIL_PORT', '465');
 define('EMAIL_USERNAME', EMAIL_FROM);
 define('EMAIL_PASSWORD', 'devteam2020');
 
