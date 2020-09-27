@@ -62,6 +62,7 @@ class Auth extends Base_Controller
         $data = $this->validate_inpt(array('email'), 'post');
         $data['temp'] = $this->generate_password()['temp_password'];
         $data['hash'] = $this->generate_password()['hashed_password'];
+        var_dump($data);
         echo "process 1";
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['hash']);
         if(!array_key_exists("status",$result)){
