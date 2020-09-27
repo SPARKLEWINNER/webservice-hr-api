@@ -89,7 +89,7 @@ define('MAIN_SITE','https://7star.com.ph');
 
 /* Default Settings */
 define('EMAIL_ADMIN','system@sparkles.com.ph');
-define('EMAIL_FROM','system@sparkles.com.ph');
+define('EMAIL_FROM','system@api.sparkles.com.ph');
 define('EMAIL_HOST', 'mail.api.sparkles.com.ph');
 define('EMAIL_PORT', '587');
 define('EMAIL_USERNAME', EMAIL_FROM);
