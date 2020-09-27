@@ -65,12 +65,24 @@ class Auth extends Base_Controller
             $data['temp'] = $this->generate_password()['temp_password'];
             $data['hash'] = $this->generate_password()['hashed_password'];
             
-            $data['id'] = $this->Main_mdl->retrieveUser($data['email'], $data['hash'])['id'];
-            $data['timestamp'] = date("Y-m-d H:i:s");
-            $data['token'] = AUTHORIZATION::generateToken($data);
-            
-            $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
-            $this->set_response($response,  200);
+            $result = $this->Main_mdl->retrieveUser($data['email'], $data['hash']);
+            if(!array_key_exists("status",$result)){
+                $data['id'] = $result;
+                $data['timestamp'] = date("Y-m-d H:i:s");
+                $data['token'] = AUTHORIZATION::generateToken($data);
+                
+                $process = $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
+                if($process){
+                    $response = $this->response_code(400, "", "");
+                    return $this->set_response($response, 400);
+                }else{
+                    $this->set_response($data,  200);
+                }
+            }else{
+                $response = $this->response_code(400, "", "");
+                return $this->set_response($response, 400);
+                
+            }
 
         else:
             $response = $this->response_code(400, "", "");

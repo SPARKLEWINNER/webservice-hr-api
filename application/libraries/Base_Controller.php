@@ -211,10 +211,14 @@ class Base_Controller extends REST_Controller{
 
     public function send_email($email, $type, $subject, $receiver_email)
 	{
+		$curr_server = $_SERVER['HTTP_HOST'];
+		if ($curr_server == "localhost") {
+            return false;
+        } 
+        
 		$data['info'] = $receiver_email;
         $template = $this->load->view($type, $data, true);
 
-		$curr_server = $_SERVER['HTTP_HOST'];
 		$config = array(
 			'protocol' => "smtp",
 			'smtp_host' => EMAIL_HOST,
@@ -232,17 +236,8 @@ class Base_Controller extends REST_Controller{
 		$this->email->to($email);
 		$this->email->subject($subject);
 		$this->email->message($template);
-		$mail = $this->email->send();
-
-		if ($curr_server != "localhost") {
-			if ($mail) {
-				return true;
-			} else {
-				show_error($this->email->print_debugger());
-			}
-		} else {
-			return true;
-		}
+        $this->email->send();
+        return true;
     }
     
     public function generate_password(){
