@@ -104,5 +104,5 @@ define('APPLE_STORE_LINK','#');
 define('PLAYSTORE_LINK','#');
 
 
-// define('PORTAL_LINK','https://portal.sparkles.com.ph/');
-define('PORTAL_LINK','http://localhost/webservice-hr-portal/');
+define('PORTAL_LINK','https://portal.sparkles.com.ph/');
+// define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');
