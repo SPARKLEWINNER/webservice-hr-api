@@ -211,10 +211,6 @@ class Base_Controller extends REST_Controller{
 
     public function send_email($email, $type, $subject, $receiver_email)
 	{
-		$curr_server = $_SERVER['HTTP_HOST'];
-		if ($curr_server == "localhost") {
-            return false;
-        } 
         
 		$data['info'] = $receiver_email;
         $template = $this->load->view($type, $data, true);
