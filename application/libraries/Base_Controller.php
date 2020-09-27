@@ -236,8 +236,12 @@ class Base_Controller extends REST_Controller{
 		$this->email->to($email);
 		$this->email->subject($subject);
 		$this->email->message($template);
-        $this->email->send();
-        return true;
+        $mail = $this->email->send();
+        if($mail){
+            return true;
+        }else{
+            show_error($this->email->print_debugger());
+        }
     }
     
     public function generate_password(){
