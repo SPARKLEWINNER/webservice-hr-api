@@ -3,10 +3,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type');
+header('Content-Type: application/json');    
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type');
-    header('Content-Type: application/json');    
     exit;       
 }
 
