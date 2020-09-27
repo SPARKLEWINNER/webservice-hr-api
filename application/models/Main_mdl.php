@@ -38,13 +38,41 @@ class Main_mdl extends Base_Model {
     public function retrieveUser($email, $password){
         $acc = $this->db->select('id,email,first_name,last_name,profile')->from('users')->where('email', $email)->get()->row();
         if(!$acc) return $this->response_code(204,"User invalid", "");
-
+        $update = array("password"=> $password, "token" => $password);
         $this->db->where('id', $acc->id);
-        $this->db->update('users', array("password" => $password));
+        $this->db->update('users', $update);
 
         return array(
             "id" => $acc->id,
         );
+    }
+
+    public function resetUser($data){
+        $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
+        if(!$acc) return $this->response_code(204,"", "");
+        
+        if($acc->token === "" || empty($acc->token)) return $this->response_code(204,"Invalid token","");
+
+        if($data['hash'] ==  $acc->token):
+
+            $update = array(
+                "password" => password_hash($data['password'], PASSWORD_DEFAULT),
+                "token" => ""
+            );
+            $this->db->where('id', $acc->id);
+            $this->db->update('users', $update);
+
+            return array(
+                "id" => $acc->id,
+                "email" =>$acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "profile" => $acc->profile
+            );
+
+        else:
+          return false;
+        endif;
     }
     
     /** Records **/

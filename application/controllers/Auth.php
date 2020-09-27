@@ -61,8 +61,8 @@ class Auth extends Base_Controller
     {
         $data = $this->validate_inpt(array('email'), 'post');
         $data['temp'] = $this->generate_password()['temp_password'];
-        $data['hash'] = $this->generate_password()['hashed_password'];
-        $result = $this->Main_mdl->retrieveUser($data['email'], $data['hash']);
+        $data['hash'] = $data['temp'];
+        $result = $this->Main_mdl->retrieveUser($data['email'], $data['temp']);
         if(!array_key_exists("status",$result)){
             $data['id'] = $result['id'];
             $data['timestamp'] = date("Y-m-d H:i:s");
@@ -73,7 +73,6 @@ class Auth extends Base_Controller
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);
             }
-            
             $this->set_response($data,  200);
         }else{
             $response = $this->response_code(422, "", "");
@@ -82,27 +81,27 @@ class Auth extends Base_Controller
         }
 
     }
-
+    
     public function reset_patch()
     {
-        $data = $this->validate_inpt(array('email'), 'post');
-        if($data != FALSE):
-            
-            $data['temp'] = $this->generate_password()['temp_password'];
-            $data['hash'] = $this->generate_password()['hashed_password'];
-            
-            $data['id'] = $this->Main_mdl->retrieveUser($data['email'], $data['hash'])['id'];
+        $data = $this->validate_inpt(array('hash', 'email', 'password'), 'patch');
+        $result = $this->Main_mdl->resetUser($data);
+        if(!array_key_exists("status",$result)){
+            $data['id'] = $result['id'];
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
             
-            $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
-            $this->set_response($response,  200);
-
-        else:
-            $response = $this->response_code(400, "", "");
-            return $this->set_response($response, 400);
+            if(!$result){
+                $response = $this->response_code(422, "Invalid token", "");
+                return $this->set_response($response, 422);
+            }
             
-        endif;
+            $this->set_response($data,  200);
+        }else{
+            $response = $this->response_code(422, "", "");
+            return $this->set_response($response, 422);
+            
+        }
     }
 
     public function token_get()
