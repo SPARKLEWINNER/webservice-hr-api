@@ -4,7 +4,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 header('Access-Control-Allow-Origin: *');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+    header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
     header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type');
     header('Content-Type: application/json');    
     exit;       
