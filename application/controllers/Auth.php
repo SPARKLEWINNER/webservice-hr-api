@@ -67,7 +67,7 @@ class Auth extends Base_Controller
             
             $result = $this->Main_mdl->retrieveUser($data['email'], $data['hash']);
             if(!array_key_exists("status",$result)){
-                $data['id'] = $result;
+                $data['id'] = $result['id'];
                 $data['timestamp'] = date("Y-m-d H:i:s");
                 $data['token'] = AUTHORIZATION::generateToken($data);
                 
