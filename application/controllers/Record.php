@@ -30,7 +30,7 @@ class Record extends Base_Controller
             'data' => $this->post('data'),
             'date_created' => $this->post('date_created'),
             'email' => $this->post('email'),
-            'reference_id' => ;
+            'reference_id' => $generated;
         );
 
         $response = $this->Main_mdl->record_data($data);
