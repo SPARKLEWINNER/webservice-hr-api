@@ -84,8 +84,6 @@ class Main_mdl extends Base_Model {
         
         $record = $this->db->select('*')->from('applications')->where('id', $inserted_id)->get()->row();
 
-        $this->generals->generateReferenceCode($this->input->post('pref_branch'))
-        
         if($this->db->affected_rows() > 0):    
             return array(
                 "id" => $this->db->insert_id(),
