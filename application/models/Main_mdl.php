@@ -91,9 +91,9 @@ class Main_mdl extends Base_Model {
                 "reference_id" => $record->reference_id,
                 "data" => $record->data,
                 "date_created" => $record->date_created,
-                "status" => $record->date_created,
-                "reviewer" => $record->date_created,
-                "notification" => $record->date_created,
+                "status" => $record->status,
+                "reviewer" => $record->reviewer,
+                "notification" => $record->notification,
             );  
         else: return false;
         endif;
