@@ -35,7 +35,6 @@ class Record extends Base_Controller
         );
 
         $response = $this->Main_mdl->record_data($data);
-        var_dump($response);
         if(!isset($response['status'])){
             return $this->set_response($response, 422);
         }else{
