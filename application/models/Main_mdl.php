@@ -87,7 +87,7 @@ class Main_mdl extends Base_Model {
         if($this->db->affected_rows() > 0):    
             return array(
                 "id" => $this->db->insert_id(),
-                "applicant_id" => $this->applicant_id,
+                "applicant_id" => $record->applicant_id,
                 "reference_id" => $record->reference_id,
                 "data" => $record->data,
                 "date_created" => $record->date_created,
