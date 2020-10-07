@@ -24,12 +24,13 @@ class Record extends Base_Controller
             $this->response_return($this->response_code(400,""));
             return false;
         }
-
+        $generated = $this->generateReferenceCode($this->post('email'));
+        var_dump($generated);
         $data = array(
             'data' => $this->post('data'),
             'date_created' => $this->post('date_created'),
             'email' => $this->post('email'),
-            'reference_id' => $this->generateReferenceCode($this->post('email'));
+            'reference_id' => ;
         );
 
         $response = $this->Main_mdl->record_data($data);
