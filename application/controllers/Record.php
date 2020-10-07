@@ -39,7 +39,7 @@ class Record extends Base_Controller
         if(!isset($response['status'])){
             return $this->set_response($response, 422);
         }else{
-            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($response,$password));
+            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($response,$generated));
             $this->set_response($response,  200); 
         }
 
