@@ -83,6 +83,8 @@ class Main_mdl extends Base_Model {
         $inserted_id = $this->db->insert_id();
         
         $record = $this->db->select('*')->from('applications')->where('id', $inserted_id)->get()->row();
+
+        $this->generals->generateReferenceCode($this->input->post('pref_branch'))
         
         if($this->db->affected_rows() > 0):    
             return array(
@@ -94,11 +96,11 @@ class Main_mdl extends Base_Model {
                 "status" => $record->status,
                 "reviewer" => $record->reviewer,
                 "notification" => $record->notification,
+                "username" => $record->username
             );  
         else: return false;
         endif;
-    
-  
+
     }
     
     public function record_pull($uid,$cid,$oid){

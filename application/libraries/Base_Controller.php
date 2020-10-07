@@ -282,5 +282,17 @@ class Base_Controller extends REST_Controller{
 
         return $data;
     }
+
+    /* auto generates */
+
+    public function generateReferenceCode($b)
+    {
+        $ref_code =  filter_var($b, FILTER_SANITIZE_STRING);
+        if ($res->num_rows() > 0) {
+            $ref_code = strtoupper($ref_code . substr(md5(microtime()), rand(0, 26), 5));
+        }
+
+        return $ref_code;
+    }
     
 }

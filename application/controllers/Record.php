@@ -28,6 +28,8 @@ class Record extends Base_Controller
         $data = array(
             'data' => $this->post('data'),
             'date_created' => $this->post('date_created'),
+            'email' => $this->post('email'),
+            'reference_id' => $this->$this->generateReferenceCode($this->post->('email'));
         );
 
         $response = $this->Main_mdl->record_data($data);
