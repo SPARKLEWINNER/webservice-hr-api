@@ -214,8 +214,6 @@ class Base_Controller extends REST_Controller{
         
 		$data['info'] = $receiver_email;
         $template = $this->load->view($type, $data, true);
-        echo $template;
-        die();
 		$config = array(
             'protocol' => "smtp",
 			'smtp_host' => EMAIL_HOST,
