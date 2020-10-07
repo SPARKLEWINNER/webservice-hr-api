@@ -82,7 +82,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('applications', $data);
         $inserted_id = $this->db->insert_id();
         
-        $record = $this->db->select('id,uid,cid,video,date_created,status,name')->from('applications')->where('id', $inserted_id)->get()->row();
+        $record = $this->db->select('*')->from('applications')->where('id', $inserted_id)->get()->row();
         
         if($this->db->affected_rows() > 0):    
             return array(
@@ -91,6 +91,9 @@ class Main_mdl extends Base_Model {
                 "reference_id" => $record->reference_id,
                 "data" => $record->data,
                 "date_created" => $record->date_created,
+                "status" => $record->date_created,
+                "reviewer" => $record->date_created,
+                "notification" => $record->date_created,
             );  
         else: return false;
         endif;
