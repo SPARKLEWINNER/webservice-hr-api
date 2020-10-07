@@ -10,6 +10,7 @@ class Record extends Base_Controller
     public  $auth = false;
     public $method = "";
     public $params = [];
+    public $new_acc_path = 'emails/new-account';
 
     function __construct()
     {
