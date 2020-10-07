@@ -288,7 +288,7 @@ class Base_Controller extends REST_Controller{
     public function generateReferenceCode($b)
     {
         $ref_code =  filter_var($b, FILTER_SANITIZE_STRING);
-        if ($res->num_rows() > 0) {
+        if ($ref_code) {
             $ref_code = strtoupper($ref_code . substr(md5(microtime()), rand(0, 26), 5));
         }
 
