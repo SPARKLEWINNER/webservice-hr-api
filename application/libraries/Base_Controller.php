@@ -289,7 +289,7 @@ class Base_Controller extends REST_Controller{
 
     public function generateReferenceCode($b)
     {
-        $ref_code =  filter_var($b, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $ref_code =  substr(filter_var($b, FILTER_SANITIZE_FULL_SPECIAL_CHARS), 0, 8);
         if ($ref_code) {
             $ref_code = strtoupper($ref_code . substr(md5(microtime()), rand(0, 26), 5));
         }
