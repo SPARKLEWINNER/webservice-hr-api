@@ -20,53 +20,25 @@ class Accounts extends Base_Controller
     
     public function create_post(){
   
-        if(empty($this->post('product_id')) && empty($this->post('email'))) {
+        if(empty($this->post('data')) && empty($this->post('date_created'))) {
             $this->response_return($this->response_code(400,""));
             return false;
         }
-  
-        if(empty($this->post('manage_email'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        
-        $firstname = $this->post('firstname');
-        $lastname = $this->post('lastname');  
-        $product_id = $this->post('product_id');
-        $email= $this->post('email');
-        $password = $this->post('password');
-        $mg_email = $this->post('manage_email');
-        $upload_proc = $this->upload_profile($_FILES['profile'], $product_id);
 
         $data = array(
-          "first_name" => $firstname,
-          "last_name" => $lastname,
-          "product_id" => $product_id,
-          "email" => $email,
-          "mg_email" => $mg_email,
-          "password" => password_hash($password, PASSWORD_DEFAULT),
-          "profile" => $upload_proc['link'],
-          "filename" => $upload_proc['name'],
-          "date_created" => date('Y-m-d H:i:s')
+            'data' => $this->post('data'),
+            'date_created' => $this->post('date_created'),
         );
-        
-        
-  
-        if($upload_proc){
-            $response = $this->Main_mdl->new_user($data);
 
-            if(!isset($response['status'])){
-                return $this->set_response($response, 422);
-            }else{
-                $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($data,$password));
-                $this->set_response($response,  200); 
-                
-            }
-           
-        }else{
-            $response = $this->response_code(422, "Server upload error", "");
+        $response = $this->Main_mdl->new_user($data);
+
+        if(!isset($response['status'])){
             return $this->set_response($response, 422);
+        }else{
+            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($data,$password));
+            $this->set_response($response,  200); 
         }
+
        
         
     }

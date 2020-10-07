@@ -79,19 +79,16 @@ class Main_mdl extends Base_Model {
     
     public function record_data($data){
 
-        $this->db->insert('records', $data);
+        $this->db->insert('applications', $data);
         $inserted_id = $this->db->insert_id();
-        
-        $record = $this->db->select('id,uid,cid,video,date_created,status,name')->from('records')->where('id', $inserted_id)->get()->row();
         
         if($this->db->affected_rows() > 0):    
             return array(
               "id" => $this->db->insert_id(),
-              "cid" => $record->cid,
-              "video" => $record->video,
-              "name" => $record->name,
+              "applicant_id" => $record->applicant_id,
+              "reference_id" => $record->reference_id,
+              "data" => $record->data,
               "date_created" => $record->date_created,
-              "status" => $record->status
             );  
         else: return false;
         endif;

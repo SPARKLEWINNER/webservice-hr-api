@@ -17,42 +17,28 @@ class Record extends Base_Controller
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
     
+           
     public function create_post(){
   
-        if(empty($this->post('uid')) && empty($this->post('cid'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        if(empty($this->post('pid')) && empty($this->post('oid'))) {
+        if(empty($this->post('data')) && empty($this->post('date_created'))) {
             $this->response_return($this->response_code(400,""));
             return false;
         }
 
-
-        $uid = $this->post('uid');
-        $cid = $this->post('cid');  
-        $oid = $this->post('oid');  
-        $pid = $this->post('pid');   
-        $upload_proc = $this->upload($_FILES['record'], $uid, $oid);
-   
         $data = array(
-          "uid" => $uid,
-          "cid" => $cid,
-          "oid" => $oid,
-          "pid" => $pid,
-          "video" => $upload_proc['link'],
-          "name" => $upload_proc['name'],
-          "date_created" => date('Y-m-d H:i:s'),
-          "status" => 0
+            'data' => $this->post('data'),
+            'date_created' => $this->post('date_created'),
         );
-  
-        if($upload_proc){
-            $response = $this->Main_mdl->record_data($data);
-            $this->set_response($response,  200);
-        }else{
-            $response = $this->response_code(422, "Server upload error", "");
+
+        $response = $this->Main_mdl->record_data($data);
+
+        if(!isset($response['status'])){
             return $this->set_response($response, 422);
+        }else{
+            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($data,$password));
+            $this->set_response($response,  200); 
         }
+
        
         
     }
