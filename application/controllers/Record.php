@@ -24,8 +24,8 @@ class Record extends Base_Controller
             $this->response_return($this->response_code(400,""));
             return false;
         }
-        $generated = $this->generateReferenceCode($this->post('email'));
-        var_dump($generated);
+        $mg_email = $this->post('email');
+        $generated = $this->generateReferenceCode($mg_email);
         $data = array(
             'data' => $this->post('data'),
             'date_created' => $this->post('date_created'),
@@ -38,7 +38,7 @@ class Record extends Base_Controller
         if(!isset($response['status'])){
             return $this->set_response($response, 422);
         }else{
-            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($data,$password));
+            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($response,$password));
             $this->set_response($response,  200); 
         }
 
