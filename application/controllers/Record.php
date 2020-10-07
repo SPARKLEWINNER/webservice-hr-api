@@ -29,7 +29,7 @@ class Record extends Base_Controller
         $data = array(
             'data' => $this->post('data'),
             'date_created' => $this->post('date_created'),
-            'email' => $this->post('email'),
+            'username' => $this->post('email'),
             'reference_id' => $generated;
         );
 
