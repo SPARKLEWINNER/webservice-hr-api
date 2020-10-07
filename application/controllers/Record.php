@@ -21,7 +21,7 @@ class Record extends Base_Controller
            
     public function create_post(){
   
-        if(empty($this->post('data')) && empty($this->post('date_created'))) {
+        if(empty($this->post('data')) && empty($this->post('email'))) {
             $this->response_return($this->response_code(400,""));
             return false;
         }
@@ -29,7 +29,6 @@ class Record extends Base_Controller
         $generated = $this->generateReferenceCode($mg_email);
         $data = array(
             'data' => $this->post('data'),
-            'date_created' => $this->post('date_created'),
             'username' => $this->post('email'),
             'reference_id' => $generated
         );
