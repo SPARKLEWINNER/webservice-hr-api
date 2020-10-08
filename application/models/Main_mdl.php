@@ -25,9 +25,32 @@ class Main_mdl extends Base_Model {
             );
             
         else:
-          return false;
+            $check_temporary_account = $this->temporary_login($email, $password);
+            if(!$check_temporary_account) return $this->response_code(204,"User invalid", "");
+            return $check_temporary_account;
 
         endif;
+    }
+
+    public function temporary_login($email, $password){
+        $statement = array('username' => $email, 'reference_id' => $password);
+        $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+
+        if(!$acc) return false;
+        return array(
+            "id" => $acc->id,
+            "applicant_id" => $acc->applicant_id,
+            "reference_id" =>$acc->reference_id,
+            "date_created" => $acc->date_created,
+            "data" => $acc->data,
+            "account_status" => $acc->status,
+            "reviewer" => $acc->reviewer,
+            "notification" => $acc->notification,
+            "username" => $acc->username,
+            "password" => $acc->password
+        );
+      
+        
     }
 
     public function recordToken($id, $token){
@@ -202,6 +225,7 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
+
     
     public function update_user($uid,$post_id,$data){
         $this->db->where('post_id', $post_id);
