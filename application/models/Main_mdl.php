@@ -97,6 +97,31 @@ class Main_mdl extends Base_Model {
           return false;
         endif;
     }
+
+    /** Exams **/
+    
+        public function exams_data($data){
+
+            $this->db->insert('exams', $data);
+            $inserted_id = $this->db->insert_id();
+            
+            $exam = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
+    
+            if($this->db->affected_rows() > 0):    
+                return array(
+                    "id" => $this->db->insert_id(),
+                    "applicant_id" => $exam->applicant_id,
+                    "date_created" => $exam->date_created,
+                    "type" => $exam->type,
+                    "data" => $exam->data,
+                    "score" => $exam->score,
+                    "exam_status" => $exam->status,
+                    "reviewer" => $exam->reviewer,
+                );  
+            else: return false;
+            endif;
+    
+        }
     
     /** Records **/
     
