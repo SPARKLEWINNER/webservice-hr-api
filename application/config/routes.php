@@ -19,6 +19,9 @@ $route['internal/record/show/(:num)/(:num)/(:num)']['get'] = 'record/records/$1/
 $route['internal/record/remove']['post'] = 'record/remove';
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
 
+/** Exams **/
+$route['internal/exam/iq/create']['post'] = 'exams/iq_create';
+
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
 $route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
