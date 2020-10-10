@@ -100,7 +100,7 @@ class Main_mdl extends Base_Model {
 
     /** Exams **/
     
-        public function exams_data($data){
+        public function exam_data($data){
 
             $this->db->insert('exams', $data);
             $inserted_id = $this->db->insert_id();

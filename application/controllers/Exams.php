@@ -23,11 +23,14 @@ class Exams extends Base_Controller
         
         $score = 0;
         // $data = $this->validate_inpt(array('email','password'), 'post');
-        $answers = array("d","d","c","a","a","c","c","c","b","c","d","b","a","d","a","c","c","d","b","a","b","b","c","b","d");
-        var_dump($answers);
+        $answer_key = array("d","d","c","a","a","c","c","c","b","c","d","b","a","d","a","c","c","d","b","a","b","b","c","b","d","c","e","b","f","b");
+        $answer = array();
         for($i = 1; $i <= 30; $i++){
-            
+            // $answer[] = json_decode($this->input->post('data'))['ex-iq-'.$i.''];
         }
+        
+        var_dump(json_decode($this->input->post('data')));
+        // var_dump($answer);
 
         $data = array(
             'applicant_id' => $this->post('applicant_id'),
