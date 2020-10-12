@@ -12,7 +12,7 @@ class Main_mdl extends Base_Model {
     }
 
     public function login($email, $password){
-        $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('email', $email)->get()->row();
+        $acc = $this->db->select('password,id,email,first_name,last_name,profile,user_level')->from('users')->where('email', $email)->get()->row();
         if(!$acc) return $this->response_code(204,"User invalid", "");
 
         if(password_verify($password,  $acc->password)):
@@ -21,7 +21,8 @@ class Main_mdl extends Base_Model {
                 "email" =>$acc->email,
                 "firstname" => $acc->first_name,
                 "lastname" => $acc->last_name,
-                "profile" => $acc->profile
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level
             );
             
         else:
@@ -47,7 +48,8 @@ class Main_mdl extends Base_Model {
             "reviewer" => $acc->reviewer,
             "notification" => $acc->notification,
             "username" => $acc->username,
-            "password" => $acc->password
+            "password" => $acc->password,
+            "user_level" => "1"
         );
       
         

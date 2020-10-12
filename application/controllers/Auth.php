@@ -31,6 +31,10 @@ class Auth extends Base_Controller
                 $data = $response;
                 $response['timestamp'] = date("Y-m-d H:i:s");
                 $response['token'] = AUTHORIZATION::generateToken($data);
+
+                if($data['user_level'] == 3){
+                    $response['route'] = "/admin/";
+                }
                 
                 // $this->Main_mdl->recordToken($data['id'],$response['token']);
                 $this->set_response($response,  200);
