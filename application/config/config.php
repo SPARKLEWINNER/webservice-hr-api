@@ -25,7 +25,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $curr_server = $_SERVER['HTTP_HOST'];
-$curr_url = $curr_server ==  "localhost" ? 'http://'.$curr_server.'/webservice-hr-api/' : 'https://' . $curr_server . '/';
+$curr_url = $curr_server ==  "localhost" ? 'http://'.$curr_server.'/webservice-hr-api/' : 'http://' . $curr_server . '/';
 
 $config['base_url'] = $curr_url;
 
