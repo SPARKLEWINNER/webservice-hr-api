@@ -90,7 +90,7 @@ define('VERSION', '1');
 
 /* Default Settings */
 define('EMAIL_ADMIN','system@sparkles.com.ph');
-define('EMAIL_FROM','no-reply@api.sparkles.com.ph');
+define('EMAIL_FROM','system@api.sparkles.com.ph');
 define('EMAIL_HOST', 'mail.api.sparkles.com.ph');
 define('EMAIL_PORT', '465');
 define('EMAIL_USERNAME', EMAIL_FROM);
