@@ -36,7 +36,7 @@ class Record extends Base_Controller
 
         if($_FILES['resume']){
             $resume_proc = $this->upload($_FILES['resume'], $generated);
-
+            var_dump($resume_proc);
             if($resume_proc){
                 $app_data['resume'] = $resume_proc['link'];
             }
