@@ -27,7 +27,6 @@ class Record extends Base_Controller
         $generated = $this->generateReferenceCode($mg_email);
         $upload_proc = $this->upload_profile($_FILES['profile'], $generated);
         
-        var_dump($upload_proc);
         $app_data = array(
             'username' => $this->post('email'),
             'reference_id' => $generated,
@@ -37,7 +36,10 @@ class Record extends Base_Controller
 
         if($_FILES['resume']){
             $resume_proc = $this->upload($_FILES['resume'], $generated);
-            $app_data['resume'] = $resume_proc['link'];
+
+            if($resume_proc){
+                $app_data['resume'] = $resume_proc['link'];
+            }
         }
 
         if($upload_proc){
