@@ -15,7 +15,7 @@ class Base_Controller extends REST_Controller{
     public  $data = [];
     public  $auth = false;
     public $unauthorize = array('status' => REST_Controller::HTTP_UNAUTHORIZED,'message' => 'Unauthorized.');
-    public $client_error = array('status' => REST_Controller::HTTP_UNPROCESSABLE_ENTITY,'message' => 'Client error.');
+    public $client_error = array('status' => REST_Controller::HTTP_UNPROCESSABLE_ENTITY);
     public $bad_request = array('status' => REST_Controller::HTTP_BAD_REQUEST,'message' => 'Bad request.');
     public $internal = array('status' => REST_Controller::HTTP_INTERNAL_SERVER_ERROR,'message' => 'Internal server error.');
     public $not_found = array('status' => REST_Controller::HTTP_NOT_FOUND,'message' => 'Not found.');
@@ -98,7 +98,7 @@ class Base_Controller extends REST_Controller{
                 break;
 
             case 422:
-                $response =  $this->success["message"] = $message;
+                $response =  $this->client_error["message"] = $message;
                 $status = REST_Controller::HTTP_BAD_REQUEST;
                 break;
 
