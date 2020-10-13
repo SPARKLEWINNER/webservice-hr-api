@@ -21,18 +21,16 @@ class Accounts extends Base_Controller
         
     public function user_get($id = NULL){
         
-        if(empty($id) && empty($product_id)){
+        if(empty($id)){
             $this->response_return($this->response_code(400,""));
             return false;
         }
-        
-        $id = $id;
         $response = $this->Main_mdl->user_pull($id);
         
         if($response){
             return $this->set_response($response,  200);
         }else{
-            $response = $this->response_code(422, "Unable to process your request", "");
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"), "");
             return $this->set_response($response, 422);
         }
     }

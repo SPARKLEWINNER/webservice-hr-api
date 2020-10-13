@@ -249,9 +249,8 @@ class Main_mdl extends Base_Model {
         
     public function user_pull($id){
         
-        $query = "SELECT *  FROM applications WHERE id = {$id}";
+        $query = "SELECT * FROM applications WHERE id = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
-
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
