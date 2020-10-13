@@ -40,7 +40,7 @@ class Auth extends Base_Controller
                 $this->set_response($response,  200);
                     
             }else{
-                $response = $this->response_code(422, "User Invalid", "");
+                $response = $this->response_code(422, array("status" => 422, "message" => "User Invalid"), "");
                 return $this->set_response($response, 422);
 
             }
