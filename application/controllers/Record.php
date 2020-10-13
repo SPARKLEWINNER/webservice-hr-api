@@ -27,8 +27,6 @@ class Record extends Base_Controller
         $generated = $this->generateReferenceCode($mg_email);
         $upload_proc = $this->upload_profile($_FILES['profile'], $generated);
         
-        var_dump($_FILES);
-        die();
         var_dump($upload_proc);
         $app_data = array(
             'username' => $this->post('email'),
