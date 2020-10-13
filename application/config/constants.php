@@ -88,6 +88,8 @@ define('SITE_NAME','7 Star');
 define('MAIN_SITE','https://7star.com.ph');
 define('VERSION', '1');
 
+define('DEFAULT_URI','http://api.sparkles.com.ph/');
+
 /* Default Settings */
 define('EMAIL_ADMIN','system@sparkles.com.ph');
 define('EMAIL_FROM','system@api.sparkles.com.ph');

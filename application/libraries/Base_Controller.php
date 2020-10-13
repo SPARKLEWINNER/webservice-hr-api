@@ -25,8 +25,8 @@ class Base_Controller extends REST_Controller{
     public $default_client = "mobileapp-client";
     public $default_auth_key = "simplerestapi";
     
-    public $videoStorage = "http://zupstars.com/wp-content/uploads/recorded_mobile/";
-    public $profileStorage = "http://zupstars.com/wp-content/uploads/profiles/";
+    public $videoStorage = DEFAULT_URI."/uploads/";
+    public $profileStorage = DEFAULT_URI."/uploads/";
 
 
     function __construct()
@@ -99,7 +99,7 @@ class Base_Controller extends REST_Controller{
 
             case 422:
                 $response =  $this->client_error;
-                $status = REST_Controller::HTTP_UNPROCESSABLE_ENTITY;
+                $status = REST_Controller::HTTP_BAD_REQUEST;
                 break;
 
             case 500: 
@@ -123,17 +123,17 @@ class Base_Controller extends REST_Controller{
     
         /* Upload files */
 
-    public function upload($file,$name, $order_id){
+    public function upload($file,$order_id){
         $valid_ext = array('mp4', 'flv');
         
-        $path = '../wp-content/uploads/recorded_mobile/';
+        $path = '../uploads/';
         $request = 'record';
         if($file){
             $img = $file['name'];
             $tmp = $file['tmp_name'];
             $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
 
-            $final_image = "ORDER-".$order_id."-".strtolower($name.time().'1.'.$ext);
+            $final_image = $order_id."-".strtolower($order_id.time().'1.'.$ext);
 
             $config = array(
                 'upload_path' => $path,
@@ -165,17 +165,17 @@ class Base_Controller extends REST_Controller{
         return false;
     }
     
-    public function upload_profile($file,$name){
+    public function upload_profile($file,$order_id){
       
         
-        $path = '../wp-content/uploads/profiles/';
+        $path = '../uploads/';
         $request = 'profile';
         if($file){
             $img = $file['name'];
             $tmp = $file['tmp_name'];
             $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
 
-            $final_image = strtolower($name.time().'1.'.$ext);
+            $final_image = strtolower($order_id.time().'1.'.$ext);
 
             $config = array(
                 'upload_path' => $path,

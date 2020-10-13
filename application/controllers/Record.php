@@ -20,29 +20,37 @@ class Record extends Base_Controller
     
            
     public function create_post(){
-  
-        if(empty($this->post('data')) && empty($this->post('email'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
+        
+
+        $data = $this->validate_inpt(array('data','email'), 'post');
         $mg_email = $this->post('email');
         $generated = $this->generateReferenceCode($mg_email);
-        $data = array(
-            'data' => $this->post('data'),
+        $upload_proc = $this->upload($_FILES['profile'], $generated);
+
+        $app_data = array(
             'username' => $this->post('email'),
-            'reference_id' => $generated
+            'reference_id' => $generated,
+            'profile' =>  $upload_proc['link']
         );
 
-        $response = $this->Main_mdl->record_data($data);
-        if(!isset($response['status'])){
-            return $this->set_response($response, 422);
-        }else{
-            $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($response,$generated));
-            $this->set_response($response,  200); 
+
+        if($_FILES['resume']){
+            $resume_proc = $this->upload($_FILES['resume'], $generated);
+            $app_data['resume'] => $resume_proc['link'];
         }
 
-       
-        
+        if($upload_proc){
+            $response = $this->Main_mdl->record_data($app_data);
+            if(!isset($response['status'])){
+                return $this->set_response($response, 422);
+            }else{
+                $this->send_email($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($response,$generated));
+                $this->set_response($response,  200); 
+            }
+        }else{
+            $response = $this->response_code(422, "Server upload error", "");
+            return $this->set_response($response, 422);
+        }
     }
         
     public function remove_post(){
