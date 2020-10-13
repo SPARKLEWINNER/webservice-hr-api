@@ -98,7 +98,7 @@ class Base_Controller extends REST_Controller{
                 break;
 
             case 422:
-                $response =  $this->client_error;
+                $response =  $this->success["message"] = $message;
                 $status = REST_Controller::HTTP_BAD_REQUEST;
                 break;
 
