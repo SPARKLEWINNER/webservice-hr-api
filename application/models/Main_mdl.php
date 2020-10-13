@@ -21,6 +21,7 @@ class Main_mdl extends Base_Model {
                 "email" =>$acc->email,
                 "firstname" => $acc->first_name,
                 "lastname" => $acc->last_name,
+                "" => $acc->profile,
                 "profile" => $acc->profile,
                 "user_level" => $acc->user_level
             );
@@ -49,7 +50,9 @@ class Main_mdl extends Base_Model {
             "notification" => $acc->notification,
             "username" => $acc->username,
             "password" => $acc->password,
-            "user_level" => "1"
+            "user_level" => "1",
+            "profile" => $acc->profile,
+            "company" => $acc->company
         );
       
         
