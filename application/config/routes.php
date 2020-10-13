@@ -24,7 +24,7 @@ $route['internal/exam/iq/create']['post'] = 'exams/iq_create';
 
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
-$route['internal/account/(:any)']['get'] = 'accounts/user_det_get';
+$route['internal/account/(:any)']['get'] = 'accounts/user_det';
 $route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
 $route['internal/account/update']['post'] = 'accounts/user_rate';
 $route['internal/account/user/update']['patch'] = 'accounts/update_user';
