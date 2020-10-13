@@ -29,6 +29,7 @@ class Record extends Base_Controller
         
         $app_data = array(
             'username' => $this->post('email'),
+            'data' => $this->post('data'),
             'company' => $this->post('company'),
             'reference_id' => $generated,
             'profile' =>  $upload_proc['link']
