@@ -115,7 +115,7 @@ class Base_Controller extends REST_Controller{
         }
         $request_header = $status ;
 
-        if($request_header === 200 || $request_header === 405){
+        if($request_header === 200 || $request_header === 405 || $request_header === 422){
             return array("status" => $request_header, "data" => $response );
         }
         return $response;
