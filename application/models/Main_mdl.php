@@ -247,7 +247,7 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? true : false;
     }
         
-    public function user_pull($id,$product_id){
+    public function user_pull($id){
         
         $query = "SELECT *  WHERE id = {$id} DESC";
         $result = $this->db->query($query);
