@@ -137,7 +137,7 @@ class Base_Controller extends REST_Controller{
 
             $config = array(
                 'upload_path' => $path,
-                'allowed_types' => "pdf|doc|docx|PDF|DOC|DOCX",
+                'allowed_types' => "pdf|doc|docx",
                 'overwrite' => FALSE,
                 'max_size' => "30000",
                 'file_name' => $final_image
