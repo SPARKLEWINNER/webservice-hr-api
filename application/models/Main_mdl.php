@@ -144,7 +144,9 @@ class Main_mdl extends Base_Model {
                 "status" => $record->status,
                 "reviewer" => $record->reviewer,
                 "notification" => $record->notification,
-                "username" => $record->username
+                "username" => $record->username,
+                "company" => $record->company,
+                "profile" => $record->profile
             );  
         else: return false;
         endif;
