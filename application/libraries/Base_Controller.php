@@ -124,9 +124,9 @@ class Base_Controller extends REST_Controller{
         /* Upload files */
 
     public function upload($file,$order_id){
-        $valid_ext = array('mp4', 'flv');
+        $valid_ext = array('docx', 'xlsx', 'csv', 'doc','pdf');
         
-        $path = '../uploads/';
+        $path = './uploads/';
         $request = 'record';
         if($file){
             $img = $file['name'];
@@ -137,7 +137,7 @@ class Base_Controller extends REST_Controller{
 
             $config = array(
                 'upload_path' => $path,
-                'allowed_types' => "MP4|FLV|WMV|AVI|WebM|MKV|MOV|flv|mp4|wmv|avi|webm|mkv|mov",
+                'allowed_types' => "pdf|doc|docx|PDF|DOC|DOCX",
                 'overwrite' => FALSE,
                 'max_size' => "30000",
                 'file_name' => $final_image
@@ -168,7 +168,7 @@ class Base_Controller extends REST_Controller{
     public function upload_profile($file,$order_id){
       
         
-        $path = '../uploads/';
+        $path = './uploads/';
         $request = 'profile';
         if($file){
             $img = $file['name'];
@@ -184,6 +184,8 @@ class Base_Controller extends REST_Controller{
                 'max_size' => "12000", // 12mb
                 'file_name' => $final_image
             );
+
+            
 
             if(!file_exists($path)) 
             {
