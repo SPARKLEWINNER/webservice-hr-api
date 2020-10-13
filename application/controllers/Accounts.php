@@ -17,6 +17,26 @@ class Accounts extends Base_Controller
         parent::__construct();
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
+
+        
+    public function user_get($id = NULL){
+        
+        if(empty($id) && empty($product_id)){
+            $this->response_return($this->response_code(400,""));
+            return false;
+        }
+        
+        $id = $id;
+        $response = $this->Main_mdl->user_pull($id);
+        
+        if($response){
+            return $this->set_response($response,  200);
+        }else{
+            $response = $this->response_code(422, "Unable to process your request", "");
+            return $this->set_response($response, 422);
+        }
+    }
+
     
     public function create_post(){
   

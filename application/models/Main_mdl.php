@@ -249,9 +249,7 @@ class Main_mdl extends Base_Model {
         
     public function user_pull($id,$product_id){
         
-        $query = "SELECT DISTINCT us.id,us.product_id,us.email,us.first_name,us.last_name,us.date_created,us.profile,us.last_login, ptmeta.meta_value FROM users us
-        LEFT JOIN wp_postmeta ptmeta ON us.product_id = ptmeta.post_id
-        WHERE id = {$id} AND  product_id = {$product_id} AND ptmeta.meta_key = '_price' ORDER BY id DESC";
+        $query = "SELECT *  WHERE id = {$id} DESC";
         $result = $this->db->query($query);
 
         return ($result->num_rows() > 0) ? $result->result_array() : false;
