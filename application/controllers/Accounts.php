@@ -19,7 +19,7 @@ class Accounts extends Base_Controller
     }
 
         
-    public function user_det_get($id = NULL){
+    public function user_get($id = NULL){
         
         if(empty($id) && empty($product_id)){
             $this->response_return($this->response_code(400,""));
@@ -62,56 +62,8 @@ class Accounts extends Base_Controller
        
         
     }
- 
-    
-    public function user_get($id = NULL, $product_id = NULL){
-        
-        if(empty($id) && empty($product_id)){
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        
-        $id = $id;
-        $product_id = $product_id;
-        $response = $this->Main_mdl->user_pull($id,$product_id);
-        
-        if($response){
-            return $this->set_response($response,  200);
-        }else{
-            $response = $this->response_code(422, "Unable to process your request", "");
-            return $this->set_response($response, 422);
-        }
-    }
-    
-    public function user_rate_post(){
-        if(empty($this->post('post_id')) && empty($this->post('uid'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        
-        $verify_user = $this->Main_mdl->check_user($this->post('uid'),$this->post('post_id'));
-        if(!$verify_user){
-            $this->response_return($this->response_code(422,""));
-            return false;
-        }
-        $uid = $this->post('uid');
-        $data = array(
-            "meta_value" => $this->post('rate')
-        );
-        $post_id = $this->post('post_id');
-        
-        $response = $this->Main_mdl->update_user($uid,$post_id, $data);
-        
-        if(!$response){
-            $response = $this->response_code(422, "Unable to process your request", "");
-            return $this->set_response($response, 422);            
-            
-        }else{
-            return $this->set_response($response,  200);
-        }
-    }
-    
-    
+
+
     public function user_notify_post(){
         if(empty($this->post('uid')) && empty($this->post('oid')) ){
             $this->response_return($this->response_code(400,""));

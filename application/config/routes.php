@@ -22,9 +22,9 @@ $route['internal/record/apply_review']['patch'] = 'record/review_record';
 /** Exams **/
 $route['internal/exam/iq/create']['post'] = 'exams/iq_create';
 
+$route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
-$route['internal/account/(:any)']['get'] = 'accounts/user_det';
 $route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
 $route['internal/account/update']['post'] = 'accounts/user_rate';
 $route['internal/account/user/update']['patch'] = 'accounts/update_user';
