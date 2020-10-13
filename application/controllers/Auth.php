@@ -102,7 +102,7 @@ class Auth extends Base_Controller
             
             $this->set_response($data,  200);
         }else{
-            $response = $this->response_code(422, "", "");
+            $response = $this->response_code(422, "Invalid Credentials", "");
             return $this->set_response($response, 422);
             
         }
