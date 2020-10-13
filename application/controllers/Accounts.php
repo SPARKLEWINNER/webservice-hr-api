@@ -19,7 +19,7 @@ class Accounts extends Base_Controller
     }
 
         
-    public function user_get($id = NULL){
+    public function user_det_get($id = NULL){
         
         if(empty($id) && empty($product_id)){
             $this->response_return($this->response_code(400,""));
