@@ -124,7 +124,7 @@ class Base_Controller extends REST_Controller{
         /* Upload files */
 
     public function upload($file,$order_id){
-        $valid_ext = array('docx', 'xlsx', 'csv', 'doc','pdf');
+        $valid_ext = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx');
         
         $path = './uploads/';
         $request = 'record';
@@ -137,7 +137,6 @@ class Base_Controller extends REST_Controller{
 
             $config = array(
                 'upload_path' => $path,
-                'allowed_types' => "pdf|doc|docx",
                 'overwrite' => FALSE,
                 'max_size' => "30000",
                 'file_name' => $final_image
@@ -149,17 +148,17 @@ class Base_Controller extends REST_Controller{
             }
 
             $this->load->library('upload', $config);
-            
-            if (!$this->upload->do_upload($request)) {
-                $error = array('error' => $this->upload->display_errors());
-    
-                return $error;
+            if (in_array($ext, $valid_ext)) {
+                if (!$this->upload->do_upload($request)) {
+                    $error = array('error' => $this->upload->display_errors());
+                    return $error;
+                }
+        
+                return array(
+                    'link' => $this->videoStorage.$final_image,
+                    'name' => $final_image
+                );
             }
-            
-            return array(
-                'link' => $this->videoStorage.$final_image,
-                'name' => $final_image
-            );
         }
 
         return false;
@@ -185,8 +184,6 @@ class Base_Controller extends REST_Controller{
                 'file_name' => $final_image
             );
 
-            
-
             if(!file_exists($path)) 
             {
                 mkdir($path, 0777, true);
@@ -199,7 +196,7 @@ class Base_Controller extends REST_Controller{
     
                 return $error;
             }
-            
+
             return array(
                 'link' => $this->profileStorage.$final_image,
                 'name' => $final_image

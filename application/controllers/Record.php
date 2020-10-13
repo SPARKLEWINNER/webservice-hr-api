@@ -29,18 +29,10 @@ class Record extends Base_Controller
         
         $app_data = array(
             'username' => $this->post('email'),
+            'company' => $this->post('company'),
             'reference_id' => $generated,
             'profile' =>  $upload_proc['link']
         );
-
-
-        if($_FILES['resume']){
-            $resume_proc = $this->upload($_FILES['resume'], $generated);
-            var_dump($resume_proc);
-            if($resume_proc){
-                $app_data['resume'] = $resume_proc['link'];
-            }
-        }
 
         if($upload_proc){
             $response = $this->Main_mdl->record_data($app_data);

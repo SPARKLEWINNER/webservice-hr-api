@@ -30,6 +30,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/tests/
 /tests/results/
 
+/uploads/*
 
 ## Upload contents
 /fa-contents
