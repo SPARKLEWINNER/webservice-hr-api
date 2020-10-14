@@ -21,7 +21,7 @@ class Main_mdl extends Base_Model {
                 "email" =>$acc->email,
                 "firstname" => $acc->first_name,
                 "lastname" => $acc->last_name,
-                "" => $acc->profile,
+                "company" => $acc->company,
                 "profile" => $acc->profile,
                 "user_level" => $acc->user_level
             );
@@ -37,6 +37,8 @@ class Main_mdl extends Base_Model {
     public function temporary_login($email, $password){
         $statement = array('username' => $email, 'reference_id' => $password);
         $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+
+        var_dump($acc);
 
         if(!$acc) return false;
         return array(
