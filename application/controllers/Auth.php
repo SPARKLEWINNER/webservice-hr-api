@@ -23,6 +23,9 @@ class Auth extends Base_Controller
         $data = $this->validate_inpt(array('email','password'), 'post');
 
         $response = $this->Main_mdl->login($data['email'],$data['password']);
+
+        var_dump($response);
+        die();
         if($response === FALSE):
             $response = $this->response_code(422, "User Invalid", "");
             return $this->set_response($response, 422);
