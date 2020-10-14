@@ -25,7 +25,7 @@ class Record extends Base_Controller
         $data = $this->validate_inpt(array('data','email'), 'post');
         $mg_email = $this->post('email');
         $generated = $this->generateReferenceCode($mg_email);
-        $upload_proc = $this->upload_profile($_FILES['profile'], $generated);
+        $upload_proc = $this->upload_profile($$this->post('profile')[0], $generated);
         
         $app_data = array(
             'username' => $this->post('email'),
