@@ -208,7 +208,7 @@ class Base_Controller extends REST_Controller{
    
     /* Email notification */
 
-    public function send_email($email, $type, $subject, $receiver_email)
+    public function send_email($email, $type, $company, $subject, $receiver_email)
 	{
         
 		$data['info'] = $receiver_email;
@@ -226,7 +226,7 @@ class Base_Controller extends REST_Controller{
 		$this->load->library('email', $config);
 		$this->email->set_newline("\r\n");
 		$this->email->set_mailtype("html");
-		$this->email->from(EMAIL_FROM, SITE_NAME);
+		$this->email->from(ucfirst($company), "http://".$company.".com.ph");
 		$this->email->to($email);
 		$this->email->subject($subject);
 		$this->email->message($template);
