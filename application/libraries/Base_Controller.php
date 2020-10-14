@@ -169,7 +169,7 @@ class Base_Controller extends REST_Controller{
         
         $path = 'uploads/';
         $request = 'profile';
-
+        $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp');
 
         if($file){
             $img = $file['name'];
@@ -187,24 +187,34 @@ class Base_Controller extends REST_Controller{
                 'file_name' => $final_image
             );
 
-            if(!file_exists($path)) 
-            {
-                mkdir($path, 0777, true);
+            if (in_array($ext, $valid_ext)) {
+				$path = $path . strtolower($final_image);
+				if (move_uploaded_file($tmp, $path)) {
+                    return array(
+                        'link' => $this->profileStorage.$final_image,
+                        'name' => $final_image
+                    );
+				}
             }
-
-            $this->load->library('upload', $config);
-            if (!$this->upload->do_upload($request)) {
-                $error = array('error' => $this->upload->display_errors());
-    
-                return $error;
-            }else{
-                
-                return array(
-                    'link' => $this->profileStorage.$final_image,
-                    'name' => $final_image
-                );
             
-            }
+            // if(!file_exists($path)) 
+            // {
+            //     mkdir($path, 0777, true);
+            // }
+
+            // $this->load->library('upload', $config);
+            // if (!$this->upload->do_upload($request)) {
+            //     $error = array('error' => $this->upload->display_errors());
+    
+            //     return $error;
+            // }else{
+                
+            //     return array(
+            //         'link' => $this->profileStorage.$final_image,
+            //         'name' => $final_image
+            //     );
+            
+            // }
 
         }
 
