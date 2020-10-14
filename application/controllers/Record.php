@@ -40,7 +40,7 @@ class Record extends Base_Controller
                 return $this->set_response($response, 422);
             }else{
                 $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
-                $this->set_response($response,  200); 
+                $this->set_response(array("status" => 200, "data" => $response),  200); 
             }
         }else{
             $response = $this->response_code(422, "Server upload error", "");
