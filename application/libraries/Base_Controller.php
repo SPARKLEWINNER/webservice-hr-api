@@ -197,12 +197,15 @@ class Base_Controller extends REST_Controller{
                 $error = array('error' => $this->upload->display_errors());
     
                 return $error;
+            }else{
+                
+                return array(
+                    'link' => $this->profileStorage.$final_image,
+                    'name' => $final_image
+                );
+            
             }
 
-            return array(
-                'link' => $this->profileStorage.$final_image,
-                'name' => $final_image
-            );
         }
 
         return false;
