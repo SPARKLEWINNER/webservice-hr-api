@@ -167,7 +167,7 @@ class Base_Controller extends REST_Controller{
     public function upload_profile($file,$ref_id){
       
         
-        $path = './uploads/';
+        $path = 'uploads/';
         $request = 'profile';
 
 
