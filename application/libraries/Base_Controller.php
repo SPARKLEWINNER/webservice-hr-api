@@ -178,14 +178,11 @@ class Base_Controller extends REST_Controller{
 
 
             $final_image = strtolower($ref_id.time().'1.'.$ext);
-
-            // $config = array(
-            //     'upload_path' => $path,
-            //     'allowed_types' => "JPEG|JPG|PNG|GIF|gif|png|jpg|jpeg",
-            //     'overwrite' => FALSE,
-            //     'max_size' => "30000", // 12mb
-            //     'file_name' => $final_image
-            // );
+            
+            if(!file_exists($path)) 
+            {
+                mkdir($path, 0777, true);
+            }
 
             if (in_array($ext, $valid_ext)) {
 				$path = $path . strtolower($final_image);
@@ -194,31 +191,13 @@ class Base_Controller extends REST_Controller{
                         'link' => $this->profileStorage.$final_image,
                         'name' => $final_image
                     );
-				}
+				}else{
+                   $error = array('error' => $this->upload->display_errors());
+                    return $error;
+                }
             }
-            
-            // if(!file_exists($path)) 
-            // {
-            //     mkdir($path, 0777, true);
-            // }
-
-            // $this->load->library('upload', $config);
-            // if (!$this->upload->do_upload($request)) {
-            //     $error = array('error' => $this->upload->display_errors());
-    
-            //     return $error;
-            // }else{
-                
-            //     return array(
-            //         'link' => $this->profileStorage.$final_image,
-            //         'name' => $final_image
-            //     );
-            
-            // }
 
         }
-
-        return false;
     }
    
     /* Email notification */
