@@ -179,13 +179,13 @@ class Base_Controller extends REST_Controller{
 
             $final_image = strtolower($ref_id.time().'1.'.$ext);
 
-            $config = array(
-                'upload_path' => $path,
-                'allowed_types' => "JPEG|JPG|PNG|GIF|gif|png|jpg|jpeg",
-                'overwrite' => FALSE,
-                'max_size' => "30000", // 12mb
-                'file_name' => $final_image
-            );
+            // $config = array(
+            //     'upload_path' => $path,
+            //     'allowed_types' => "JPEG|JPG|PNG|GIF|gif|png|jpg|jpeg",
+            //     'overwrite' => FALSE,
+            //     'max_size' => "30000", // 12mb
+            //     'file_name' => $final_image
+            // );
 
             if (in_array($ext, $valid_ext)) {
 				$path = $path . strtolower($final_image);
