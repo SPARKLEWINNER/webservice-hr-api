@@ -12,52 +12,57 @@ class Main_mdl extends Base_Model {
     }
 
     public function login($email, $password){
+        
         $acc = $this->db->select('password,id,email,first_name,last_name,profile,user_level')->from('users')->where('email', $email)->get()->row();
-        if(!$acc) return $this->response_code(204,"User invalid", "");
+        if($acc != null){
 
-        if(password_verify($password,  $acc->password)):
-            return array(
-                "id" => $acc->id,
-                "email" =>$acc->email,
-                "firstname" => $acc->first_name,
-                "lastname" => $acc->last_name,
-                "company" => $acc->company,
-                "profile" => $acc->profile,
-                "user_level" => $acc->user_level
-            );
-            
-        else:
+            if(password_verify($password,  $acc->password)){
+                return array(
+                    "id" => $acc->id,
+                    "email" =>$acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level
+                );
+            }
+            else{
+                return $this->response_code(204,"User invalid", "");
+            }
+        }
+
+        else{
             $check_temporary_account = $this->temporary_login($email, $password);
             if(!$check_temporary_account) return $this->response_code(204,"User invalid", "");
             return $check_temporary_account;
 
-        endif;
+        }
     }
 
     public function temporary_login($email, $password){
         $statement = array('username' => $email, 'reference_id' => $password);
         $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
 
-        var_dump($acc);
-
-        if(!$acc) return false;
-        return array(
-            "id" => $acc->id,
-            "applicant_id" => $acc->applicant_id,
-            "reference_id" =>$acc->reference_id,
-            "date_created" => $acc->date_created,
-            "data" => $acc->data,
-            "account_status" => $acc->status,
-            "reviewer" => $acc->reviewer,
-            "notification" => $acc->notification,
-            "username" => $acc->username,
-            "password" => $acc->password,
-            "user_level" => "1",
-            "profile" => $acc->profile,
-            "company" => $acc->company
-        );
-      
-        
+        if($acc == null){
+            return false;
+        }else{
+            return array(
+                "id" => $acc->id,
+                "applicant_id" => $acc->applicant_id,
+                "reference_id" =>$acc->reference_id,
+                "date_created" => $acc->date_created,
+                "data" => $acc->data,
+                "account_status" => $acc->status,
+                "reviewer" => $acc->reviewer,
+                "notification" => $acc->notification,
+                "username" => $acc->username,
+                "password" => $acc->password,
+                "user_level" => "1",
+                "profile" => $acc->profile,
+                "company" => $acc->company
+            );
+        }
     }
 
     public function recordToken($id, $token){
