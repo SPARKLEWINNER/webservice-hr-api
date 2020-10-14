@@ -164,23 +164,26 @@ class Base_Controller extends REST_Controller{
         return false;
     }
     
-    public function upload_profile($file,$order_id){
+    public function upload_profile($file,$ref_id){
       
         
         $path = './uploads/';
         $request = 'profile';
+
+
         if($file){
             $img = $file['name'];
             $tmp = $file['tmp_name'];
             $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
 
-            $final_image = strtolower($order_id.time().'1.'.$ext);
+
+            $final_image = strtolower($ref_id.time().'1.'.$ext);
 
             $config = array(
                 'upload_path' => $path,
                 'allowed_types' => "JPEG|JPG|PNG|GIF|gif|png|jpg|jpeg",
                 'overwrite' => FALSE,
-                'max_size' => "12000", // 12mb
+                'max_size' => "30000", // 12mb
                 'file_name' => $final_image
             );
 
@@ -190,7 +193,6 @@ class Base_Controller extends REST_Controller{
             }
 
             $this->load->library('upload', $config);
-            
             if (!$this->upload->do_upload($request)) {
                 $error = array('error' => $this->upload->display_errors());
     

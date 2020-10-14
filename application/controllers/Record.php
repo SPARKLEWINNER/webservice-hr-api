@@ -22,14 +22,14 @@ class Record extends Base_Controller
     public function create_post(){
         
 
-        $data = $this->validate_inpt(array('data','email'), 'post');
+        // $data = $this->validate_inpt(array('data','email'), 'post');
         $mg_email = $this->post('email');
         $generated = $this->generateReferenceCode($mg_email);
-        $upload_proc = $this->upload_profile($this->post('profile'), $generated);
 
+        $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
         $app_data = array(
             'username' => $this->post('email'),
-            'data' => $this->post('data'),
+            'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
             'profile' =>  $upload_proc['link']
