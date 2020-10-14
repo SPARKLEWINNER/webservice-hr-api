@@ -126,7 +126,7 @@ class Base_Controller extends REST_Controller{
     public function upload($file,$order_id){
         $valid_ext = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx');
         
-        $path = './uploads/';
+        $path = 'uploads/';
         $request = 'record';
         if($file){
             $img = $file['name'];
