@@ -180,14 +180,13 @@ class Main_mdl extends Base_Model {
     
     
     public function record_patch_data($data,$status){
-    
         $this->db->where('id', $data['id']);
-        $this->db->update('applications', $status);
+        $this->db->update('applications', array("status" => $status));
     
         if($this->db->affected_rows() > 0):
             $result = $this->db->select('id,status')->from('applications')->where('id', $data['id'])->get()->row();
             return array(
-                "id" => $id,
+                "id" => $result->id,
                 "status" => $result->status
             );
         else:
