@@ -13,9 +13,8 @@ class Main_mdl extends Base_Model {
 
     public function login($email, $password){
         
-        $acc = $this->db->select('password,id,email,first_name,last_name,profile,user_level')->from('users')->where('email', $email)->get()->row();
-        if($acc != null){
-
+        $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
+        if(isset($acc)){
             if(password_verify($password,  $acc->password)){
                 return array(
                     "id" => $acc->id,
@@ -58,7 +57,7 @@ class Main_mdl extends Base_Model {
                 "notification" => $acc->notification,
                 "username" => $acc->username,
                 "password" => $acc->password,
-                "user_level" => "1",
+                "user_level" => 10,
                 "profile" => $acc->profile,
                 "company" => $acc->company
             );
@@ -163,20 +162,11 @@ class Main_mdl extends Base_Model {
 
     }
     
-    public function record_pull($uid,$cid,$oid){
+    public function record_pull($company){
 
-        $query = "SELECT * FROM records WHERE uid = {$uid} AND  cid = {$cid} AND oid = {$oid} ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
         $result = $this->db->query($query);
-        $data = array();
-        foreach($result->result_array() as $arr => $key){
-            $file_pointer = $this->videoStorage.$key['name'];
-            if (!file_exists($file_pointer)) {
-                continue;
-            }else{
-                $data[] = $key;
-            }          
-        }
-        return ($result->num_rows() > 0) ? $data : false;
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
     

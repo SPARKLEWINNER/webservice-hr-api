@@ -33,11 +33,27 @@ class Auth extends Base_Controller
                 $response['token'] = AUTHORIZATION::generateToken($data);
 
                 if($data['user_level'] == 3){
-                    $response['route'] = "/admin/";
+                    $response['route'] = "admin/";
+                }
+
+                if($data['user_level'] == 2){
+                    $response['route'] = "supervisor/";
+                }
+
+                if($data['user_level'] == 1){
+                    $response['route'] = "hr/";
+                }
+
+                if($data['user_level'] == 0){
+                    $response['route'] = "employee/";
+                }
+
+                if($data['user_level'] == 10){
+                    $response['route'] = "applicant/";
                 }
                 
                 // $this->Main_mdl->recordToken($data['id'],$response['token']);
-                $this->set_response($response,  200);
+                $this->set_response(array("status" => 200, "data" => $response), 200);
                     
             }else{
                 $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");

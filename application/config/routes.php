@@ -15,6 +15,7 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
+$route['internal/record/(:any)']['get'] = 'record/applicants/$1';
 $route['internal/record/show/(:num)/(:num)/(:num)']['get'] = 'record/records/$1/$2/$3';
 $route['internal/record/remove']['post'] = 'record/remove';
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
