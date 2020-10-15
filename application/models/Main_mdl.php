@@ -170,6 +170,14 @@ class Main_mdl extends Base_Model {
 
     }
     
+    public function record_specific_pull($company, $id){
+
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `id` = '${$id}' LIMIT 1"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+    
     public function record_remove($uid, $cid, $record_id, $oid){
         $query = "SELECT * FROM records WHERE id = {$record_id}  AND oid = {$oid} ORDER BY id DESC";
         $result = $this->db->query($query);
