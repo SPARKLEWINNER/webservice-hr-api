@@ -48,6 +48,17 @@ class Record extends Base_Controller
         }
     }
 
+    public function in_review_patch(){
+        $data = $this->validate_inpt(array('id'), 'patch');
+        $response = $this->Main_mdl->record_patch_data($data, 1);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function applicants_get($company = NULL){
                
         if(empty($company) ){
