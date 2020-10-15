@@ -185,7 +185,7 @@ class Main_mdl extends Base_Model {
         $this->db->update('applications', $status);
     
         if($this->db->affected_rows() > 0):
-            $result = $this->db->select('id,status')->from('applications')->where('id', $data['id']))->get()->row();
+            $result = $this->db->select('id,status')->from('applications')->where('id', $data['id'])->get()->row();
             return array(
                 "id" => $id,
                 "status" => $result->status
