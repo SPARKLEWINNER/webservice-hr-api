@@ -47,6 +47,28 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+           
+    public function review_app_post(){
+        $data = $this->validate_inpt(array('data','company','id'), 'post');
+        $mg_id = $this->post('id');
+        $generated = $this->generateReferenceCode($mg_id);
+
+        $app_data = array(
+            'applicant_id' => $this->post('id'),
+            'recruitment' => json_encode($this->post()),
+            'company' => $this->post('company'),
+            'reference_id' => $generated,
+        );
+
+        $response = $this->Main_mdl->record_review_data($mg_id,$app_data);
+        if(!isset($response['status'])){
+            return $this->set_response($response, 422);
+        }else{
+            $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }
+        
+    }
 
     public function in_review_patch(){
         $data = $this->validate_inpt(array('id'), 'patch');

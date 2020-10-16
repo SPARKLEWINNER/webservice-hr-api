@@ -161,7 +161,31 @@ class Main_mdl extends Base_Model {
         endif;
 
     }
+
+    public function record_review_data($id,$data){
+
+        $this->db->insert('reviews', $data);
+        $inserted_id = $this->db->insert_id();
+        
+        $record = $this->db->select('*')->from('reviews')->where('id', $inserted_id)->get()->row();
+
+        if($this->db->affected_rows() > 0):    
+            $this->db->where('id', $id);
+            $this->db->update('applications', array("status" => 2));
     
+            return array(
+                "id" => $inserted_id,
+                "applicant_id" => $record->applicant_id,
+                "reference_id" => $record->reference_id,
+                "recruitment" => $record->recruitment,
+                "reviewer" => $this->session->id,
+                "reviewer_status" => 1
+            );  
+        else: return false;
+        endif;
+
+    }    
+
     public function record_pull($company){
 
         $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
