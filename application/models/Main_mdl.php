@@ -171,7 +171,7 @@ class Main_mdl extends Base_Model {
 
         if($this->db->affected_rows() > 0):    
             $this->db->where('id', $id);
-            $this->db->update('applications', array("status" => 2));
+            $this->db->update('applications', array("status" => 3));
     
             return array(
                 "id" => $inserted_id,
