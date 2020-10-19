@@ -117,7 +117,7 @@ class Record extends Base_Controller
         
     }
     
-    public function applicants_specific_reviews($company = NULL, $id = NULL){
+    public function applicants_specific_reviews_get($company = NULL, $id = NULL){
                
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));
