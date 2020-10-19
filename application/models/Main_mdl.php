@@ -197,7 +197,7 @@ class Main_mdl extends Base_Model {
     public function record_specific_pull($company, $id){
 
         $query = "SELECT * FROM `applications` app
-        LEFT JOIN `reviews` rw ON app.company = rw.company AND `app.applicant_id` = '{$id}' LIMIT 1"; 
+        LEFT JOIN `reviews` rw ON app.company = rw.company AND `app.id` = '{$id}' LIMIT 1"; 
         $result = $this->db->query($query);
         var_dump($result->result_array() );
         return ($result->num_rows() > 0) ? $result->result_array() : false;
