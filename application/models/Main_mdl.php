@@ -196,12 +196,21 @@ class Main_mdl extends Base_Model {
     
     public function record_specific_pull($company, $id){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `id` = '{$id}' LIMIT 1"; 
+        $query = "SELECT * FROM `applications` app
+        LEFT JOIN `reviews` rw ON app.company = rw.company AND `id` = '{$id}' LIMIT 1"; 
         $result = $this->db->query($query);
+        var_dump($result->result_array() );
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
     
+    public function record_exam_pull($company, $id){
+
+        $query = "SELECT * FROM `exams` where `company` = '{$company}' AND `appiid` = '{$id}' LIMIT 1"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
     
     public function record_patch_data($data,$status){
         $this->db->where('id', $data['id']);
