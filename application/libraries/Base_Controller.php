@@ -242,9 +242,7 @@ class Base_Controller extends REST_Controller{
     
     public function generate_password(){
 
-        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
-        . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        . '0123456789)'); // and any other characters
+        $seed = str_split('abcdefghijklmnopqrstuvwxyz'. 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'. '0123456789)'); // and any other characters
         shuffle($seed);
         $rand = '';
         foreach (array_rand($seed, 6) as $k) {
@@ -325,7 +323,7 @@ class Base_Controller extends REST_Controller{
             'message' => json_encode($this->post()),
             'information' => $this->post('company'),
             'status' => $generated,
-            'date' =>  date('Y-m-d H:i:s')1
+            'date' =>  date('Y-m-d H:i:s')
         );
 
         $response = $this->Main_mdl->record_log($log_data);
