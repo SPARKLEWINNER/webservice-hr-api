@@ -314,6 +314,51 @@ class Base_Controller extends REST_Controller{
           }
     }
 
+
+    /* Log Activities */
+
+    public function activity_logs($type,$user,$status,$message, $information){
+
+        $log_data = array(
+            'user' =>  $this->post('person_email'),
+            'type' =>  $upload_proc['link'],
+            'message' => json_encode($this->post()),
+            'information' => $this->post('company'),
+            'status' => $generated,
+            'date' =>  date('Y-m-d H:i:s')1
+        );
+
+        $response = $this->Main_mdl->record_log($log_data);
+        if($response){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+
+    public function email_logs($type,$user,$email,$status,$message, $data){
+
+        $log_data = array(
+            'user' =>  $user,
+            'email' =>  $email,
+            'type' =>  $type,
+            'message' => $message,
+            'data' => $data,
+            'status' => $status,
+            'date' =>  date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->record_system($log_data);
+        if($response){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    
+
       
     
 }

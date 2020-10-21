@@ -555,4 +555,18 @@ class Main_mdl extends Base_Model {
         $this->db->where('user_id',$users_id)->where('token',$token)->delete('user_token');
         return $this->response_code(200, '', '');
     }
+
+
+    /* Log activity */
+
+        
+    public function record_log($data){
+        $this->db->insert('logs', $data);
+        return $this->db->affected_rows() != 1  ? false : true;
+    }
+        
+    public function record_system($data){
+        $this->db->insert('system', $data);
+        return $this->db->affected_rows() != 1  ? false : true;
+    }
 }

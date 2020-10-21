@@ -63,9 +63,10 @@ class Record extends Base_Controller
    
                 $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
                 if($is_mailed == NULL){
+                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details));
                     $this->set_response(array("status" => 200, "data" => $response),  200); 
                 }else{
-                    
+                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED TO SEND", $email_details);
                 }
             }
         }else{
