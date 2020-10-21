@@ -40,7 +40,6 @@ class Record extends Base_Controller
                 return $this->set_response($response, 422);
             }else{
                 $is_mailed = $this->send_email_sg($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
-                var_dump($is_mailed);
                 if($is_mailed == NULL){
                     $this->set_response(array("status" => 200, "data" => $response),  200); 
                 }else{
