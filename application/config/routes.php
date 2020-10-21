@@ -16,6 +16,7 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
 $route['internal/record/review_app']['post'] = 'record/review_app';
+$route['internal/record/exam']['post'] = 'record/exam_take';
 
 $route['internal/record/review']['patch'] = 'record/in_review';
 
@@ -26,6 +27,7 @@ $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applic
 
 $route['internal/record/show/(:num)/(:num)/(:num)']['get'] = 'record/records/$1/$2/$3';
 $route['internal/record/remove']['post'] = 'record/remove';
+
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
 
 

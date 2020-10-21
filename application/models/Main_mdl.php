@@ -186,6 +186,24 @@ class Main_mdl extends Base_Model {
 
     }    
 
+    public function record_exam_data($data){
+        $this->db->insert('exams', $data);
+        $inserted_id = $this->db->insert_id();
+        $record = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $this->db->insert_id(),
+                "applicant_id" => $record->applicant_id,
+                "type" => $record->type,
+                "data" => $record->data,
+                "date_created" => $record->date_created,
+                "status" => $record->status,
+            );  
+        else:
+            return false;
+        endif;
+    }    
+
     public function record_pull($company){
 
         $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
