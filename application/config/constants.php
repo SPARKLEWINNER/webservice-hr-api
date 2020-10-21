@@ -103,9 +103,14 @@ define('EMAIL_PASSWORD', 'devteam2020');
 define('EMAIL_NEW_APPLICANT','Account Credentials');
 define('EMAIL_FORGOT_PASSWORD','Forgot Password');
 
-define('APPLE_STORE_LINK','#');
-define('PLAYSTORE_LINK','#');
 
+/* Send Grid */
+
+define('EMAIL_SG_ENDPOINT', 'https://api.sendgrid.com/v3/mail/send');
+define('EMAIL_SG_TOKEN', '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');
+
+/* Send Grid - Templates */
+define('EMAIL_SGTEMPlATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');
 
 define('PORTAL_LINK','http://portal.sparkles.com.ph/');
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');

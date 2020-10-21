@@ -27,7 +27,7 @@ class Record extends Base_Controller
         $generated = $this->generateReferenceCode($mg_email);
         $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
         $app_data = array(
-            'username' => $this->post('person_email'),
+            'username' =>  $this->post('person_email'),
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
@@ -39,8 +39,13 @@ class Record extends Base_Controller
             if(!isset($response['status'])){
                 return $this->set_response($response, 422);
             }else{
-                $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
-                $this->set_response(array("status" => 200, "data" => $response),  200); 
+                $is_mailed = $this->send_email_sg($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
+                var_dump($is_mailed);
+                if($is_mailed == NULL){
+                    $this->set_response(array("status" => 200, "data" => $response),  200); 
+                }else{
+                    
+                }
             }
         }else{
             $response = $this->response_code(422, "Server upload error", "");

@@ -200,55 +200,7 @@ class Base_Controller extends REST_Controller{
         }
     }
    
-    /* Email notification */
 
-    public function send_email($email, $type, $company, $subject, $receiver_email)
-	{
-        
-		$data['info'] = $receiver_email;
-        $template = $this->load->view($type, $data, true);
-		$config = array(
-            'protocol' => "smtp",
-			'smtp_host' => EMAIL_HOST,
-			'smtp_port' =>  EMAIL_PORT,
-			'smtp_user' => EMAIL_USERNAME,
-			'smtp_pass' => EMAIL_PASSWORD,
-			'mailtype' => "html",
-			'charset' => "utf-8",
-			'wordwrap' => TRUE,
-		);
-		$this->load->library('email', $config);
-		$this->email->set_newline("\r\n");
-		$this->email->set_mailtype("html");
-		$this->email->from(ucfirst($company), "http://".$company.".com.ph");
-		$this->email->to($email);
-		$this->email->subject($subject);
-		$this->email->message($template);
-        $mail = $this->email->send();
-        if($mail){
-            return true;
-        }else{
-            show_error($this->email->print_debugger());
-        }
-    }
-    
-    public function generate_password(){
-
-        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
-        . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        . '0123456789)'); // and any other characters
-        shuffle($seed);
-        $rand = '';
-        foreach (array_rand($seed, 6) as $k) {
-            $rand .= $seed[$k];
-        }
-
-        $encrypt_password = password_hash($rand, PASSWORD_DEFAULT);
-        return array(
-            "hashed_password" => $encrypt_password,
-            "temp_password" => $rand,
-        );
-    }
 
     /* Validate inputs */
 
@@ -276,7 +228,7 @@ class Base_Controller extends REST_Controller{
         return $data;
     }
 
-    /* auto generates */
+    /* Auto generate code */
 
     public function generateReferenceCode($b)
     {
@@ -287,5 +239,102 @@ class Base_Controller extends REST_Controller{
 
         return $ref_code;
     }
+    
+    public function generate_password(){
+
+        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+        . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789)'); // and any other characters
+        shuffle($seed);
+        $rand = '';
+        foreach (array_rand($seed, 6) as $k) {
+            $rand .= $seed[$k];
+        }
+
+        $encrypt_password = password_hash($rand, PASSWORD_DEFAULT);
+        return array(
+            "hashed_password" => $encrypt_password,
+            "temp_password" => $rand,
+        );
+    }
+
+    /* Email notification -- Send Grid */
+    public function send_email_sg($email, $type, $company, $subject, $receiver_email)
+    {
+        $headr = array();
+        $headr[] = 'Authorization: Bearer '.EMAIL_SG_TOKEN;
+        $headr[] = 'Content-Type: application/json';
+        $data['info'] = $receiver_email;
+
+
+        $_param = json_encode(
+            array(
+                "from" => array(
+                    "email" => "system@".$company.".com.ph"
+                ),
+                "personalizations" => [array(
+                    "to" => [array(
+                        "email" => $data['info'][0]['username']
+                    )],
+                    "dynamic_template_data" => array(
+                        "email"=> $data['info'][0]['username'],
+                        "password" => $data['info'][0]['reference_id'],
+                        "help" => EMAIL_ADMIN,
+                        "portal" =>"www.".$company.".com.ph"
+                    )
+                )],
+                "template_id" => EMAIL_SGTEMPlATE_NEW_ACC,
+            )
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,EMAIL_SG_ENDPOINT);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headr);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $_param);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($output,TRUE);
+    }
+
+   /* Email notification -- cPanel */
+
+    public function send_email($email, $type, $company, $subject, $receiver_email)
+    {
+          
+          $data['info'] = $receiver_email;
+          $template = $this->load->view($type, $data, true);
+          $config = array(
+              'protocol' => "smtp",
+              'smtp_host' => EMAIL_HOST,
+              'smtp_port' =>  EMAIL_PORT,
+              'smtp_user' => EMAIL_USERNAME,
+              'smtp_pass' => EMAIL_PASSWORD,
+              'mailtype' => "html",
+              'charset' => "utf-8",
+              'wordwrap' => TRUE,
+          );
+          $this->load->library('email', $config);
+          $this->email->set_newline("\r\n");
+          $this->email->set_mailtype("html");
+          $this->email->from(ucfirst($company), "http://".$company.".com.ph");
+          $this->email->to($email);
+          $this->email->subject($subject);
+          $this->email->message($template);
+          $mail = $this->email->send();
+          if($mail){
+              return true;
+          }else{
+              show_error($this->email->print_debugger());
+          }
+    }
+
+      
     
 }
