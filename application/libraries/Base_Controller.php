@@ -259,33 +259,12 @@ class Base_Controller extends REST_Controller{
     }
 
     /* Email notification -- Send Grid */
-    public function send_email_sg($email, $type, $company, $subject, $receiver_email)
+    public function send_email_sg($company, $subject, $receiver_email)
     {
         $headr = array();
         $headr[] = 'Authorization: Bearer '.EMAIL_SG_TOKEN;
         $headr[] = 'Content-Type: application/json';
-        $data['info'] = $receiver_email;
-
-
-        $_param = json_encode(
-            array(
-                "from" => array(
-                    "email" => "system@".$company.".com.ph"
-                ),
-                "personalizations" => [array(
-                    "to" => [array(
-                        "email" => $data['info'][0]['username']
-                    )],
-                    "dynamic_template_data" => array(
-                        "email"=> $data['info'][0]['username'],
-                        "password" => $data['info'][0]['reference_id'],
-                        "help" => EMAIL_ADMIN,
-                        "portal" =>"www.".$company.".com.ph"
-                    )
-                )],
-                "template_id" => EMAIL_SGTEMPlATE_NEW_ACC,
-            )
-        );
+        $_param = json_encode($receiver_email);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,EMAIL_SG_ENDPOINT);

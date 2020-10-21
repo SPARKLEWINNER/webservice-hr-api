@@ -39,7 +39,29 @@ class Record extends Base_Controller
             if(!isset($response['status'])){
                 return $this->set_response($response, 422);
             }else{
-                $is_mailed = $this->send_email_sg($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
+
+                $email_details = array(
+                    "from" => array(
+                        "email" => "system@".$this->post('company').".com.ph"
+                    ),
+                    "personalizations" => [array(
+                        "to" => [array(
+                            "email" => $response['username']
+                        )],
+                        "subject" => EMAIL_NEW_APPLICANT,
+                        "dynamic_template_data" => array(
+                            "email"=> $response['username'],
+                            "password" => $response['reference_id'],
+                            "help" => EMAIL_ADMIN,
+                            // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
+                            "portal" =>"www.portal.sparkles.com.ph" // to be change 
+                        )
+                    )],
+                    "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
+                );
+
+   
+                $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
                 if($is_mailed == NULL){
                     $this->set_response(array("status" => 200, "data" => $response),  200); 
                 }else{
