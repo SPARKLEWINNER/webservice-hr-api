@@ -98,7 +98,7 @@ class Record extends Base_Controller
     }
 
     public function exam_take_post(){
-        $data = $this->validate_inpt(array('data','company','id'), 'post');
+        $data = $this->validate_inpt(array('applicant_id','type'), 'post');
 
         $app_data = array(
             "applicant_id" => $this->input->post("applicant_id"),
