@@ -54,7 +54,7 @@ class Record extends Base_Controller
                             "password" => $response['reference_id'],
                             "help" => EMAIL_ADMIN,
                             // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
-                            "portal" =>"www.portal.sparkles.com.ph" // to be change 
+                            "portal" =>"http://portal.sparkles.com.ph/" // to be change 
                         )
                     )],
                     "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
