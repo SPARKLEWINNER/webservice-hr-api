@@ -16,6 +16,7 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
 $route['internal/record/review_app']['post'] = 'record/review_app';
+$route['internal/record/review_store_app']['patch'] = 'record/review_store_app';
 $route['internal/record/exam']['post'] = 'record/exam_take';
 
 $route['internal/record/review']['patch'] = 'record/in_review';
@@ -30,7 +31,10 @@ $route['internal/record/remove']['post'] = 'record/remove';
 
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
 
+$route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 
+$route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
+$route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
 
 /** Exams **/
 $route['internal/exam/iq/create']['post'] = 'exams/iq_create';

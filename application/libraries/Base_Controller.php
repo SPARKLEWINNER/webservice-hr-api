@@ -335,7 +335,7 @@ class Base_Controller extends REST_Controller{
     }
 
 
-    public function email_logs($type,$user,$email,$status,$message, $data){
+    public function email_logs($type,$user,$email,$status,$message, $data,$company){
 
         $log_data = array(
             'user' =>  $user,
@@ -344,6 +344,7 @@ class Base_Controller extends REST_Controller{
             'message' => $message,
             'data' => $data,
             'status' => $status,
+            'company' => $company,
             'date' =>  date('Y-m-d H:i:s')
         );
 

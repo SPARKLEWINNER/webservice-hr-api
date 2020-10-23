@@ -63,10 +63,10 @@ class Record extends Base_Controller
    
                 $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
                 if($is_mailed == NULL){
-                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details));
+                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details), $this->post('company'));
                     $this->set_response(array("status" => 200, "data" => $response),  200); 
                 }else{
-                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED TO SEND", $email_details);
+                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", $email_details, $this->post('company'));
                 }
             }
         }else{
@@ -92,6 +92,18 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }
+        
+    }
+    public function review_store_app_patch(){
+        $data = $this->validate_inpt(array('store','company','id'), 'patch');
+
+        $response = $this->Main_mdl->record_review_store_data($data);
+        if(!isset($response['status'])){
+            return $this->set_response($response, 422);
+        }else{
+            // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
             $this->set_response(array("status" => 200, "data" => $response),  200); 
         }
         
@@ -180,6 +192,62 @@ class Record extends Base_Controller
         
     }
         
+    
+    public function stores_record_get($company = NULL){
+               
+        if(empty($company)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_stores_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
+    public function emails_record_get($company = NULL){
+               
+        if(empty($company)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_emails_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
+        
+        
+    
+    public function logs_record_get($company = NULL){
+               
+        if(empty($company)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_logs_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
+        
     public function remove_post(){
   
         if(empty($this->post('uid')) && empty($this->post('cid'))) {
@@ -218,8 +286,6 @@ class Record extends Base_Controller
             $this->response_return($this->response_code (400,""));
             return false;
         }
-        
-
         
         $uid = $uid;
         $cid = $cid;

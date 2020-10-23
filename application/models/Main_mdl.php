@@ -186,6 +186,36 @@ class Main_mdl extends Base_Model {
 
     }    
 
+    public function record_review_store_data($data){
+        $app_id = $data['id'];
+        $app_data = array(
+            "store" => $data['store'],
+            "reviewer" => $data['id'],
+            "review_status" => 1
+        )
+
+        $this->db->where('applicant_id', $app_id);
+        $this->db->update('reviews', $app_data);
+        
+        $record = $this->db->select('*')->from('reviews')->where('id', $inserted_id)->get()->row();
+
+        if($this->db->affected_rows() > 0):    
+            $this->db->where('id', $id);
+            $this->db->update('applications', array("status" => 4));
+    
+            return array(
+                "id" => $inserted_id,
+                "applicant_id" => $record->applicant_id,
+                "reference_id" => $record->reference_id,
+                "recruitment" => $record->recruitment,
+                "reviewer" => $this->session->id,
+                "reviewer_status" => 1
+            );  
+        else: return false;
+        endif;
+
+    }    
+
     public function record_exam_data($data){
         $this->db->insert('exams', $data);
         $inserted_id = $this->db->insert_id();
@@ -223,6 +253,32 @@ class Main_mdl extends Base_Model {
     public function record_reviews_pull($company, $id){
 
         $query = "SELECT * FROM `reviews` where `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+    
+    public function record_stores_pull($company){
+
+        $query = "SELECT * FROM `stores` where `company` = '{$company}'"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+    
+    
+    public function record_emails_pull($company){
+
+        $query = "SELECT * FROM `system` where `company` = '{$company}'"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+    
+    
+    public function record_logs_pull($company){
+
+        $query = "SELECT * FROM `activity` where `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
