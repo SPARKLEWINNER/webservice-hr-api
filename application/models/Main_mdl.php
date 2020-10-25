@@ -192,7 +192,7 @@ class Main_mdl extends Base_Model {
             "store" => $data['store'],
             "reviewer" => $data['id'],
             "review_status" => 1
-        )
+        );
 
         $this->db->where('applicant_id', $app_id);
         $this->db->update('reviews', $app_data);
@@ -236,7 +236,7 @@ class Main_mdl extends Base_Model {
 
     public function record_pull($company){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `19` where `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
