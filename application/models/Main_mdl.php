@@ -171,7 +171,7 @@ class Main_mdl extends Base_Model {
 
         if($this->db->affected_rows() > 0):    
             $this->db->where('id', $id);
-            $this->db->update('applications', array("status" => 3));
+            $this->db->update('`applications`', array("status" => 3));
     
             return array(
                 "id" => $inserted_id,
@@ -236,7 +236,7 @@ class Main_mdl extends Base_Model {
 
     public function record_pull($company){
 
-        $query = "SELECT * FROM `19` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
