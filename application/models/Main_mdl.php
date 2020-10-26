@@ -190,26 +190,25 @@ class Main_mdl extends Base_Model {
         $app_id = $data['id'];
         $app_data = array(
             "store" => $data['store'],
-            "reviewer" => $data['id'],
-            "review_status" => 1
+            "reviewer" => $data['reviewer'],
+            "review_status" => 1,
+            "store_review_date" => date('Y-m-d H:i:s')
         );
 
         $this->db->where('applicant_id', $app_id);
         $this->db->update('reviews', $app_data);
-        
-        $record = $this->db->select('*')->from('reviews')->where('id', $inserted_id)->get()->row();
-
         if($this->db->affected_rows() > 0):    
-            $this->db->where('id', $id);
+            $record = $this->db->select('*')->from('reviews')->where('applicant_id', $app_id)->get()->row();
+            $this->db->where('id', $app_id);
             $this->db->update('applications', array("status" => 4));
     
             return array(
-                "id" => $inserted_id,
+                "id" => $app_id,
                 "applicant_id" => $record->applicant_id,
                 "reference_id" => $record->reference_id,
                 "recruitment" => $record->recruitment,
-                "reviewer" => $this->session->id,
-                "reviewer_status" => 1
+                "reviewer" => $record->reviewer,
+                "reviewer_status" => $record->review_status
             );  
         else: return false;
         endif;
@@ -237,6 +236,14 @@ class Main_mdl extends Base_Model {
     public function record_pull($company){
 
         $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
+    public function record_status_pull($company, $status){
+
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `status` = '{$status}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 

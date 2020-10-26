@@ -15,13 +15,15 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
+$route['internal/record/create/document']['post'] = 'record/create_doc';
 $route['internal/record/review_app']['post'] = 'record/review_app';
-$route['internal/record/review_store_app']['patch'] = 'record/review_store_app';
+$route['internal/record/review_store_app']['post'] = 'record/review_store_app';
 $route['internal/record/exam']['post'] = 'record/exam_take';
 
 $route['internal/record/review']['patch'] = 'record/in_review';
 
 $route['internal/record/(:any)']['get'] = 'record/applicants/$1';
+$route['internal/record/(:any)/(:num)']['get'] = 'record/applicants_status/$1/$2';
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
 

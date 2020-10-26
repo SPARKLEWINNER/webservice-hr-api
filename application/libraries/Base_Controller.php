@@ -123,41 +123,33 @@ class Base_Controller extends REST_Controller{
     
         /* Upload files */
 
-    public function upload($file,$order_id){
+    public function upload_doc($file,$doc_id){
         $valid_ext = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx');
         
         $path = 'uploads/';
-        $request = 'record';
+        $request = 'doc';
         if($file){
             $img = $file['name'];
             $tmp = $file['tmp_name'];
             $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
 
-            $final_image = $order_id."-".strtolower($order_id.time().'1.'.$ext);
-
-            $config = array(
-                'upload_path' => $path,
-                'overwrite' => FALSE,
-                'max_size' => "30000",
-                'file_name' => $final_image
-            );
-
+            $final_image = $doc_id."-".strtolower($doc_id.time().'1.'.$ext);
             if(!file_exists($path)) 
             {
                 mkdir($path, 0777, true);
             }
 
-            $this->load->library('upload', $config);
             if (in_array($ext, $valid_ext)) {
-                if (!$this->upload->do_upload($request)) {
-                    $error = array('error' => $this->upload->display_errors());
+				$path = $path . strtolower($final_image);
+				if (move_uploaded_file($tmp, $path)) {
+                    return array(
+                        'link' => $this->profileStorage.$final_image,
+                        'name' => $final_image
+                    );
+				}else{
+                   $error = array('error' => $this->upload->display_errors());
                     return $error;
                 }
-        
-                return array(
-                    'link' => $this->videoStorage.$final_image,
-                    'name' => $final_image
-                );
             }
         }
 
@@ -206,7 +198,6 @@ class Base_Controller extends REST_Controller{
 
     public function validate_inpt($req, $method){
         $data = array();
-
         if($method == "patch"){
             foreach($req as $r) {
                 if($this->patch($r) === NULL) {

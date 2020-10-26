@@ -74,7 +74,57 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
-           
+
+    public function create_doc_post(){
+
+        $data = $this->validate_inpt(array('id','company'), 'post');
+        $applicant_id = $this->post('id');
+        $status = false;
+
+        $psa_proc = $hsdiploma_proc = $healthcard_proc = $mayorspermit_proc = $nbi_proc = "";
+
+        if(!empty($_FILES['psa'])){
+            $psa_proc = $this->upload_profile($_FILES['psa'], $applicant_id);
+        }
+
+        if(!empty($_FILES['hsdiploma'])){
+            $hsdiploma_proc = $this->upload_profile($_FILES['hsdiploma'], $applicant_id);
+        }
+
+        if(!empty($_FILES['healthcard'])){
+            $healthcard_proc = $this->upload_profile($_FILES['healthcard'], $applicant_id);
+        }
+
+        if(!empty($_FILES['mayorspermit'])){
+            $mayorspermit_proc = $this->upload_profile($_FILES['mayorspermit'], $applicant_id);
+        }
+
+        if(!empty($_FILES['nbi'])){
+            $nbi_proc = $this->upload_profile($_FILES['nbi'], $applicant_id);
+        }
+
+        $upload_proc = $this->upload_profile($_FILES['pref_document'], $applicant_id);
+        $app_data = array(
+            'username' =>  $this->post('person_email'),
+            'data' => json_encode($this->post()),
+            'company' => $this->post('company'),
+            'reference_id' => $generated,
+            'profile' =>  $upload_proc['link']
+        );
+
+        if($status){
+            $response = $this->Main_mdl->record_data($app_data);
+            if(!isset($response['status'])){
+                return $this->set_response($response, 422);
+            }else{
+                $this->set_response(array("status" => 200, "data" => $response),  200); 
+            }
+        }else{
+            $response = $this->response_code(422, "Server upload error", "");
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function review_app_post(){
         $data = $this->validate_inpt(array('data','company','id'), 'post');
         $mg_id = $this->post('id');
@@ -82,7 +132,7 @@ class Record extends Base_Controller
 
         $app_data = array(
             'applicant_id' => $this->post('id'),
-            'recruitment' => json_encode($this->post()),
+            'recruitment' => json_encode(json_decode($this->post('data'))),
             'company' => $this->post('company'),
             'reference_id' => $generated,
         );
@@ -96,8 +146,9 @@ class Record extends Base_Controller
         }
         
     }
-    public function review_store_app_patch(){
-        $data = $this->validate_inpt(array('store','company','id'), 'patch');
+
+    public function review_store_app_post(){
+        $data = $this->validate_inpt(array('store','company','id', 'reviewer'), 'post');
 
         $response = $this->Main_mdl->record_review_store_data($data);
         if(!isset($response['status'])){
@@ -146,6 +197,24 @@ class Record extends Base_Controller
         }
 
         $response = $this->Main_mdl->record_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
+
+    public function applicants_status_get($company = NULL, $status = 0){
+               
+        if(empty($company) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_status_pull($company, $status);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
