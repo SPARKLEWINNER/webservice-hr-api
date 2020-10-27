@@ -161,18 +161,21 @@ class Record extends Base_Controller
     }
 
     public function exam_take_post(){
-        $data = $this->validate_inpt(array('applicant_id','type'), 'post');
-
+        $data = $this->validate_inpt(array('id','job', 'exam'), 'post');
         $app_data = array(
-            "applicant_id" => $this->input->post("applicant_id"),
+            "applicant_id" => $data["id"],
             "date_created" => date('Y-m-d H:i:s'),
-            "type" => $this->input->post("type")
+            "job_id" => $data["job"],
+            "exam_id" => $data["exam"],
         );
 
         $response = $this->Main_mdl->record_exam_data($app_data);
+        $this->Main_mdl->record_applying_for($data['job'], $data['id']);
         if(!isset($response['status'])){
+            $this->activity_logs($data["id"],"EXAMTAKE","FAILED", json_encode($app_data), 1);
             return $this->set_response($response, 422);
         }else{
+            $this->activity_logs($data["id"],"EXAMTAKE","SUCCESS", json_encode($app_data), 0);
             $this->set_response(array("status" => 200, "data" => $response),  200); 
         }
 
@@ -181,6 +184,17 @@ class Record extends Base_Controller
     public function in_review_patch(){
         $data = $this->validate_inpt(array('id'), 'patch');
         $response = $this->Main_mdl->record_patch_data($data, 1);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function review_bypass_record_patch(){
+        $data = $this->validate_inpt(array('id','status'), 'patch');
+        $response = $this->Main_mdl->record_patch_data($data, $data['status']);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{

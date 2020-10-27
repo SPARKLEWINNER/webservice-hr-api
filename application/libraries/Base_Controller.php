@@ -306,14 +306,14 @@ class Base_Controller extends REST_Controller{
 
     /* Log Activities */
 
-    public function activity_logs($type,$user,$status,$message, $information){
+    public function activity_logs($id,$type,$message,$information, $status){
 
         $log_data = array(
-            'user' =>  $this->post('person_email'),
-            'type' =>  $upload_proc['link'],
-            'message' => json_encode($this->post()),
-            'information' => $this->post('company'),
-            'status' => $generated,
+            'user' =>  $id,
+            'type' =>  $type,
+            'message' => $message,
+            'information' => $information,
+            'status' => $status,
             'date' =>  date('Y-m-d H:i:s')
         );
 

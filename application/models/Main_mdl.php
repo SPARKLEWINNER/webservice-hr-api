@@ -186,6 +186,17 @@ class Main_mdl extends Base_Model {
 
     }    
 
+    public function record_applying_for($job_id, $applicant_id){
+
+        $result = $this->db->select('*')->from('applications')->where('id', $applicant_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            if($result->applying_for == 0){
+                $this->db->where('id', $applicant_id);
+                $this->db->update('applications', array("applying_for" => $job_id));
+            }
+        endif;
+    }
+
     public function record_review_store_data($data){
         $app_id = $data['id'];
         $app_data = array(
@@ -218,15 +229,15 @@ class Main_mdl extends Base_Model {
     public function record_exam_data($data){
         $this->db->insert('exams', $data);
         $inserted_id = $this->db->insert_id();
-        $record = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
+        $exams = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
         if($this->db->affected_rows() > 0):    
             return array(
-                "id" => $this->db->insert_id(),
-                "applicant_id" => $record->applicant_id,
-                "type" => $record->type,
-                "data" => $record->data,
-                "date_created" => $record->date_created,
-                "status" => $record->status,
+                "id" => $inserted_id,
+                "applicant_id" => $exams->applicant_id,
+                "job_id" => $exams->job_id,
+                "exam_id" => $exams->exam_id,
+                "date_created" => $exams->date_created,
+                "status" => $exams->status,
             );  
         else:
             return false;
@@ -251,9 +262,19 @@ class Main_mdl extends Base_Model {
     
     public function record_specific_pull($company, $id){
 
-        $query = "SELECT * FROM `applications` app  WHERE app.company = '{$company}' AND app.id = '{$id}' LIMIT 1"; 
+        $query = "SELECT app.*, st.meta_value FROM `applications` app  
+        LEFT JOIN `settings` st ON app.applying_for = st.id WHERE app.company = '{$company}' AND app.id = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $data = $result->result_array();
+        if($result->num_rows() > 0){
+            $exams = "SELECT * FROM `exams` WHERE applicant_id = '{$id}'";
+            $data[0]['taken_exam'][] = $this->db->query($exams)->result_array();
+            return $data;
+        } else{
+
+            return false;
+        }
+
 
     }
     
@@ -642,12 +663,93 @@ class Main_mdl extends Base_Model {
 
         
     public function record_log($data){
-        $this->db->insert('logs', $data);
+        $this->db->insert('activity', $data);
         return $this->db->affected_rows() != 1  ? false : true;
     }
         
     public function record_system($data){
         $this->db->insert('system', $data);
         return $this->db->affected_rows() != 1  ? false : true;
+    }
+
+
+    public function system_record_jobs($data){
+        $this->db->insert('settings', $data);
+        $inserted_id = $this->db->insert_id();
+        $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "company" => $jobs->company,
+              "posted_by" => $jobs->posted_by,
+              "meta_key" => $jobs->meta_key,
+              "meta_value" => $jobs->meta_value,
+              "date_created" => $jobs->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
+    public function system_record_exams($data){
+        $this->db->insert('settings', $data);
+        $inserted_id = $this->db->insert_id();
+        $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "company" => $jobs->company,
+              "posted_by" => $jobs->posted_by,
+              "meta_key" => $jobs->meta_key,
+              "meta_value" => $jobs->meta_value,
+              "date_created" => $jobs->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+    }
+
+    public function record_get_system($ref_id){
+        $applicant = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->get()->row();
+        $system = $this->db->select('*')->from('system')->where('user', $ref_id)->get()->row();
+        if($this->db->affected_rows() > 0){
+            return array(
+                "reference_id" => $applicant->reference_id,
+                "username" => $applicant->username,
+                "company" => $applicant->company,
+                "email_details" => $system->data,
+            );
+        }else{
+            return false;
+        }
+        
+
+    }
+
+    public function system_jobs_pull($company,$id,$jobs){
+  
+        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}'"; 
+        $result = $this->db->query($jobs);
+        if($result->num_rows() > 0){
+            $jobs_result = $result->result_array();
+
+
+            foreach($jobs_result as $key => $value){
+                $jobs_result[$key]['exams'] = array();
+                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
+                $exams_result = $this->db->query($exams)->result_array();
+
+                foreach($exams_result as $k => $v){
+                    if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
+                        $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                    }
+
+                }
+            }
+            
+        }
+        return ($result->num_rows() > 0) ? $jobs_result : false;
+        
     }
 }

@@ -32,16 +32,28 @@ $route['internal/record/show/(:num)/(:num)/(:num)']['get'] = 'record/records/$1/
 $route['internal/record/remove']['post'] = 'record/remove';
 
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
+$route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
 $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 
+/* System */
 $route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
 $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
+
+
+$route['internal/resend/email']['post'] = 'system/resend_email';
+$route['internal/system/create/jobs']['post'] = 'system/create_job';
+$route['internal/system/create/exams']['post'] = 'system/create_exams';
+
+$route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
+
 
 /** Exams **/
 $route['internal/exam/iq/create']['post'] = 'exams/iq_create';
 
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
+
+
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
 $route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
