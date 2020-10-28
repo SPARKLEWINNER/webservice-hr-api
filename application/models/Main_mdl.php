@@ -731,6 +731,19 @@ class Main_mdl extends Base_Model {
     }
 
 
+    public function system_record_remove_exams($exam_id){
+
+        $this->db->where('id', $exam_id);
+        $this->db->delete("settings");
+
+        if($this->db->affected_rows() > 0):
+            return true;
+        else:
+            return false;
+        endif;
+    }
+
+
 
     public function record_get_system($ref_id){
         $applicant = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->get()->row();
