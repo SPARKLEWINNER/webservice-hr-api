@@ -6,6 +6,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class System extends Base_Controller{
 
+
+    /* post */ 
+
     public function resend_email_post(){
         $ref_id = $this->post('id');
         $response = $this->Main_mdl->record_get_system($ref_id);
@@ -60,6 +63,8 @@ class System extends Base_Controller{
         }
     }
 
+    /* get */ 
+
     public function jobs_records_get($company = NULL , $id = NULL){
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));
@@ -89,4 +94,26 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
+
+    /* patch */ 
+
+    public function update_exams_patch(){
+        $data = $this->validate_inpt(array('company', 'title', 'exam_id', 'notice', 'job_id', 'link'), 'patch');
+        $exam_id = $data['exam_id'];
+        $app_data = array(
+            "company" => $data['company'],
+            "meta_key" => "exams",
+            "meta_value" => json_encode($data)
+        );
+
+        $response = $this->Main_mdl->system_record_update_exams($app_data, $exam_id);
+
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
 }

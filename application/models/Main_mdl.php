@@ -710,6 +710,28 @@ class Main_mdl extends Base_Model {
         endif;
     }
 
+    public function system_record_update_exams($data,$exam_id){
+
+        $this->db->where('id', $exam_id);
+        $this->db->update('settings', $data);
+    
+        if($this->db->affected_rows() > 0):
+            $jobs = $this->db->select('*')->from('settings')->where('id', $exam_id)->get()->row();
+            return array(
+                "id" => $jobs->id,
+                "company" => $jobs->company,
+                "posted_by" => $jobs->posted_by,
+                "meta_key" => $jobs->meta_key,
+                "meta_value" => $jobs->meta_value,
+                "date_created" => $jobs->date_created,
+              ); 
+        else:
+            return false;
+        endif;
+    }
+
+
+
     public function record_get_system($ref_id){
         $applicant = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->get()->row();
         $system = $this->db->select('*')->from('system')->where('user', $ref_id)->get()->row();
