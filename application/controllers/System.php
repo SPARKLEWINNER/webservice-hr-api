@@ -75,7 +75,7 @@ class System extends Base_Controller{
         }
     }
 
-    public function job_specific_records($company = NULL , $job_id = NULL){
+    public function job_specific_records_get($company = NULL , $job_id = NULL){
         if(empty($company) && empty($job_id) ){
             $this->response_return($this->response_code (400,""));
             return false;
