@@ -46,6 +46,7 @@ $route['internal/system/create/jobs']['post'] = 'system/create_job';
 $route['internal/system/create/exams']['post'] = 'system/create_exams';
 
 $route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
+$route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';
 
 
 /** Exams **/

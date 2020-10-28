@@ -752,4 +752,30 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $jobs_result : false;
         
     }
+
+    public function system_jobs_specific_pull($company,$job_id,$jobs){
+  
+        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}' AND id = {$job_id} LIMIT 1"; 
+        $result = $this->db->query($jobs);
+        if($result->num_rows() > 0){
+            $jobs_result = $result->result_array();
+
+
+            foreach($jobs_result as $key => $value){
+                $jobs_result[$key]['exams'] = array();
+                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
+                $exams_result = $this->db->query($exams)->result_array();
+
+                foreach($exams_result as $k => $v){
+                    if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
+                        $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                    }
+
+                }
+            }
+            
+        }
+        return ($result->num_rows() > 0) ? $jobs_result : false;
+        
+    }
 }
