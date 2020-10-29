@@ -24,6 +24,7 @@ $route['internal/record/review']['patch'] = 'record/in_review';
 
 $route['internal/record/(:any)']['get'] = 'record/applicants/$1';
 $route['internal/record/(:any)/(:num)']['get'] = 'record/applicants_status/$1/$2';
+$route['internal/record/weeks/(:any)/(:num)']['get'] = 'record/applicants_weekly/$1/$2';
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
 

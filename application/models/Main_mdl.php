@@ -259,6 +259,14 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
+
+    public function record_weeks_pull($company, $days){
+
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND DATEDIFF(NOW(),date_created) > {$days} ORDER BY `date_created` ASC"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
     
     public function record_specific_pull($company, $id){
 
