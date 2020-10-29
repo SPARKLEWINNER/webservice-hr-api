@@ -239,14 +239,25 @@ class Record extends Base_Controller
         
     }
 
-    public function applicants_weekly_get($company = NULL, $days = 0){
+    public function applicants_weekly_get($type = NULL, $company = NULL , $number = 0){
+
+        if(empty($company) && empty($number)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
                
-        if(empty($company)  && empty($days)){
+        if(empty($type)){
             $this->response_return($this->response_code (400,""));
             return false;
         }
 
-        $response = $this->Main_mdl->record_weeks_pull($company, $days);
+        if($type == "day"){
+            $response = $this->Main_mdl->record_day_pull($company, $number);
+
+        }else{
+            $response = $this->Main_mdl->record_weeks_pull($company, $number);
+        }
+
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
