@@ -251,7 +251,7 @@ class Record extends Base_Controller
             return false;
         }
 
-        if($type == "day"){
+        if($type == "day" || $type == "days"){
             $response = $this->Main_mdl->record_day_pull($company, $number);
 
         }else{
