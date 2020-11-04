@@ -111,28 +111,28 @@ class Main_mdl extends Base_Model {
 
     /** Exams **/
     
-        public function exam_data($data){
+    public function exam_data($data){
 
-            $this->db->insert('exams', $data);
-            $inserted_id = $this->db->insert_id();
-            
-            $exam = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
-    
-            if($this->db->affected_rows() > 0):    
-                return array(
-                    "id" => $this->db->insert_id(),
-                    "applicant_id" => $exam->applicant_id,
-                    "date_created" => $exam->date_created,
-                    "type" => $exam->type,
-                    "data" => $exam->data,
-                    "score" => $exam->score,
-                    "exam_status" => $exam->status,
-                    "reviewer" => $exam->reviewer,
-                );  
-            else: return false;
-            endif;
-    
-        }
+        $this->db->insert('exams', $data);
+        $inserted_id = $this->db->insert_id();
+        
+        $exam = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
+
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $this->db->insert_id(),
+                "applicant_id" => $exam->applicant_id,
+                "date_created" => $exam->date_created,
+                "type" => $exam->type,
+                "data" => $exam->data,
+                "score" => $exam->score,
+                "exam_status" => $exam->status,
+                "reviewer" => $exam->reviewer,
+            );  
+        else: return false;
+        endif;
+
+    }
     
     /** Records **/
     
@@ -320,7 +320,7 @@ class Main_mdl extends Base_Model {
     
     public function record_stores_pull($company){
 
-        $query = "SELECT * FROM `stores` WHERE `company` = '{$company}'"; 
+        $query = "SELECT * FROM `store` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -391,7 +391,6 @@ class Main_mdl extends Base_Model {
         endif;
     }
 
-
     public function record_remove($uid, $cid, $record_id, $oid){
         $query = "SELECT * FROM records WHERE id = {$record_id}  AND oid = {$oid} ORDER BY id DESC";
         $result = $this->db->query($query);
@@ -408,7 +407,6 @@ class Main_mdl extends Base_Model {
         return ($this->db->affected_rows() > 0) ? true : false;
     }
     
-    
     public function submit_record($id,$data){
     
         $this->db->where('id', $id);
@@ -424,6 +422,28 @@ class Main_mdl extends Base_Model {
             return false;
         endif;
     }
+
+    /* Stores */
+
+    public function system_record_store($data){
+        $this->db->insert('store', $data);
+        $inserted_id = $this->db->insert_id();
+        $store = $this->db->select('*')->from('store')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "name" => $store->name,
+              "details" => $store->details,
+              "company" => $store->company,
+              "status" => $store->status,
+              "date_created" => $store->date_created
+            ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
     
     
     /** Accounts **/

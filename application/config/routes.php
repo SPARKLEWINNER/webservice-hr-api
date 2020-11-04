@@ -48,6 +48,9 @@ $route['internal/system/update/email']['patch'] = 'system/update_email';
 /* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
 
+/* -- Stores */
+$route['internal/system/create/store']['post'] = 'system/create_store';
+
 /* -- Exams */
 $route['internal/system/create/exams']['post'] = 'system/create_exams';
 $route['internal/system/update/exams']['patch'] = 'system/update_exams';
