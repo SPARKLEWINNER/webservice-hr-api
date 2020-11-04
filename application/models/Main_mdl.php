@@ -685,6 +685,35 @@ class Main_mdl extends Base_Model {
         return $this->response_code(200, '', '');
     }
 
+    /* People */
+    public function system_record_people($data, $temp_password){
+        $validate_acc = $this->db->select('*')->from('users')->where('email', $data['email'])->get();
+        if($validate_acc->num_rows() == 0){
+            $this->db->insert('users', $data);
+            $inserted_id = $this->db->insert_id();
+            $people = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
+            if($this->db->affected_rows() > 0):    
+                return array(
+                  "id" => $inserted_id,
+                  "company" => $people->company,
+                  "email" => $people->email,
+                  "first_name" => $people->first_name,
+                  "last_name" => $people->last_name,
+                  "user_level" => $people->user_level,
+                  "date_created" => $people->date_created,
+                  "temp_password" => $temp_password,
+                ); 
+            else:
+                return false;
+            endif;
+        }else{
+            return false;
+        }
+
+       
+    }
+
+
 
     /* Log activity */
 

@@ -45,6 +45,9 @@ $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 $route['internal/resend/email']['post'] = 'system/resend_email';
 $route['internal/system/update/email']['patch'] = 'system/update_email';
 
+/* -- People */
+$route['internal/system/create/people']['post'] = 'system/create_people';
+
 /* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
 

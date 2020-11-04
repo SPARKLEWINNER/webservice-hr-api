@@ -347,6 +347,24 @@ class Base_Controller extends REST_Controller{
         }
     }
 
+    public function createPassword($len = 6)
+    {
+        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+            . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            . '0123456789)'); // and any other characters
+        shuffle($seed);
+        $rand = '';
+        foreach (array_rand($seed, 6) as $k) {
+            $rand .= $seed[$k];
+        }
+
+        $encrypt_password = password_hash($rand, PASSWORD_DEFAULT);
+        return array(
+            "hashed_password" => $encrypt_password,
+            "temp_password" => $rand,
+        );
+    }
+
     
 
       

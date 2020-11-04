@@ -103,6 +103,48 @@ class System extends Base_Controller{
         }
     }
 
+    public function create_people_post(){
+        $data = $this->validate_inpt(array('company', 'fname', 'id', 'lname','email','access'), 'post');
+        $generate_password = $this->createPassword();
+        $app_data = array(
+            "company" => $data['company'],
+            "first_name" => $data['fname'],
+            "last_name" => $data['lname'],
+            "email" => $data['email'],
+            "password" => $generate_password['hashed_password'],
+            "user_level" => $data['access'],
+            "date_created" => date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->system_record_people($app_data, $generate_password['temp_password']);
+        $email_details = array(
+            "from" => array(
+                "email" => "system@".$response['company'].".com.ph"
+            ),
+            "personalizations" => [array(
+                "to" => [array(
+                    "email" => $response['email']
+                )],
+                "subject" => EMAIL_NEW_APPLICANT,
+                "dynamic_template_data" => array(
+                    "email"=> $response['email'],
+                    "password" => $response['temp_password'],
+                    "help" => EMAIL_ADMIN,
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
+                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change 
+                )
+            )],
+            "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
+        );
+        $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
+        if($is_mailed == NULL){
+            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "SUCCESS", json_encode($email_details), $response['company']);
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }else{
+            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "FAILED", json_encode($email_details), $response['company']);
+        }
+    }
+
     /* get */ 
 
     public function jobs_records_get($company = NULL , $id = NULL){
