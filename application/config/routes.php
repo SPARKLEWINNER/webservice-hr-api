@@ -30,9 +30,6 @@ $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_spe
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
 
 
-$route['internal/record/show/(:num)/(:num)/(:num)']['get'] = 'record/records/$1/$2/$3';
-$route['internal/record/remove']['post'] = 'record/remove';
-
 $route['internal/record/apply_review']['patch'] = 'record/review_record';
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
@@ -41,14 +38,21 @@ $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 /* System */
 $route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
 $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
+$route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
 
+/* -- Emails */
 $route['internal/resend/email']['post'] = 'system/resend_email';
 $route['internal/system/update/email']['patch'] = 'system/update_email';
+
+/* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
+
+/* -- Exams */
 $route['internal/system/create/exams']['post'] = 'system/create_exams';
 $route['internal/system/update/exams']['patch'] = 'system/update_exams';
 $route['internal/system/remove/exams/(:any)']['delete'] = 'system/remove_exams/$1';
+
 
 $route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
 $route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';

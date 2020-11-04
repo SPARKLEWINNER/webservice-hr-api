@@ -312,7 +312,7 @@ class Main_mdl extends Base_Model {
     
     public function record_reviews_pull($company, $id){
 
-        $query = "SELECT * FROM `reviews` where `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1"; 
+        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -320,27 +320,59 @@ class Main_mdl extends Base_Model {
     
     public function record_stores_pull($company){
 
-        $query = "SELECT * FROM `stores` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `stores` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
-    
     
     public function record_emails_pull($company){
 
-        $query = "SELECT * FROM `system` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `system` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
     
-    
     public function record_logs_pull($company){
 
-        $query = "SELECT * FROM `activity` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `logs` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+    
+    public function record_exam_logs_pull($company){
+
+        $applicants = "SELECT * FROM `applications` where `company` = '{$company}'"; 
+        $result = $this->db->query($applicants);
+        if($result->num_rows() > 0){
+            $app_res = $result->result_array();
+
+            foreach($app_res as $key => $value){
+                $app_res[$key]['exams'] = array();
+                $exams = "SELECT * FROM exams"; 
+                $exams_takers = $this->db->query($exams)->result_array();
+
+                foreach($exams_takers as $k => $v){
+                    if($value['id'] == $exams_takers[$k]['applicant_id']){
+
+                        $stgs_exms = "SELECT * FROM settings WHERE id = '{$exams_takers[$k]["exam_id"]}' AND meta_key = 'exams'";
+                        $stgs_details = $this->db->query($stgs_exms)->result_array();
+                        if($stgs_details){
+
+                            $exam_title = json_decode($stgs_details[0]['meta_value'])->title;
+                            if($exams_takers[$k]){
+                                $exams_takers[$k]['title'] = $exam_title;
+                                $app_res[$key]['exams'][] =  $exams_takers[$k];
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+        return ($result->num_rows() > 0) ? $app_res : false;
 
     }
     
@@ -562,65 +594,8 @@ class Main_mdl extends Base_Model {
         return ($this->db->affected_rows() > 0) ? $result : false;
         
     }
-    
-    /** Orders **/
-    
-    public function orders_pull($uid,$product_id){
-        
-        $pre_requisites = "SELECT DISTINCT ORDERS.order_id, POSTS.post_status status, ORDERS.order_item_id as ordermetaId, WPUSERS.user_nicename AS client, ORDERSMETA.meta_value AS prod_id, CIUSERS.id AS uid, 
-        WPUSERS.ID as cid, POSTS.post_date as date_posted FROM wp_woocommerce_order_items ORDERS 
-        LEFT JOIN wp_woocommerce_order_itemmeta ORDERSMETA ON ORDERS.order_item_id = ORDERSMETA.order_item_id 
-        LEFT JOIN wp_posts POSTS ON ORDERS.order_id = POSTS.ID 
-        LEFT JOIN wp_postmeta POSTMETA ON POSTS.ID = POSTMETA.post_id 
-        LEFT JOIN users CIUSERS ON ORDERSMETA.meta_value = CIUSERS.product_id 
-        LEFT JOIN wp_users WPUSERS ON WPUSERS.ID = POSTS.post_author 
-        WHERE ORDERSMETA.meta_key = '_product_id' AND ORDERSMETA.meta_value = {$product_id} AND CIUSERS.id = {$uid} AND POSTS.post_status != 'trash'";
-        $result = $this->db->query($pre_requisites);
-        $result_array = $this->db->query($pre_requisites)->result_array();
-        
-        
-        foreach($result_array as $k => $pre_req){  
-            $meta_id = $pre_req['ordermetaId'];
-            $message = $this->db->select('meta_value')->from('wp_woocommerce_order_itemmeta')->where('meta_key', "Video message")->where('order_item_id', $meta_id)->get()->row();
-            $total = $this->db->select('meta_value')->from('wp_woocommerce_order_itemmeta')->where('meta_key', "_line_total")->where('order_item_id', $meta_id)->get()->row();
-            $result_array[$k]['message'] = $message->meta_value;
-            $result_array[$k]['total'] = $total->meta_value;
-        }
 
-        return ($result->num_rows() > 0) ? $result_array : false;
 
-    }
-    
-    public function order_pull_list($uid, $product_id, $status){
-        $pre_requisites = "SELECT DISTINCT ORDERS.order_id, POSTS.post_status status, ORDERS.order_item_id as ordermetaId, WPUSERS.user_nicename AS client, ORDERSMETA.meta_value AS prod_id, CIUSERS.id AS uid, 
-        WPUSERS.ID as cid, POSTS.post_date as date_posted FROM wp_woocommerce_order_items ORDERS 
-        LEFT JOIN wp_woocommerce_order_itemmeta ORDERSMETA ON ORDERS.order_item_id = ORDERSMETA.order_item_id 
-        LEFT JOIN wp_posts POSTS ON ORDERS.order_id = POSTS.ID 
-        LEFT JOIN wp_postmeta POSTMETA ON POSTS.ID = POSTMETA.post_id 
-        LEFT JOIN users CIUSERS ON ORDERSMETA.meta_value = CIUSERS.product_id 
-        LEFT JOIN wp_users WPUSERS ON WPUSERS.ID = POSTS.post_author 
-        WHERE ORDERSMETA.meta_key = '_product_id' AND ORDERSMETA.meta_value = {$product_id} AND CIUSERS.id = {$uid} AND POSTS.post_status = '{$status}'";
-        $result = $this->db->query($pre_requisites);
-        $result_array = $this->db->query($pre_requisites)->result_array();
-        
-        
-        foreach($result_array as $k => $pre_req){       
-            $meta_id = $pre_req['ordermetaId'];
-            $oid = $pre_req['order_id'];
-            $uid = $pre_req['uid'];
-            
-            $message = $this->db->select('meta_value')->from('wp_woocommerce_order_itemmeta')->where('meta_key', "Video message")->where('order_item_id', $meta_id)->get()->row();
-            $total = $this->db->select('meta_value')->from('wp_woocommerce_order_itemmeta')->where('meta_key', "_line_total")->where('order_item_id', $meta_id)->get()->row();
-            $video = $this->db->select('video')->from('records')->where('oid', $oid)->where('uid', $uid)->get()->row();
-            
-            $result_array[$k]['message'] = $message->meta_value;
-            $result_array[$k]['total'] = $total->meta_value;
-            $result_array[$k]['video'] = !empty($video->video) ? $video->video : ""; 
-        }
-
-        return ($result->num_rows() > 0) ? $result_array : false;
-    }
-    
     /** Notification **/
     
     public function notify_user($data){

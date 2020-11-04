@@ -369,8 +369,6 @@ class Record extends Base_Controller
         
     }
         
-        
-    
     public function logs_record_get($company = NULL){
                
         if(empty($company)){
@@ -389,60 +387,26 @@ class Record extends Base_Controller
         
     }
         
-    public function remove_post(){
-  
-        if(empty($this->post('uid')) && empty($this->post('cid'))) {
-            $this->response_return($this->response_code(400,""));
+        
+    public function exam_logs_record_get($company = NULL){
+
+        if(empty($company)){
+            $this->response_return($this->response_code (400,""));
             return false;
         }
-        
-        if(empty($this->post('oid'))) {
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        
-        $uid = $this->post('uid');
-        $cid = $this->post('cid');  
-        $record_id = $this->post('record_id'); 
-        $oid = $this->post('oid'); 
-        $response = $this->Main_mdl->record_remove($uid, $cid, $record_id, $oid);
+
+        $response = $this->Main_mdl->record_exam_logs_pull($company);
         if($response){
-            $this->set_response($response,  200);
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
-            $response = $this->response_code(422, "Server upload error", "");
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
        
         
     }
-    
-    public function records_get($uid = NULL, $cid = NULL, $oid = NULL){
         
-        if(empty($uid) && empty($cid) ){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-        
-        if(empty($oid) ){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-        
-        $uid = $uid;
-        $cid = $cid;
-        $oid = $oid;
-        $response = $this->Main_mdl->record_pull($uid,$cid,$oid);
-        
-        if($response){
-            return $this->set_response($response,  200);
-        }else{
-            $response = $this->response_code(422, "Unable to process your request", "");
-            return $this->set_response($response, 422);
-        }
-       
-        
-    }
-    
+
     public function review_record_patch(){
 
        if(empty($this->patch('status')) && empty($this->patch('id'))){
