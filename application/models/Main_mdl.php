@@ -712,6 +712,22 @@ class Main_mdl extends Base_Model {
 
        
     }
+    public function system_people_assign($data){
+            $this->db->insert('assigning', $data);
+            $inserted_id = $this->db->insert_id();
+            $assign = $this->db->select('*')->from('assigning')->where('id', $inserted_id)->get()->row();
+            if($this->db->affected_rows() > 0):    
+                return array(
+                  "id" => $inserted_id,
+                  "emp_id" => $assign->emp_id,
+                  "store_id" => $assign->store_id,
+                  "company" => $assign->company,
+                  "date_assigned" => $assign->date_assigned,
+                ); 
+            else:
+                return false;
+            endif;
+    }
 
     
     public function system_people_pull($company){

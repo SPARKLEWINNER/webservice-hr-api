@@ -103,6 +103,26 @@ class System extends Base_Controller{
         }
     }
 
+    public function assign_people_post(){
+        $data = $this->validate_inpt(array('id','user_id','store_id','company'), 'post');
+
+        $app_data = array(
+            "emp_id" =>  $data['user_id'],
+            "store_id" => $data['store_id'],
+            "company" => $data['company'],
+            "date_assigned" => date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->system_people_assign($app_data);
+
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function create_people_post(){
         $data = $this->validate_inpt(array('company', 'fname', 'id', 'lname','email','access'), 'post');
         $generate_password = $this->createPassword();
