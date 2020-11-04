@@ -147,6 +147,36 @@ class System extends Base_Controller{
 
     /* get */ 
 
+    public function peoples_get($company = NULL){
+        if(empty($company) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->system_people_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function people_specific_get($company = NULL, $id = NULL){
+        if(empty($company) && empty($id) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->system_people_specific_pull($company,$id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function jobs_records_get($company = NULL , $id = NULL){
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));

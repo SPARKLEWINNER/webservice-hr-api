@@ -32,21 +32,26 @@ class Auth extends Base_Controller
                 $response['timestamp'] = date("Y-m-d H:i:s");
                 $response['token'] = AUTHORIZATION::generateToken($data);
 
+                if($data['user_level'] == 2){
+                    $response['route'] = "employee/";
+                }
+
                 if($data['user_level'] == 3){
                     $response['route'] = "admin/";
                 }
 
-                if($data['user_level'] == 2){
-                    $response['route'] = "supervisor/";
-                }
-
-                if($data['user_level'] == 1){
+                if($data['user_level'] == 4){
                     $response['route'] = "hr/";
                 }
 
-                if($data['user_level'] == 0){
-                    $response['route'] = "employee/";
+                if($data['user_level'] == 5){
+                    $response['route'] = "supervisor/";
                 }
+
+                if($data['user_level'] == 6){
+                    $response['route'] = "hr/";
+                }
+
 
                 if($data['user_level'] == 10){
                     $response['route'] = "applicant/";

@@ -47,6 +47,8 @@ $route['internal/system/update/email']['patch'] = 'system/update_email';
 
 /* -- People */
 $route['internal/system/create/people']['post'] = 'system/create_people';
+$route['internal/system/people/(:any)']['get'] = 'system/peoples/$1';
+$route['internal/system/specific/people/(:any)/(:num)']['get'] = 'system/people_specific/$1/$2';
 
 /* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';

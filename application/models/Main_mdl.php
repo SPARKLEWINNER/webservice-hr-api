@@ -713,7 +713,18 @@ class Main_mdl extends Base_Model {
        
     }
 
-
+    
+    public function system_people_pull($company){
+        $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' ORDER BY id DESC";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+    
+    public function system_people_specific_pull($company, $id){
+        $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' AND id = {$id} ORDER BY id DESC";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
 
     /* Log activity */
 
