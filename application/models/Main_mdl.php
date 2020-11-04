@@ -274,7 +274,24 @@ class Main_mdl extends Base_Model {
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
+
+    /* Pool */
+    public function record_pool_weeks_pull($company, $weeks){
+
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
+    public function record_pool_day_pull($company, $days){
+
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
     
+    /* Specific */
     public function record_specific_pull($company, $id){
 
         $query = "SELECT app.*, st.meta_value FROM `applications` app  
@@ -756,6 +773,62 @@ class Main_mdl extends Base_Model {
         else:
             return false;
         endif;
+    }
+
+    /* Email */
+
+    public function system_record_update_email($data,$email_id){
+        $applicants = $this->db->select('*')->from('applications')->where('reference_id', $email_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+
+            $profile = json_decode($applicants->data);
+            $profile->person_email = $applicants->username = $data['email'];
+            $update_application = array(
+              "data" => json_encode($profile),
+              "username" => $applicants->username
+            ); 
+
+            $this->db->where('reference_id', $email_id);
+            $this->db->update('applications', $update_application);
+        
+            if($this->db->affected_rows() > 0):
+
+                // get the system table's data
+                $system = $this->db->select('*')->from('system')->where('user', $email_id)->get()->row();
+                $mail_data = json_decode($system->data);
+                $mail_data->personalizations[0]->to = $mail_data->personalizations[0]->dynamic_template_data->email = $data['email'];
+                $mail_new_data = array(
+                  "data" => json_encode($mail_data),
+                  "email" => $data['email']
+                ); 
+    
+                $this->db->where('user', $email_id);
+                $this->db->update('system', $mail_new_data);
+
+                if($this->db->affected_rows() > 0):
+                    $system = $this->db->select('*')->from('system')->where('user', $email_id)->get()->row();
+                    return array(
+                        "id" => $system->id,
+                        "user" => $system->user,
+                        "type" => $system->type,
+                        "message" => $system->message,
+                        "data" => $system->data,
+                        "email" => $system->email,
+                    ); 
+
+                else:
+                    return false;
+                endif; // update for system table
+
+            else:
+                return false;
+            endif; // update for application table
+
+        else:
+            return false;
+        endif; // get of applicant's profile
+
+
     }
 
 

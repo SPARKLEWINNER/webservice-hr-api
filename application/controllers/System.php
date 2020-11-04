@@ -12,8 +12,27 @@ class System extends Base_Controller{
     public function resend_email_post(){
         $ref_id = $this->post('id');
         $response = $this->Main_mdl->record_get_system($ref_id);
+        $email_details = array(
+            "from" => array(
+                "email" => "system@".$response['company'].".com.ph"
+            ),
+            "personalizations" => [array(
+                "to" => [array(
+                    "email" => $response['username']
+                )],
+                "subject" => EMAIL_NEW_APPLICANT,
+                "dynamic_template_data" => array(
+                    "email"=> $response['username'],
+                    "password" => $response['reference_id'],
+                    "help" => EMAIL_ADMIN,
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
+                    "portal" =>"http://portal.sparkles.com.ph/" // to be change 
+                )
+            )],
+            "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
+        );
 
-        $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, json_decode($response['email_details']));
+        $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
         if($is_mailed == NULL){
             $this->set_response(array("status" => 200, "data" => $is_mailed),  200); 
         }else{
@@ -115,6 +134,23 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
+
+    public function update_email_patch(){
+        $data = $this->validate_inpt(array('id', 'email'), 'patch');
+        $email_id = $data['id'];
+        $app_data = array(
+            "email" => $data['email']
+        );
+
+        $response = $this->Main_mdl->system_record_update_email($app_data, $email_id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
 
     /* delete */ 
 

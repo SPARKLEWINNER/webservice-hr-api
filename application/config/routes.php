@@ -25,6 +25,7 @@ $route['internal/record/review']['patch'] = 'record/in_review';
 $route['internal/record/(:any)']['get'] = 'record/applicants/$1';
 $route['internal/record/(:any)/(:num)']['get'] = 'record/applicants_status/$1/$2';
 $route['internal/record/sort/(:any)/(:any)/(:num)']['get'] = 'record/applicants_weekly/$1/$2/$3';
+$route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'record/applicants_pool/$1/$2/$3';
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
 
@@ -43,6 +44,7 @@ $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
 
 
 $route['internal/resend/email']['post'] = 'system/resend_email';
+$route['internal/system/update/email']['patch'] = 'system/update_email';
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
 $route['internal/system/create/exams']['post'] = 'system/create_exams';
 $route['internal/system/update/exams']['patch'] = 'system/update_exams';

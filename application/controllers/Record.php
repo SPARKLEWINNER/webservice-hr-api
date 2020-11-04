@@ -268,6 +268,34 @@ class Record extends Base_Controller
         
     }
 
+    public function applicants_pool_get($type = NULL, $company = NULL , $number = 0){
+
+        if(empty($company) && empty($number)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+               
+        if(empty($type)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        if($type == "day" || $type == "days"){
+            $response = $this->Main_mdl->record_pool_day_pull($company, $number);
+
+        }else{
+            $response = $this->Main_mdl->record_pool_weeks_pull($company, $number);
+        }
+
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+        
+    }
+
     public function applicants_specific_get($company = NULL, $id = NULL){
                
         if(empty($company) && empty($id) ){
@@ -322,6 +350,7 @@ class Record extends Base_Controller
        
         
     }
+
     public function emails_record_get($company = NULL){
                
         if(empty($company)){
