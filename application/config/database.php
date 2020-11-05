@@ -14,7 +14,7 @@ if ($_SERVER['HTTP_HOST'] == "localhost") :
 	$hostname = "localhost";
 	$database = "sparkles";
 	$username = "root";
-	$password = ""; //macos mysql
+	$password = "mysql"; //macos mysql
 else:
 	$hostname = "localhost";
 	$database = "webapi_portal";

@@ -350,6 +350,24 @@ class Record extends Base_Controller
        
         
     }
+    
+    public function store_people_record_get($store = NULL, $company = NULL){
+               
+        if(empty($company) && empty($store)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->records_store_people_pull($company, $store);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
 
     public function emails_record_get($company = NULL){
                

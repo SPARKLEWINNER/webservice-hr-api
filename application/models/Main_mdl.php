@@ -326,6 +326,34 @@ class Main_mdl extends Base_Model {
 
     }
     
+    
+    public function records_store_people_pull($company, $store_id){
+
+        $applications_q = "SELECT * FROM applications apls 
+        LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}'";
+        $result = $this->db->query($applications_q);
+        $appls = $result->result_array();
+        if($result->num_rows() > 0 ){
+
+            foreach($appls as $k => $apls){
+                
+                if($apls['recruitment']):
+                    $store_deploy = json_decode($apls['recruitment'])->assess_deployment_store;
+                    if($store_deploy != NULL){
+                        $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_deploy}";
+                        $store_result = $this->db->query($store_details);
+                        if($store_result->num_rows() > 0){
+                            $appls[$k]['store_name'] = $store_result->result_array()[0]['name']; 
+                            $appls[$k]['store_id'] = $store_result->result_array()[0]['id']; 
+                        }
+                    }
+                endif;
+            }
+        }
+        return ($result->num_rows() > 0) ? $appls : false;
+
+    }
+    
     public function record_emails_pull($company){
 
         $query = "SELECT * FROM `system` WHERE `company` = '{$company}'"; 
