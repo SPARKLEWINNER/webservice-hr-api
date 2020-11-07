@@ -126,7 +126,7 @@ class Record extends Base_Controller
     }
 
     public function review_app_post(){
-        $data = $this->validate_inpt(array('data','company','id','review_app','assess_evaluation'), 'post');
+        $data = $this->validate_inpt(array('data','company','id','reviewer','assess_evaluation', 'store','refernce_id'), 'post');
         $mg_id = $this->post('id');
         $generated = $this->generateReferenceCode($mg_id);
 
@@ -134,9 +134,10 @@ class Record extends Base_Controller
             'applicant_id' => $this->post('id'),
             'recruitment' => json_encode(json_decode($this->post('data'))),
             'company' => $this->post('company'),
-            'review_status' => $this->post('review'),
+            'recruitment_reviewer' => $this->post('reviewer'),
             'assess_evaluation' => $this->post('assess_evaluation'),
-            'reference_id' => $generated,
+            'store' => $this->post('store'),
+            'reference_id' => $this->post('refernce_id'),
         );
 
         $response = $this->Main_mdl->record_review_data($mg_id,$app_data);
@@ -150,7 +151,7 @@ class Record extends Base_Controller
     }
 
     public function review_store_app_post(){
-        $data = $this->validate_inpt(array('store','company','id', 'reviewer', 'store_assess','assess_evaluation'), 'post');
+        $data = $this->validate_inpt(array('company','id', 'reviewer', 'store_assess','review_status'), 'post');
         $response = $this->Main_mdl->record_review_store_data($data);
         if(!isset($response['status'])){
             return $this->set_response($response, 422);

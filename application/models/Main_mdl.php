@@ -210,8 +210,8 @@ class Main_mdl extends Base_Model {
                 "applicant_id" => $record->applicant_id,
                 "reference_id" => $record->reference_id,
                 "recruitment" => $record->recruitment,
-                "reviewer" => $this->session->id,
-                "reviewer_status" => 1
+                "reviewer" => $record->recruitment_reviewer,
+                "assess_evaluations" => $record->assess_evaluation
             );  
         else: return false;
         endif;
@@ -232,14 +232,11 @@ class Main_mdl extends Base_Model {
     public function record_review_store_data($data){
         $app_id = $data['id'];
         $app_data = array(
-            "store" => $data['store'],
             "store_assess" => $data['store_assess'],
-            "assess_evaluation" => $data['assess_evaluation'],
             "reviewer" => $data['reviewer'],
-            "review_status" => 1,
+            "review_status" => $data['review_status'],
             "store_review_date" => date('Y-m-d H:i:s')
         );
-
 
         $this->db->where('applicant_id', $app_id);
         $this->db->update('reviews', $app_data);
@@ -374,7 +371,7 @@ class Main_mdl extends Base_Model {
     
     public function record_ts_reviews_pull($company, $ref_id){
         $apl = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->where('company', $company)->get()->row();
-        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `reference_id` = '{$apl->id}' LIMIT 1"; 
+        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$apl->id}' LIMIT 1"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -399,9 +396,9 @@ class Main_mdl extends Base_Model {
         if($result->num_rows() > 0 ){
 
             foreach($appls as $k => $apls){
-                if($apls['recruitment']):
+                if($apls['recruitment'] && json_decode($apls['recruitment'])->assess_evaluation == 1):
                     $store_results[] = $apls;
-                    $store_deploy = json_decode($apls['recruitment'])->assess_deployment_store;
+                    $store_deploy = $apls['store'];
                     if($store_deploy != NULL){
                         $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_deploy}";
                         $store_result = $this->db->query($store_details);
