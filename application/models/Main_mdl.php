@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+date_default_timezone_set('Asia/Manila');
 require APPPATH . '/libraries/Base_Model.php';
 
 class Main_mdl extends Base_Model {
@@ -16,15 +16,47 @@ class Main_mdl extends Base_Model {
         $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
         if(isset($acc)){
             if(password_verify($password,  $acc->password)){
-                return array(
-                    "id" => $acc->id,
-                    "email" =>$acc->email,
-                    "firstname" => $acc->first_name,
-                    "lastname" => $acc->last_name,
-                    "company" => $acc->company,
-                    "profile" => $acc->profile,
-                    "user_level" => $acc->user_level
-                );
+                $this->db->where('id', $acc->id);
+                $this->db->update('users', array("last_login" => date('Y-m-d H:i:s') ));
+
+                if($acc->user_level == 3){
+                    return array(
+                        "id" => $acc->id,
+                        "email" =>$acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level
+                    );
+                }else{
+
+                    if($acc->user_level == 5){
+                        $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+                        $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+                        return array(
+                            "id" => $acc->id,
+                            "email" =>$acc->email,
+                            "firstname" => $acc->first_name,
+                            "lastname" => $acc->last_name,
+                            "company" => $acc->company,
+                            "profile" => $acc->profile,
+                            "user_level" => $acc->user_level,
+                            "store_id" => $store->id,
+                            "store_name" => $store->name
+                        );
+                    }else{
+                        return array(
+                            "id" => $acc->id,
+                            "email" =>$acc->email,
+                            "firstname" => $acc->first_name,
+                            "lastname" => $acc->last_name,
+                            "company" => $acc->company,
+                            "profile" => $acc->profile,
+                            "user_level" => $acc->user_level,
+                        );
+                    }
+                }
             }
             else{
                 return $this->response_code(204,"User invalid", "");
@@ -171,7 +203,7 @@ class Main_mdl extends Base_Model {
 
         if($this->db->affected_rows() > 0):    
             $this->db->where('id', $id);
-            $this->db->update('`applications`', array("status" => 3));
+            $this->db->update('applications', array("status" => 3));
     
             return array(
                 "id" => $inserted_id,
@@ -201,13 +233,17 @@ class Main_mdl extends Base_Model {
         $app_id = $data['id'];
         $app_data = array(
             "store" => $data['store'],
+            "store_assess" => $data['store_assess'],
+            "assess_evaluation" => $data['assess_evaluation'],
             "reviewer" => $data['reviewer'],
             "review_status" => 1,
             "store_review_date" => date('Y-m-d H:i:s')
         );
 
+
         $this->db->where('applicant_id', $app_id);
         $this->db->update('reviews', $app_data);
+
         if($this->db->affected_rows() > 0):    
             $record = $this->db->select('*')->from('reviews')->where('applicant_id', $app_id)->get()->row();
             $this->db->where('id', $app_id);
@@ -317,6 +353,32 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
+
+    // Team Supervisor
+
+    public function record_ts_specific_pull($company, $ref_id){
+
+        $query = "SELECT app.*, st.meta_value FROM `applications` app  
+        LEFT JOIN `settings` st ON app.applying_for = st.id WHERE app.company = '{$company}' AND app.reference_id = '{$ref_id}' LIMIT 1";
+        $result = $this->db->query($query);
+        $data = $result->result_array();
+        if($result->num_rows() > 0){
+            $exams = "SELECT * FROM `exams` WHERE applicant_id = '{$ref_id}'";
+            $data[0]['taken_exam'][] = $this->db->query($exams)->result_array();
+            return $data;
+        } else{
+
+            return false;
+        }
+    }
+    
+    public function record_ts_reviews_pull($company, $ref_id){
+        $apl = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->where('company', $company)->get()->row();
+        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `reference_id` = '{$apl->id}' LIMIT 1"; 
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
     
     public function record_stores_pull($company){
 
@@ -329,28 +391,34 @@ class Main_mdl extends Base_Model {
     
     public function records_store_people_pull($company, $store_id){
 
-        $applications_q = "SELECT * FROM applications apls 
+        $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls 
         LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}'";
         $result = $this->db->query($applications_q);
         $appls = $result->result_array();
+        $store_results = array();
         if($result->num_rows() > 0 ){
 
             foreach($appls as $k => $apls){
-                
                 if($apls['recruitment']):
+                    $store_results[] = $apls;
                     $store_deploy = json_decode($apls['recruitment'])->assess_deployment_store;
                     if($store_deploy != NULL){
                         $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_deploy}";
                         $store_result = $this->db->query($store_details);
+
+                        $applying_for = json_decode($apls['applying_for']);
+                        $job_details = $this->db->select('*')->from('settings')->where('id', $applying_for)->where('company', $company)->get()->row();
                         if($store_result->num_rows() > 0){
-                            $appls[$k]['store_name'] = $store_result->result_array()[0]['name']; 
-                            $appls[$k]['store_id'] = $store_result->result_array()[0]['id']; 
+                            $store_results[$k]['store_name'] = $store_result->result_array()[0]['name']; 
+                            $store_results[$k]['store_id'] = $store_result->result_array()[0]['id']; 
+                            $store_results[$k]['job_title'] = json_decode($job_details->meta_value)->title; 
                         }
                     }
                 endif;
             }
         }
-        return ($result->num_rows() > 0) ? $appls : false;
+
+        return ($result->num_rows() > 0) ? $store_results : false;
 
     }
     

@@ -37,7 +37,7 @@ $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'record/store_people_record/$1/$2';
 
 /* System */
-$route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
+$route['internal/emails/(:any)']['get'] = 'record/emails_rec`ord/$1';
 $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
@@ -71,8 +71,12 @@ $route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_speci
 /** Exams **/
 $route['internal/exam/iq/create']['post'] = 'exams/iq_create';
 
+/* User */
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 
+/* Supervisors */
+$route['internal/record/ts/specific/(:any)/(:any)']['get'] = 'record/applicants_ts_specific/$1/$2';
+$route['internal/record/ts/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_ts_specific_reviews/$1/$2';
 
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
@@ -89,3 +93,5 @@ $route['internal/orders/list/(:num)/(:num)/(:any)']['get'] = 'orders/orders_list
 
 /** Notifications **/
 $route['internal/notify/user']['post'] = 'accounts/user_notify'; 
+
+

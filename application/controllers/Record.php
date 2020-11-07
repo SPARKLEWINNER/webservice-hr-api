@@ -126,7 +126,7 @@ class Record extends Base_Controller
     }
 
     public function review_app_post(){
-        $data = $this->validate_inpt(array('data','company','id'), 'post');
+        $data = $this->validate_inpt(array('data','company','id','review_app'), 'post');
         $mg_id = $this->post('id');
         $generated = $this->generateReferenceCode($mg_id);
 
@@ -134,6 +134,7 @@ class Record extends Base_Controller
             'applicant_id' => $this->post('id'),
             'recruitment' => json_encode(json_decode($this->post('data'))),
             'company' => $this->post('company'),
+            'review_status' => $this->post('review'),
             'reference_id' => $generated,
         );
 
@@ -148,8 +149,7 @@ class Record extends Base_Controller
     }
 
     public function review_store_app_post(){
-        $data = $this->validate_inpt(array('store','company','id', 'reviewer'), 'post');
-
+        $data = $this->validate_inpt(array('store','company','id', 'reviewer', 'store_assess','assess_evaluation'), 'post');
         $response = $this->Main_mdl->record_review_store_data($data);
         if(!isset($response['status'])){
             return $this->set_response($response, 422);
@@ -331,8 +331,43 @@ class Record extends Base_Controller
        
         
     }
-        
     
+    // Supervisor Requests
+
+    public function applicants_ts_specific_get($company = NULL, $id = NULL){
+               
+        if(empty($company) && empty($id) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_ts_specific_pull($company,$id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+    
+    public function applicants_ts_specific_reviews_get($company = NULL, $ref_id = NULL){
+               
+        if(empty($company) && empty($ref_id) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_ts_reviews_pull($company,$ref_id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
+    }
+
     public function stores_record_get($company = NULL){
                
         if(empty($company)){
