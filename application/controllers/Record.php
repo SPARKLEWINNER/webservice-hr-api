@@ -126,7 +126,7 @@ class Record extends Base_Controller
     }
 
     public function review_app_post(){
-        $data = $this->validate_inpt(array('data','company','id','review_app'), 'post');
+        $data = $this->validate_inpt(array('data','company','id','review_app','assess_evaluation'), 'post');
         $mg_id = $this->post('id');
         $generated = $this->generateReferenceCode($mg_id);
 
@@ -135,6 +135,7 @@ class Record extends Base_Controller
             'recruitment' => json_encode(json_decode($this->post('data'))),
             'company' => $this->post('company'),
             'review_status' => $this->post('review'),
+            'assess_evaluation' => $this->post('assess_evaluation'),
             'reference_id' => $generated,
         );
 
