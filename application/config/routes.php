@@ -15,10 +15,10 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 
 /** Records **/
 $route['internal/record/create']['post'] = 'record/create';
-$route['internal/record/create/document']['post'] = 'record/create_doc';
 $route['internal/record/review_app']['post'] = 'record/review_app';
 $route['internal/record/review_store_app']['post'] = 'record/review_store_app';
 $route['internal/record/exam']['post'] = 'record/exam_take';
+$route['internal/record/upload/documents']['post'] = 'record/upload_documents';
 
 $route['internal/record/review']['patch'] = 'record/in_review';
 

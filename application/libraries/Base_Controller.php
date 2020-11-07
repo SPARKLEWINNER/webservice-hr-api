@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+date_default_timezone_set('Asia/Manila');
 require APPPATH . '/libraries/REST_Controller.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -25,7 +26,7 @@ class Base_Controller extends REST_Controller{
     public $default_client = "mobileapp-client";
     public $default_auth_key = "simplerestapi";
     
-    public $videoStorage = DEFAULT_URI."/uploads/";
+    public $documentStorage = DEFAULT_URI."/uploads/docs/";
     public $profileStorage = DEFAULT_URI."/uploads/";
 
 
@@ -123,37 +124,60 @@ class Base_Controller extends REST_Controller{
     
         /* Upload files */
 
-    public function upload_doc($file,$doc_id){
-        $valid_ext = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx');
-        
-        $path = 'uploads/';
+    public function upload_doc($file,$doc_id,$company){
+        $img = $file['name'];
+        $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+        $path = 'uploads/docs/';
         $request = 'doc';
+        $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
+
+        
         if($file){
-            $img = $file['name'];
-            $tmp = $file['tmp_name'];
-            $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+            $config = array(
+                'upload_path' => "./uploads/docs/",
+                'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
+                'overwrite' => FALSE,
+                'max_size' => "20000",
+                'file_name' => $name
+            );
+    
+            $this->load->library('upload', $config);
+            $record_upload = array(
+                "applicant_id" => $doc_id,
+                "type" => "DOCUMENTUPLOAD",
+                "company" => $company,
+                "date_uploaded" => date('Y-m-d H:i:s'),
+            );
 
-            $final_image = $doc_id."-".strtolower($doc_id.time().'1.'.$ext);
-            if(!file_exists($path)) 
-            {
-                mkdir($path, 0777, true);
-            }
+            if (!$this->upload->do_upload('file')) {
+                $record_upload['message'] = json_encode(array('error' => $this->upload->display_errors()) );
+                $record_upload['status'] = 1;
+                $this->Main_mdl->record_upload_activity($record_upload);
+            }else{
+                    $record_upload['status'] = 0;
+                    $record_upload['message'] = json_encode($this->upload->data());
 
-            if (in_array($ext, $valid_ext)) {
-				$path = $path . strtolower($final_image);
-				if (move_uploaded_file($tmp, $path)) {
-                    return array(
-                        'link' => $this->profileStorage.$final_image,
-                        'name' => $final_image
+                     $data = array(
+                        "applicant_id" => $doc_id,
+                        "doc_name" => $file['name'],
+                        "doc_type" => $file['type'],
+                        "doc_size" => $file['size'],
+                        "doc_link" => $this->documentStorage.$name,
+                        "date_created" => date('Y-m-d H:i:s'),
+                        "status" => 0,
                     );
-				}else{
-                   $error = array('error' => $this->upload->display_errors());
-                    return $error;
-                }
+
+                    $this->Main_mdl->record_upload_doc($data);
+                    $this->Main_mdl->record_upload_activity($record_upload);
+                    return array(
+                        'link' => $this->documentStorage.$name,
+                        'name' => $name
+                    );
             }
+        }else{
+            return false;
         }
 
-        return false;
     }
     
     public function upload_profile($file,$ref_id){

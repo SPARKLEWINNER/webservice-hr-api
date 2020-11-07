@@ -75,45 +75,11 @@ class Record extends Base_Controller
         }
     }
 
-    public function create_doc_post(){
-
-        $data = $this->validate_inpt(array('id','company'), 'post');
-        $applicant_id = $this->post('id');
-        $status = false;
-
-        $psa_proc = $hsdiploma_proc = $healthcard_proc = $mayorspermit_proc = $nbi_proc = "";
-
-        if(!empty($_FILES['psa'])){
-            $psa_proc = $this->upload_profile($_FILES['psa'], $applicant_id);
-        }
-
-        if(!empty($_FILES['hsdiploma'])){
-            $hsdiploma_proc = $this->upload_profile($_FILES['hsdiploma'], $applicant_id);
-        }
-
-        if(!empty($_FILES['healthcard'])){
-            $healthcard_proc = $this->upload_profile($_FILES['healthcard'], $applicant_id);
-        }
-
-        if(!empty($_FILES['mayorspermit'])){
-            $mayorspermit_proc = $this->upload_profile($_FILES['mayorspermit'], $applicant_id);
-        }
-
-        if(!empty($_FILES['nbi'])){
-            $nbi_proc = $this->upload_profile($_FILES['nbi'], $applicant_id);
-        }
-
-        $upload_proc = $this->upload_profile($_FILES['pref_document'], $applicant_id);
-        $app_data = array(
-            'username' =>  $this->post('person_email'),
-            'data' => json_encode($this->post()),
-            'company' => $this->post('company'),
-            'reference_id' => $generated,
-            'profile' =>  $upload_proc['link']
-        );
-
-        if($status){
-            $response = $this->Main_mdl->record_data($app_data);
+    public function upload_documents_post(){
+        $data = $this->validate_inpt(array('company','id'), 'post');
+        $upload_proc = $this->upload_doc($_FILES['file'], $data['id'], $data['company']);
+        if($upload_proc){
+            $response = $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
             if(!isset($response['status'])){
                 return $this->set_response($response, 422);
             }else{

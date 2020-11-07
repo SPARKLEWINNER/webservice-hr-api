@@ -194,6 +194,26 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_upload_doc($data){
+        $this->db->insert('records', $data);
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    public function record_upload_activity($data){
+        $this->db->insert('upload', $data);
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+    
+    
+    public function records_doc_pull($id,$company){
+        $this->db->where('id', $id);
+        $this->db->update('applications', array("status" => 5));
+        if($this->db->affected_rows() > 0):    
+            return $this->db->select('*')->from('records')->where('applicant_id', $id)->get()->row();
+        else: return false;
+        endif;
+    }
+
     public function record_review_data($id,$data){
 
         $this->db->insert('reviews', $data);
