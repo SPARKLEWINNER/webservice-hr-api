@@ -353,7 +353,9 @@ class Main_mdl extends Base_Model {
         $data = $result->result_array();
         if($result->num_rows() > 0){
             $exams = "SELECT * FROM `exams` WHERE applicant_id = '{$id}'";
+            $reviews = "SELECT * FROM `records` WHERE applicant_id = '{$id}'";
             $data[0]['taken_exam'][] = $this->db->query($exams)->result_array();
+            $data[0]['documents'][] = $this->db->query($reviews)->result_array();
             return $data;
         } else{
 
