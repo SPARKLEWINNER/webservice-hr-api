@@ -323,7 +323,7 @@ class Main_mdl extends Base_Model {
 
     public function record_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY AND status = 0"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
@@ -331,7 +331,7 @@ class Main_mdl extends Base_Model {
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week AND status = 0"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -939,6 +939,46 @@ class Main_mdl extends Base_Model {
         endif;
     }
 
+    /* Requirements */
+
+    public function system_record_requirements($data){
+        $this->db->insert('settings', $data);
+        $inserted_id = $this->db->insert_id();
+        $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+            "id" => $inserted_id,
+            "company" => $jobs->company,
+            "posted_by" => $jobs->posted_by,
+            "meta_key" => $jobs->meta_key,
+            "meta_value" => $jobs->meta_value,
+            "date_created" => $jobs->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+    }
+
+
+    public function system_update_requirements($data, $req_id){
+        $this->db->where('id', $req_id);
+        $this->db->update('settings', $data);
+        $jobs = $this->db->select('*')->from('settings')->where('id', $req_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $req_id,
+                "company" => $jobs->company,
+                "posted_by" => $jobs->posted_by,
+                "meta_key" => $jobs->meta_key,
+                "meta_value" => $jobs->meta_value,
+                "date_created" => $jobs->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+    }
+
+
     /* Email */
 
     public function system_record_update_email($data,$email_id){
@@ -1027,7 +1067,17 @@ class Main_mdl extends Base_Model {
                 $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
                 $exams_result = $this->db->query($exams)->result_array();
 
+                $jobs_result[$key]['requirements'] = array();
+                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
+                $requirements_result = $this->db->query($requirements)->result_array();
+                foreach($requirements_result as $kr => $vr){
+                    if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
+                        $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                    }
+                }
+
                 foreach($exams_result as $k => $v){
+                    
                     if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
                         $jobs_result[$key]['exams'][] =  $exams_result[$k];
                     }
@@ -1043,15 +1093,24 @@ class Main_mdl extends Base_Model {
     public function system_jobs_specific_pull($company,$job_id,$jobs){
   
         $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}' AND id = {$job_id} LIMIT 1"; 
+        
         $result = $this->db->query($jobs);
         if($result->num_rows() > 0){
             $jobs_result = $result->result_array();
-
 
             foreach($jobs_result as $key => $value){
                 $jobs_result[$key]['exams'] = array();
                 $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
                 $exams_result = $this->db->query($exams)->result_array();
+
+                $jobs_result[$key]['requirements'] = array();
+                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
+                $requirements_result = $this->db->query($requirements)->result_array();
+                foreach($requirements_result as $kr => $vr){
+                    if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
+                        $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                    }
+                }
 
                 foreach($exams_result as $k => $v){
                     if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){

@@ -37,7 +37,7 @@ $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'record/store_people_record/$1/$2';
 
 /* System */
-$route['internal/emails/(:any)']['get'] = 'record/emails_rec`ord/$1';
+$route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
 $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
@@ -54,6 +54,8 @@ $route['internal/system/specific/people/(:any)/(:num)']['get'] = 'system/people_
 
 /* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
+$route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
+$route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';
 
 /* -- Stores */
 $route['internal/system/create/store']['post'] = 'system/create_store';
@@ -63,13 +65,12 @@ $route['internal/system/create/exams']['post'] = 'system/create_exams';
 $route['internal/system/update/exams']['patch'] = 'system/update_exams';
 $route['internal/system/remove/exams/(:any)']['delete'] = 'system/remove_exams/$1';
 
+/* Documents CMS */
+$route['internal/system/create/requirements']['post'] = 'system/create_requirements';
+$route['internal/system/update/requirements']['post'] = 'system/update_requirements';
 
-$route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
-$route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';
 
 
-/** Exams **/
-$route['internal/exam/iq/create']['post'] = 'exams/iq_create';
 
 /* User */
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
