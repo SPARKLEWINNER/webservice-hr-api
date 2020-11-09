@@ -66,7 +66,7 @@ class Record extends Base_Controller
                     $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details), $this->post('company'));
                     $this->set_response(array("status" => 200, "data" => $response),  200); 
                 }else{
-                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", $email_details, $this->post('company'));
+                    $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", json_encode($email_details), $this->post('company'));
                 }
             }
         }else{
