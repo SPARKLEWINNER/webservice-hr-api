@@ -93,7 +93,7 @@ class Record extends Base_Controller
     public function review_app_post(){
         $data = $this->validate_inpt(array('data','company','id','reviewer','assess_evaluation', 'store','refernce_id'), 'post');
         $mg_id = $this->post('id');
-        $generated = $this->generateReferenceCode($mg_id);
+
 
         $app_data = array(
             'applicant_id' => $this->post('id'),
@@ -105,6 +105,8 @@ class Record extends Base_Controller
             'reference_id' => $this->post('refernce_id'),
         );
 
+        print_r($app_data);
+        die();
         $response = $this->Main_mdl->record_review_data($mg_id,$app_data);
         if(!isset($response['status'])){
             return $this->set_response($response, 422);
