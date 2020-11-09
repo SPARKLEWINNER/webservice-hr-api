@@ -419,7 +419,8 @@ class Main_mdl extends Base_Model {
 
             foreach($appls as $k => $apls){
                 if($apls['recruitment'] && json_decode($apls['recruitment'])->assess_evaluation == 1):
-                    $store_results[] = $apls;
+                    $store_results = array();
+                    $store_results = $apls;
                     $store_deploy = $apls['store'];
                     if($store_deploy != NULL){
                         $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_deploy}";
@@ -428,9 +429,9 @@ class Main_mdl extends Base_Model {
                         $applying_for = json_decode($apls['applying_for']);
                         $job_details = $this->db->select('*')->from('settings')->where('id', $applying_for)->where('company', $company)->get()->row();
                         if($store_result->num_rows() > 0){
-                            $store_results[$k]['store_name'] = $store_result->result_array()[0]['name']; 
-                            $store_results[$k]['store_id'] = $store_result->result_array()[0]['id']; 
-                            $store_results[$k]['job_title'] = json_decode($job_details->meta_value)->title; 
+                            $store_results['store_name'] = $store_result->result_array()[0]['name']; 
+                            $store_results['store_id'] = $store_result->result_array()[0]['id']; 
+                            $store_results['job_title'] = json_decode($job_details->meta_value)->title; 
                         }
                     }
                 endif;
