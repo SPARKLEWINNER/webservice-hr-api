@@ -307,7 +307,7 @@ class Main_mdl extends Base_Model {
 
     public function record_status_pull($company, $status){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `status` = '{$status}'"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `status` = '{$status}' ORDER BY id DESC"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
