@@ -34,7 +34,6 @@ $route['internal/record/apply_review']['patch'] = 'record/review_record';
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
 $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
-$route['internal/stores/ts/(:num)/(:any)']['get'] = 'record/store_people_record/$1/$2';
 
 /* System */
 $route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
@@ -78,6 +77,7 @@ $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 /* Supervisors */
 $route['internal/record/ts/specific/(:any)/(:any)']['get'] = 'record/applicants_ts_specific/$1/$2';
 $route['internal/record/ts/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_ts_specific_reviews/$1/$2';
+$route['internal/stores/ts/(:num)/(:any)']['get'] = 'record/store_people_record/$1/$2';
 
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';

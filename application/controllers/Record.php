@@ -354,7 +354,7 @@ class Record extends Base_Controller
     }
     
     public function store_people_record_get($store = NULL, $company = NULL){
-               
+
         if(empty($company) && empty($store)){
             $this->response_return($this->response_code (400,""));
             return false;

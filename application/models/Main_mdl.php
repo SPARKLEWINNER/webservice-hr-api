@@ -411,16 +411,14 @@ class Main_mdl extends Base_Model {
     public function records_store_people_pull($company, $store_id){
 
         $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls 
-        LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}'";
+        LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}' AND rvws.store = $store_id";
         $result = $this->db->query($applications_q);
         $appls = $result->result_array();
 
         $store_results = array();
         if($result->num_rows() > 0 ){
-
             foreach($appls as $k => $apls){
                 if($apls['recruitment'] && json_decode($apls['recruitment'])->assess_evaluation == 1):
-                    $store_results = array();
                     $store_results = $apls;
                     $store_deploy = $apls['store'];
                     if($store_deploy != NULL){
