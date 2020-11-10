@@ -414,6 +414,7 @@ class Main_mdl extends Base_Model {
         LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}'";
         $result = $this->db->query($applications_q);
         $appls = $result->result_array();
+
         $store_results = array();
         if($result->num_rows() > 0 ){
 
@@ -423,7 +424,7 @@ class Main_mdl extends Base_Model {
                     $store_results = $apls;
                     $store_deploy = $apls['store'];
                     if($store_deploy != NULL){
-                        $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_deploy}";
+                        $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_id}";
                         $store_result = $this->db->query($store_details);
 
                         $applying_for = json_decode($apls['applying_for']);
@@ -437,6 +438,9 @@ class Main_mdl extends Base_Model {
                 endif;
             }
         }
+
+        var_dump($store_results);
+
 
         return ($result->num_rows() > 0) ? $store_results : false;
 
