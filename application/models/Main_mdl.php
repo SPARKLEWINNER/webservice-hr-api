@@ -439,9 +439,6 @@ class Main_mdl extends Base_Model {
             }
         }
 
-        var_dump($store_results);
-
-
         return ($result->num_rows() > 0) ? $store_results : false;
 
     }
