@@ -521,7 +521,6 @@ class Main_mdl extends Base_Model {
             return ($this->db->affected_rows() > 0) ? array("Removed successfully") : false;
         }
         
-        echo $record_id;
         $this->db->where('id', $record_id);
         $this->db->delete('records');
         return ($this->db->affected_rows() > 0) ? true : false;
