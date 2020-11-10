@@ -207,6 +207,72 @@ class System extends Base_Controller{
         }
     }
 
+    public function update_people_password_post(){
+        $data = $this->validate_inpt(array('company','id','email','password', 'new_password'), 'post');
+        $generate_password = $this->createPassword();
+        $app_data = array(
+            "company" => $data['company'],
+            "id" => $data['id'],
+            "email" => $data['email'],
+            "password" => $data['new_password'],
+        );
+
+        $response = $this->Main_mdl->system_record_people_password($app_data, $data['password']);
+        if($response == NULL){
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            return $this->set_response($response, 422);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "FAILED", json_encode($email_details), $response['company']);
+        }
+    }
+
+    public function reset_password_post(){
+        $email = $this->post('email');
+
+        if(empty($email) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $generate_password = $this->createPassword();
+        $app_data = array(
+            "email" => $email,
+            "password" => $generate_password['hashed_password'],
+            "temp_password" => $generate_password['temp_password'],
+        );
+
+        $response = $this->Main_mdl->system_record_reset_people($app_data, $generate_password['temp_password']);
+        $email_details = array(
+            "from" => array(
+                "email" => "system@".$response['company'].".com.ph"
+            ),
+            "personalizations" => [array(
+                "to" => [array(
+                    "email" => $response['email']
+                )],
+                "subject" => EMAIL_NEW_APPLICANT,
+                "dynamic_template_data" => array(
+                    "email"=> $response['email'],
+                    "password" => $response['temp_password'],
+                    "help" => EMAIL_ADMIN,
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
+                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change 
+                )
+            )],
+            "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
+        );
+        $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
+        if($is_mailed == NULL){
+            $this->email_logs('RESETPASSWORD',$response['id'], $email, 0, "SUCCESS", json_encode($email_details), $response['company']);
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }else{
+            $this->email_logs('RESETPASSWORD',$response['id'], $email, 0, "FAILED", json_encode($email_details), $response['company']);
+        }
+    }
+
+
     /* get */ 
 
     public function peoples_get($company = NULL){

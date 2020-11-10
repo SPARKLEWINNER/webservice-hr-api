@@ -823,9 +823,61 @@ class Main_mdl extends Base_Model {
         }else{
             return false;
         }
-
-       
     }
+
+    public function system_record_people_password($data, $old_password){
+        $validate_acc = $this->db->select('*')->from('users')->where('email', $data['email'])->get()->row();
+        if($validate_acc->num_rows() == 0){
+            if(password_verify($old_password,  $acc->password)){
+                $this->db->where('id', $validate_acc->id);
+                $this->db->update('users', $data);
+                if($this->db->affected_rows() > 0):
+                    return array(
+                        "id" => $acc->id,
+                        "email" =>$acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level
+                    );
+                else:
+                    return $this->response_code(204,"User invalid", "");
+                endif;
+            }
+            else{
+                return $this->response_code(204,"User invalid", "");
+            }
+        }else{
+            return $this->response_code(204,"User invalid", "");
+        }
+    }
+
+    public function system_record_reset_people($data, $temp_password){
+        $validate_acc = $this->db->select('*')->from('users')->where('email', $data['email'])->get()->row();
+        if($validate_acc){
+            $this->db->where('id', $validate_acc->id);
+            $this->db->update('users', $data);
+            $people = $this->db->select('*')->from('users')->where('id', $validate_acc->id)->get()->row();
+            if($this->db->affected_rows() > 0):    
+                return array(
+                  "id" => $validate_acc->id,
+                  "company" => $people->company,
+                  "email" => $people->email,
+                  "first_name" => $people->first_name,
+                  "last_name" => $people->last_name,
+                  "user_level" => $people->user_level,
+                  "date_created" => $people->date_created,
+                  "temp_password" => $temp_password,
+                ); 
+            else:
+                return false;
+            endif;
+        }else{
+            return false;
+        }
+    }
+
     public function system_people_assign($data){
             $this->db->insert('assigning', $data);
             $inserted_id = $this->db->insert_id();
