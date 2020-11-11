@@ -141,7 +141,7 @@ class Base_Controller extends REST_Controller{
 
         if($file){
             $config = array(
-                'upload_path' => "./uploads/docs/",
+                'upload_path' => "uploads/",
                 'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
                 'overwrite' => FALSE,
                 'max_size' => "20480",
