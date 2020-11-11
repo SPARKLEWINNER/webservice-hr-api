@@ -90,7 +90,7 @@ define('MAIN_SITE','https://7star.com.ph');
 define('VERSION', '1');
 
 if($_SERVER['HTTP_HOST'] == "localhost"){
-    define('DEFAULT_URI','http://localhost/hr/');
+    define('DEFAULT_URI','http://localhost/webservice-hr-api/');
 }else{
     define('DEFAULT_URI','http://api.sparkles.com.ph/');
 }

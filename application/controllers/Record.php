@@ -80,7 +80,7 @@ class Record extends Base_Controller
         $upload_proc = $this->upload_doc($_FILES['file'], $data['id'], $data['company']);
         if($upload_proc){
             $response = $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
-            if(!isset($response['status'])){
+            if(!$response){
                 return $this->set_response($response, 422);
             }else{
                 $this->set_response(array("status" => 200, "data" => $response),  200); 

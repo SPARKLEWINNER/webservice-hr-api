@@ -26,8 +26,8 @@ class Base_Controller extends REST_Controller{
     public $default_client = "mobileapp-client";
     public $default_auth_key = "simplerestapi";
     
-    public $documentStorage = DEFAULT_URI."/uploads/docs/";
-    public $profileStorage = DEFAULT_URI."/uploads/";
+    public $documentStorage = DEFAULT_URI."uploads/docs/";
+    public $profileStorage = DEFAULT_URI."uploads/";
 
 
     function __construct()
@@ -131,7 +131,12 @@ class Base_Controller extends REST_Controller{
         $request = 'doc';
         $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
 
-        
+                    
+        if(!file_exists($path)) 
+        {
+            mkdir($path, 0777, true);
+        }
+
         if($file){
             $config = array(
                 'upload_path' => "./uploads/docs/",

@@ -206,10 +206,19 @@ class Main_mdl extends Base_Model {
     
     
     public function records_doc_pull($id,$company){
-        $this->db->where('id', $id);
-        $this->db->update('applications', array("status" => 5));
+        $validate_status = $this->db->select('*')->from('applications')->where('id', $id)->get()->row();
+        if($validate_status->status != 5){
+            $this->db->where('id', $id);
+            $this->db->update('applications', array("status" => 5));
+        }
         if($this->db->affected_rows() > 0):    
-            return $this->db->select('*')->from('records')->where('applicant_id', $id)->get()->row();
+            $query = "SELECT * FROM records WHERE applicant_id = {$id}";
+            $result = $this->db->query($query);
+            if($result){
+                return $result->result_array();
+            }else{
+                return false;
+            }
         else: return false;
         endif;
     }
