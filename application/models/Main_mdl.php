@@ -410,34 +410,40 @@ class Main_mdl extends Base_Model {
     
     public function records_store_people_pull($company, $store_id){
 
-        $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls 
-        LEFT JOIN reviews rvws ON apls.id = rvws.applicant_id WHERE apls.company = '{$company}' AND rvws.store = $store_id";
+        $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls";
         $result = $this->db->query($applications_q);
         $appls = $result->result_array();
-
-        $store_results = array();
+        $return_array = array();
         if($result->num_rows() > 0 ){
             foreach($appls as $k => $apls){
-                if($apls['recruitment'] && json_decode($apls['recruitment'])->assess_evaluation == 1):
-                    $store_results = $apls;
-                    $store_deploy = $apls['store'];
-                    if($store_deploy != NULL){
-                        $store_details = "SELECT * FROM store WHERE company = '{$company}' AND id = {$store_id}";
-                        $store_result = $this->db->query($store_details);
+                $specific_r = array('applicant_id' => $apls['id'], 'company' => $company, 'store' => $store_id);
+                $review = $this->db->select('*')->from('reviews')->where($specific_r)->get()->row_array();
+                if(!empty($review) && $review['applicant_id'] == $apls['id']):
+                    
+                    if($review['assess_evaluation'] == 1):
+                        $store = $this->db->select('*')->from('store')->where('id', $store_id)->where('company', $company)->get()->row();
+                        $job = $this->db->select('*')->from('settings')->where('id', json_decode($apls['applying_for']))->where('company', $company)->get()->row();
 
-                        $applying_for = json_decode($apls['applying_for']);
-                        $job_details = $this->db->select('*')->from('settings')->where('id', $applying_for)->where('company', $company)->get()->row();
-                        if($store_result->num_rows() > 0){
-                            $store_results['store_name'] = $store_result->result_array()[0]['name']; 
-                            $store_results['store_id'] = $store_result->result_array()[0]['id']; 
-                            $store_results['job_title'] = json_decode($job_details->meta_value)->title; 
+
+                        if(!empty($store) && !empty($job)){
+                            $apls['review'] = $review; 
+                            $apls['review_status'] = $review['review_status']; 
+                            $apls['store_name'] = $store->name; 
+                            $apls['store_id'] = $store->id; 
+                            $apls['job_title'] = json_decode($job->meta_value)->title; 
+                            $return_array[] = $apls;
                         }
-                    }
+
+                    endif;
+
                 endif;
             }
+            return (!empty($return_array)) ? $return_array : false;
+        }else{
+            return false;
         }
 
-        return ($result->num_rows() > 0) ? $store_results : false;
+       
 
     }
     
