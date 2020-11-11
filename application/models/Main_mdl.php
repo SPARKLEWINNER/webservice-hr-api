@@ -354,8 +354,10 @@ class Main_mdl extends Base_Model {
         if($result->num_rows() > 0){
             $exams = "SELECT * FROM `exams` WHERE applicant_id = '{$id}'";
             $reviews = "SELECT * FROM `records` WHERE applicant_id = '{$id}'";
+            if($data[0]['status'] == 5){
+                $data[0]['documents'][] = $this->db->query($reviews)->result_array();
+            }
             $data[0]['taken_exam'][] = $this->db->query($exams)->result_array();
-            $data[0]['documents'][] = $this->db->query($reviews)->result_array();
             return $data;
         } else{
 
