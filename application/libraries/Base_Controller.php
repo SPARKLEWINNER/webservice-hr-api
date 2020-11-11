@@ -177,7 +177,8 @@ class Base_Controller extends REST_Controller{
                         'name' => $name
                     );
 				}else{
-                    $record_upload['message'] = json_encode(array('error' => "Server upload error") );
+
+                    $record_upload['message'] = json_encode(array('error' => $file['error']) );
                     $record_upload['status'] = 1;
                     $record_upload["type"] = "FAILEDDOCUMENTUPLOAD";
                     $this->Main_mdl->record_upload_activity($record_upload);
