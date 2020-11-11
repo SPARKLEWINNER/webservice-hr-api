@@ -31,7 +31,8 @@ class Record extends Base_Controller
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
-            'profile' =>  $upload_proc['link']
+            'profile' =>  $upload_proc['link'],
+            'date_created' => date('Y-m-d H:i:s')
         );
 
         if($upload_proc){
