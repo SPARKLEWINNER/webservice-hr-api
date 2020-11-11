@@ -140,21 +140,20 @@ class Base_Controller extends REST_Controller{
         }
 
         if($file){
-            $config = array(
-                'upload_path' => "uploads/",
-                'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
-                'overwrite' => FALSE,
-                'max_size' => "20480",
-                'file_name' => $name
-            );
-            $this->load->library('upload', $config);
-            $this->upload->initialize($config); 
+            // $config = array(
+            //     'upload_path' => "uploads/",
+            //     'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
+            //     'overwrite' => FALSE,
+            //     'max_size' => "20480",
+            //     'file_name' => $name
+            // );
+            // $this->load->library('upload', $config);
+            // $this->upload->initialize($config); 
             $record_upload = array(
                 "applicant_id" => $doc_id,
                 "company" => $company,
                 "date_uploaded" => date('Y-m-d H:i:s'),
             );
-            /*
             if (in_array($ext, $valid_ext)) {
 				$path = $path . strtolower($name);
 				if (move_uploaded_file($tmp, $path)) {
@@ -185,7 +184,7 @@ class Base_Controller extends REST_Controller{
                     $this->Main_mdl->record_upload_activity($record_upload);
                 }
             }
-            */
+            /*
             var_dump($this->upload->display_errors());
 
             if (!$this->upload->do_upload('file')) {
@@ -214,6 +213,7 @@ class Base_Controller extends REST_Controller{
                         'name' => $name
                     );
             }
+            */
         }else{
             return false;
         }
