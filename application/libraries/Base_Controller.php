@@ -149,7 +149,6 @@ class Base_Controller extends REST_Controller{
             $this->load->library('upload', $config);
             $record_upload = array(
                 "applicant_id" => $doc_id,
-                "type" => "DOCUMENTUPLOAD",
                 "company" => $company,
                 "date_uploaded" => date('Y-m-d H:i:s'),
             );
@@ -157,11 +156,12 @@ class Base_Controller extends REST_Controller{
             if (!$this->upload->do_upload('file')) {
                 $record_upload['message'] = json_encode(array('error' => $this->upload->display_errors()) );
                 $record_upload['status'] = 1;
+                $record_upload["type"] = "FAILEDDOCUMENTUPLOAD";
                 $this->Main_mdl->record_upload_activity($record_upload);
             }else{
                     $record_upload['status'] = 0;
                     $record_upload['message'] = json_encode($this->upload->data());
-
+                    $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
                      $data = array(
                         "applicant_id" => $doc_id,
                         "doc_name" => $file['name'],
