@@ -148,6 +148,7 @@ class Base_Controller extends REST_Controller{
                 'file_name' => $name
             );
             $this->load->library('upload', $config);
+            $this->upload->initialize($config); 
             // $record_upload = array(
             //     "applicant_id" => $doc_id,
             //     "company" => $company,
