@@ -78,7 +78,7 @@ class Record extends Base_Controller
     public function upload_documents_post(){
         $data = $this->validate_inpt(array('company','id'), 'post');
         $upload_proc = $this->upload_doc($_FILES['file'], $data['id'], $data['company']);
-        $res = $this->activity_logs($data['id'], 'DOCUMENTLOG', json_encode($_FILES['file']), json_encode($upload_proc), "DOCUMENTLOG", filter_var($upload_proc, FILTER_VALIDATE_BOOLEAN));
+        $this->activity_logs($data['id'], 'DOCUMENTLOG', json_encode($_FILES['file']), json_encode($upload_proc), "DOCUMENTLOG", filter_var($upload_proc, FILTER_VALIDATE_BOOLEAN));
         if($upload_proc){
             $response = $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
             if(!$response){
