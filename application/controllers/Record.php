@@ -104,6 +104,7 @@ class Record extends Base_Controller
             'assess_evaluation' => $this->post('assess_evaluation'),
             'store' => $this->post('store'),
             'reference_id' => $this->post('refernce_id'),
+            'date_created' => date('Y-m-d H:i:s')
         );
 
         $response = $this->Main_mdl->record_review_data($mg_id,$app_data);
