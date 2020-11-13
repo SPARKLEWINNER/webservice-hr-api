@@ -35,12 +35,14 @@ class Record extends Base_Controller
             'date_created' => date('Y-m-d H:i:s')
         );
 
+
         if($upload_proc){
             $response = $this->Main_mdl->record_data($app_data);
             if(!isset($response['status'])){
+                $this->appl_logs($app_data['username'],"APPLICANT","FAILED", json_encode($app_data), 0, $app_data['company']);
                 return $this->set_response($response, 422);
             }else{
-
+                $this->appl_logs($app_data['username'],"APPLICANT","SUCCESS", json_encode($app_data), 1, $app_data['company']);
                 $email_details = array(
                     "from" => array(
                         "email" => "system@".$this->post('company').".com.ph"
@@ -70,6 +72,7 @@ class Record extends Base_Controller
                 }
             }
         }else{
+            $this->appl_logs($app_data['username'],"APPLICANT","FAILED", json_encode($app_data), 0, $app_data['company']);
             $response = $this->response_code(422, "Server upload error", "");
             return $this->set_response($response, 422);
         }

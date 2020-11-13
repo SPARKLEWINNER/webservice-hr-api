@@ -38,6 +38,8 @@ $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 /* System */
 $route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
 $route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
+$route['internal/application/logs/(:any)']['get'] = 'record/application_record/$1';
+$route['internal/activity/logs/(:any)']['get'] = 'record/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
 

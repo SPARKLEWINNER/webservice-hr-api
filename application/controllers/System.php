@@ -174,6 +174,7 @@ class System extends Base_Controller{
             "last_name" => $data['lname'],
             "email" => $data['email'],
             "password" => $generate_password['hashed_password'],
+            "temp_password" => $generate_password['temp_password'],
             "user_level" => $data['access'],
             "date_created" => date('Y-m-d H:i:s')
         );

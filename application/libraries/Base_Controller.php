@@ -389,6 +389,26 @@ class Base_Controller extends REST_Controller{
         }
     }
 
+    public function appl_logs($id,$type,$message,$information,$company, $status){
+
+        $log_data = array(
+            'user' =>  $id,
+            'type' =>  $type,
+            'message' => $message,
+            'information' => $information,
+            'company' => $company,
+            'status' => $status,
+            'date' =>  date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->record_log($log_data);
+        if($response){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
 
     public function email_logs($type,$user,$email,$status,$message, $data,$company){
 
