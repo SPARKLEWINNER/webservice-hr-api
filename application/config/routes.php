@@ -70,9 +70,6 @@ $route['internal/system/remove/exams/(:any)']['delete'] = 'system/remove_exams/$
 $route['internal/system/create/requirements']['post'] = 'system/create_requirements';
 $route['internal/system/update/requirements']['post'] = 'system/update_requirements';
 
-
-
-
 /* User */
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 
@@ -92,7 +89,6 @@ $route['internal/account/token/update']['patch'] = 'accounts/register_token';
 /** Orders **/
 $route['internal/orders/show/(:num)/(:num)']['get'] = 'orders/orders/$1/$2';
 $route['internal/orders/list/(:num)/(:num)/(:any)']['get'] = 'orders/orders_list/$1/$2/$3';
-
 
 /** Notifications **/
 $route['internal/notify/user']['post'] = 'accounts/user_notify'; 
