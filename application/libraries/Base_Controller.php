@@ -132,8 +132,7 @@ class Base_Controller extends REST_Controller{
         $request = 'doc';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
         $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
-
-                    
+        
         if(!file_exists($path)) 
         {
             mkdir($path, 0777, true);
@@ -160,10 +159,12 @@ class Base_Controller extends REST_Controller{
                     $record_upload['status'] = 0;
                     $record_upload['message'] = json_encode($file);
                     $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
+                    
                      $data = array(
                         "applicant_id" => $doc_id,
                         "doc_name" => $file['name'],
                         "doc_type" => $file['type'],
+                        "doc_file" => addslashes(file_get_contents($this->documentStorage.$name)),
                         "doc_size" => $file['size'],
                         "doc_link" => $this->documentStorage.$name,
                         "date_created" => date('Y-m-d H:i:s'),

@@ -7,6 +7,9 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['internal/deploy'] = 'main/deploy';
 
+
+
+
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/logout']['post'] = 'auth/logout';
@@ -95,4 +98,7 @@ $route['internal/orders/list/(:num)/(:num)/(:any)']['get'] = 'orders/orders_list
 /** Notifications **/
 $route['internal/notify/user']['post'] = 'accounts/user_notify'; 
 
+
+/* Read Document */
+$route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2'; 
 
