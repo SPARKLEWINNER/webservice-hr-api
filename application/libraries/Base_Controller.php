@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
     header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type');
     header('Content-Type: application/json');    
+    header('Content-Type: multipart/form-data');    
     exit;       
 }
 
