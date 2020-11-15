@@ -45,6 +45,8 @@ $route['internal/application/logs/(:any)']['get'] = 'record/application_record/$
 $route['internal/activity/logs/(:any)']['get'] = 'record/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
+$route['internal/wage/create']['post'] = 'record/wage_create_record';
+
 
 /* -- Emails */
 $route['internal/resend/email']['post'] = 'system/resend_email';

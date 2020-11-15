@@ -288,6 +288,22 @@ class Main_mdl extends Base_Model {
 
     }    
 
+    public function record_wage_data($data){
+        $this->db->insert('wages', $data);
+        $inserted_id = $this->db->insert_id();
+        $wage = $this->db->select('*')->from('wages')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $inserted_id,
+                "company" => $wage->company,
+                "data" => $wage->data,
+                "date_created" => $wage->date_created,
+            );  
+        else:
+            return false;
+        endif;
+    }    
+
     public function record_exam_data($data){
         $this->db->insert('exams', $data);
         $inserted_id = $this->db->insert_id();

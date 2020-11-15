@@ -133,6 +133,26 @@ class Record extends Base_Controller
         
     }
 
+    public function wage_create_record(){
+        $data = $this->validate_inpt(array('id','company', 'name'), 'post');
+        $app_data = array(
+            "id" => $data["id"],
+            "company" => $data["company"],
+            "date_created" => date('Y-m-d H:i:s'),
+            "data" =>  json_encode($this->post('data')),
+        );
+
+        $response = $this->Main_mdl->record_wage_data($app_data);
+        if(!isset($response['status'])){
+            $this->activity_logs($data["id"],"WAGEFAILED","FAILED", json_encode($app_data), 1);
+            return $this->set_response($response, 422);
+        }else{
+            $this->activity_logs($data["id"],"ADDWAGE","SUCCESS", json_encode($app_data), 0);
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }
+
+    }
+
     public function exam_take_post(){
         $data = $this->validate_inpt(array('id','job', 'exam'), 'post');
         $app_data = array(
