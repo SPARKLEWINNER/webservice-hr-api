@@ -20,5 +20,6 @@ class Main extends Base_Controller
         header("Content-type: " . $row["imageType"]);
         echo $row["imageData"];
     }
-    
+
+
 }
