@@ -46,6 +46,8 @@ $route['internal/activity/logs/(:any)']['get'] = 'record/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
 
 $route['internal/wage/create']['post'] = 'record/wage_create_record';
+$route['internal/wage/assign']['post'] = 'record/wage_assign_record';
+$route['internal/wages/(:any)']['get'] = 'record/wages/$1';
 
 
 /* -- Emails */

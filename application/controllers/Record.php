@@ -133,13 +133,15 @@ class Record extends Base_Controller
         
     }
 
-    public function wage_create_record(){
-        $data = $this->validate_inpt(array('id','company', 'name'), 'post');
+    public function wage_create_record_post(){
+        $data = $this->validate_inpt(array('id','company','name'), 'post');
         $app_data = array(
             "id" => $data["id"],
+            "name" => $data["name"],
             "company" => $data["company"],
             "date_created" => date('Y-m-d H:i:s'),
-            "data" =>  json_encode($this->post('data')),
+            "data" =>  $this->post('data'),
+            "status" => 0
         );
 
         $response = $this->Main_mdl->record_wage_data($app_data);
@@ -148,6 +150,27 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             $this->activity_logs($data["id"],"ADDWAGE","SUCCESS", json_encode($app_data), 0);
+            $this->set_response(array("status" => 200, "data" => $response),  200); 
+        }
+
+    }
+
+    public function wage_assign_record_post(){
+        $data = $this->validate_inpt(array('id','company','job_id', 'wage_id'), 'post');
+        $app_data = array(
+            "emp_id" => $data["id"],
+            "job_id" => $data["job_id"],
+            "wage_id" => $data["wage_id"],
+            "company" => $data["company"],
+            "date_assigned" => date('Y-m-d H:i:s'),
+        );
+
+        $response = $this->Main_mdl->record_wage_assign_data($app_data);
+        if(!isset($response['status'])){
+            $this->activity_logs($data["id"],"WAGEFAILEDASSIGN","FAILED", json_encode($app_data), 1);
+            return $this->set_response($response, 422);
+        }else{
+            $this->activity_logs($data["id"],"ASSIGNWAGESUCCESS","SUCCESS", json_encode($app_data), 0);
             $this->set_response(array("status" => 200, "data" => $response),  200); 
         }
 
@@ -194,6 +217,24 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
+    }
+
+    public function wages_get($company = NULL){
+               
+        if(empty($company) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->wages_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+       
+        
     }
 
     public function applicants_get($company = NULL){

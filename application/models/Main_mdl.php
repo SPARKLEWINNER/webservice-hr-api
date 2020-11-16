@@ -295,9 +295,30 @@ class Main_mdl extends Base_Model {
         if($this->db->affected_rows() > 0):    
             return array(
                 "id" => $inserted_id,
+                "name" => $wage->name,
                 "company" => $wage->company,
                 "data" => $wage->data,
                 "date_created" => $wage->date_created,
+                "status" => $wage->status
+            );  
+        else:
+            return false;
+        endif;
+    }    
+
+    public function record_wage_assign_data($data){
+        $this->db->insert('wage_assigning', $data);
+        $inserted_id = $this->db->insert_id();
+        $wage = $this->db->select('*')->from('wages')->where('id', $data['emp_id'])->get()->row();
+
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $data['emp_id'],
+                "name" => $wage->name,
+                "company" => $wage->company,
+                "data" => $wage->data,
+                "date_created" => $wage->date_created,
+                "status" => $wage->status
             );  
         else:
             return false;
@@ -327,6 +348,27 @@ class Main_mdl extends Base_Model {
         $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
+    public function wages_pull($company){
+
+        $query = "SELECT * FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
+        $result = $this->db->query($query);
+
+        $compiled_dd = array();
+        foreach($result->result() as $k => $wages){
+            $compiled_dd[][$k] = $wages;
+            $query_jbs = "SELECT * FROM `settings` where `meta_key` = 'jobs' AND `id` = {$wages->job_id}"; 
+            $result_jbs = $this->db->query($query_jbs);
+
+            if($result_jbs->num_rows() > 0){
+                $compiled_dd['job'] = $result_jbs->result_array();
+            }
+
+
+        }
+        return ($result->num_rows() > 0) ? $compiled_dd : false;
 
     }
 
