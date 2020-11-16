@@ -124,6 +124,27 @@ class System extends Base_Controller{
         }
     }
     
+    public function create_report_post(){
+        $data = $this->validate_inpt(array('id','company','details'), 'post');
+
+        $app_data = array(
+            "emp_id" => $data['id'],
+            "company" => $data['company'],
+            "details" => $data['details'],
+            "status" => 0,
+            "date_created" => date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->system_record_report($app_data);
+
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+    
     public function create_store_post(){
         $data = $this->validate_inpt(array('name','company','created_by'), 'post');
 

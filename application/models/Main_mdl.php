@@ -983,6 +983,26 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 
+    /* Reports */
+
+    public function system_record_report($data){
+        $this->db->insert('reports', $data);
+        $inserted_id = $this->db->insert_id();
+        $report = $this->db->select('*')->from('reports')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "company" => $report->company,
+              "details" => $report->details,
+              "status" => $report->status,
+              "date_created" => $report->date_created
+            ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
     /* Log activity */
 
         

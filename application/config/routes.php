@@ -106,3 +106,5 @@ $route['internal/notify/user']['post'] = 'accounts/user_notify';
 /* Read Document */
 $route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2'; 
 
+/* Profile */
+$route['internal/profile/reports']['post'] = 'system/create_report';
