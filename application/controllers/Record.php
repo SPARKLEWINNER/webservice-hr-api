@@ -156,10 +156,10 @@ class Record extends Base_Controller
     }
 
     public function wage_assign_record_post(){
-        $data = $this->validate_inpt(array('id','company','job_id', 'wage_id'), 'post');
+        $data = $this->validate_inpt(array('id','company','store_id', 'wage_id'), 'post');
         $app_data = array(
             "emp_id" => $data["id"],
-            "job_id" => $data["job_id"],
+            "store_id" => $data["store_id"],
             "wage_id" => $data["wage_id"],
             "company" => $data["company"],
             "date_assigned" => date('Y-m-d H:i:s'),

@@ -353,17 +353,20 @@ class Main_mdl extends Base_Model {
 
     public function wages_pull($company){
 
-        $query = "SELECT * FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
+        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
         $result = $this->db->query($query);
 
-        $compiled_dd = array();
-        foreach($result->result() as $k => $wages){
-            $compiled_dd[][$k] = $wages;
-            $query_jbs = "SELECT * FROM `settings` where `meta_key` = 'jobs' AND `id` = {$wages->job_id}"; 
-            $result_jbs = $this->db->query($query_jbs);
-
-            if($result_jbs->num_rows() > 0){
-                $compiled_dd['job'] = $result_jbs->result_array();
+        $compiled_dd = $result->result_array();
+        foreach($result->result_array() as $k => $wages){
+            $compiled_dd[$k] = $wages;
+            if($wages['store_id']){
+                $query_str = "SELECT * FROM `store` where `id` = {$wages['store_id']}"; 
+                $result_str = $this->db->query($query_str);
+    
+                if($result_str->num_rows() > 0){
+                    $compiled_dd[$k]['store'] =  $result_str->result_array();
+                }
+    
             }
 
 
