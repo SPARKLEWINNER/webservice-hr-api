@@ -993,6 +993,7 @@ class Main_mdl extends Base_Model {
             return array(
               "id" => $inserted_id,
               "company" => $report->company,
+              "name" => $report->name,
               "details" => $report->details,
               "status" => $report->status,
               "date_created" => $report->date_created

@@ -125,11 +125,12 @@ class System extends Base_Controller{
     }
     
     public function create_report_post(){
-        $data = $this->validate_inpt(array('id','company','details'), 'post');
+        $data = $this->validate_inpt(array('emp_id','name','company','details'), 'post');
 
         $app_data = array(
-            "emp_id" => $data['id'],
+            "emp_id" => $data['emp_id'],
             "company" => $data['company'],
+            "name" => $data['name'],
             "details" => $data['details'],
             "status" => 0,
             "date_created" => date('Y-m-d H:i:s')
