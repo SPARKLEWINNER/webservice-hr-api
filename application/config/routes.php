@@ -111,3 +111,4 @@ $route['internal/profile/reports']['post'] = 'system/create_report';
 
 /* Computations */
 $route['internal/record/dtr/create']['post'] = 'system/create_dtr';
+$route['internal/record/payroll/get/(:any)/(:any)']['get'] = 'system/payroll_record/$1/$2';

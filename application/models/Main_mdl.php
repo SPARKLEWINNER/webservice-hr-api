@@ -659,6 +659,38 @@ class Main_mdl extends Base_Model {
        
     }
 
+    public function system_record_payroll($company, $store){
+        $employees = "SELECT * FROM  applications appl 
+        LEFT JOIN employee emd ON emd.applicant_id = appl.id
+        WHERE  appl.status = 6 AND appl.company = '{$company}'";
+        $result_emp = $this->db->query($employees);
+
+        $compiled_dd = $result_emp->result_array();
+        if($result_emp->num_rows() > 0){
+            foreach($result_emp->result_array() as $k => $emp){
+                $dtr = "SELECT * FROM dtr WHERE store_id = {$store} AND emp_id = {$emp["applicant_id"]}";
+                $result_dtr = $this->db->query($dtr);
+                if($result_dtr->num_rows() > 0){
+                    $compiled_dd[$k]['dtr'] =  $result_dtr->result_array();
+                }
+                
+            }
+
+            return ($result_emp->num_rows() > 0) ? $compiled_dd : false;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function system_record_wages_combine($store){
+        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg 
+        LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wgasg.store_id = '{$store}'"; 
+        $result = $this->db->query($query);
+        $compiled_dd = $result->result_array();
+        return ($result->num_rows() > 0) ? $compiled_dd : false;
+    }
+
     
     
     /** Accounts **/

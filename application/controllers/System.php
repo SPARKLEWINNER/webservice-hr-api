@@ -381,6 +381,22 @@ class System extends Base_Controller{
         }
     }
 
+    public function payroll_record_get($company = NULL , $store_id = NULL){
+        if(empty($company) && empty($store_id) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->system_record_payroll($company,$store_id);
+        if($response){
+
+            return $this->set_response(array("status" => 200, "data" => $this->computePayroll($response)),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     /* patch */ 
 
     public function update_exams_patch(){
@@ -434,6 +450,105 @@ class System extends Base_Controller{
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
+    }
+
+    /* computations */
+
+    public function computePayroll($response){
+
+            
+        $rate_per_hr = $ot = $nsd = $ts = $ml = 0;
+        $basic_pay = $otamt = $lateamt = $nsdamt = $tsamt = $mlamt = $gross_pay = $gross_pay_less = 0;
+        $total_hrs = 0;
+        $days = 0;
+        $sss = $phic = $hdmf = 0;
+        $rpd = $total_salary = $total_contribution=  0;
+        $dtrArr = array();
+        foreach($response as $ke => $employee){
+            $wages = $this->Main_mdl->system_record_wages_combine($employee['store_id']);
+            $dtrArr['employee'] = $employee;
+            if($wages){
+
+                // get the store's wage computation
+                foreach($wages as $kw => $wage){
+                    $declared_calc = json_decode($wage['data'], true);
+                    $rpd = $declared_calc['rate-per-day'];  //rate per hr %
+                    $rate_per_hr = $declared_calc['rate-per-hr'];  //rate per hr %
+                    $ot = $declared_calc['overtime'];   // overtime %
+                    $late = $declared_calc['late-per-hr']; // late %
+                    $nsd = $declared_calc['nightshift-diff'];   // nsd %
+                    $ts = $declared_calc['tsallowance_amt'];   // ts allowance %
+                    $ml = $declared_calc['meal_amt'];   // meal allowance %
+                    $sss = $declared_calc['sss_amt']; // sss deduction
+                    $phic = $declared_calc['phl_amt']; // phl deduction
+                    $hdmf = $declared_calc['hmdf_amt']; // hdmf deduction
+                }   
+            }
+
+            if($employee['dtr']){
+                foreach($employee['dtr'] as $dtr_ext){
+                    $dtr = json_decode(json_decode($dtr_ext['dtr'])->dtr);
+                    if($dtr){
+                        if(!empty($dtr->ot_t)){
+                            $otamt = $dtr->ot_t;
+                        }
+
+                        if(!empty($dtr->nsd_t)){
+                            $nsdamt = $dtr->nsd_t;
+                        }
+
+                        if(!empty($dtr->late_t)){
+                            $lateamt = $dtr->late_t;
+                        }
+
+                        $total = array_sum($dtr->no_hours) + $otamt;
+                        $days = $this->floatNumber($total / 8);
+                    }
+
+                    // iterate response 
+                    $dtrArr['employee']['basic_pay'] = $this->floatNumber($basic_pay = $rate_per_hr * $total); // basic pay 
+                    $dtrArr['employee']['omtamt'] = $omtamt = $ot * $otamt; // overtime 
+                    $dtrArr['employee']['lateamt'] = $lateamt = $lateamt * $late; // late
+                    $dtrArr['employee']['nsdamt'] = $nsdamt = $nsdamt * $nsd;  // nsd
+                    $dtrArr['employee']['tsamt'] = $tsamt = $days * $ts;  // ts allowance
+                    $dtrArr['employee']['mlamt'] = $this->floatNumber($mlamt = $days * $ml); // meal allowance
+                    $dtrArr['employee']['gross_pay'] = $gross_pay = $basic_pay + $otamt + $nsdamt + $tsamt + $mlamt - $lateamt; // gross pay
+                    $dtrArr['employee']['gross_pay_less'] = $gross_pay_less = $gross_pay - $tsamt - $mlamt;    // gross pay without ts & meal
+                    $dtrArr['employee']['sil']  = $sil =  $this->floatNumber($rpd * 5 / 12 / 2);
+                    $dtrArr['employee']['13month']  = $month13 = $this->floatNumber(($basic_pay - $lateamt) / 12);
+                    $dtrArr['employee']['total_salary']  = $total_salary = $this->floatNumber(($basic_pay + $omtamt + $nsdamt + $sil + $month13) - $lateamt);
+                    $dtrArr['employee']['sss']  = $sss;
+                    $dtrArr['employee']['phic']  = $phic;
+                    $dtrArr['employee']['hdmf']  = $hdmf;
+                    $dtrArr['employee']['total_contribution']  = $total_contribution = $this->floatNumber($sss + $phic + $hdmf);
+                    $dtrArr['employee']['gross_billing']  = $this->floatNumber($total_salary + $total_contribution);
+                }
+
+                return $dtrArr;
+            }
+
+
+        }
+
+
+
+        
+        
+        
+        
+       
+       
+        
+        
+     
+    }
+
+    public function floatNumber($number){
+        return number_format((float) $number, 2, '.', '');
+    }
+
+    public function floatVal($percentage){
+        return floatval($percentage);
     }
 
 }
