@@ -295,6 +295,29 @@ class System extends Base_Controller{
         }
     }
 
+    public function create_dtr_post(){
+        $data = $this->validate_inpt(array('id','company','store_id', 'emp_id', 'dtr'), 'post');
+
+        $app_data = array(
+            "company" => $data['company'],
+            "store_id" => $data['store_id'],
+            "emp_id" => $data['emp_id'],
+            "author" => $data['id'],
+            "dtr" =>  json_encode($this->post()),
+            "date_created" => date('Y-m-d H:i:s'),
+            "status" => 0
+        );
+
+        $response = $this->Main_mdl->system_record_dtr($app_data);
+
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
 
     /* get */ 
 

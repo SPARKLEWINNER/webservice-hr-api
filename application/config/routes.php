@@ -108,3 +108,6 @@ $route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2';
 
 /* Profile */
 $route['internal/profile/reports']['post'] = 'system/create_report';
+
+/* Computations */
+$route['internal/record/dtr/create']['post'] = 'system/create_dtr';

@@ -636,6 +636,29 @@ class Main_mdl extends Base_Model {
        
     }
 
+    /* DTR */
+
+    public function system_record_dtr($data){
+        $this->db->insert('dtr', $data);
+        $inserted_id = $this->db->insert_id();
+        $dtr = $this->db->select('*')->from('dtr')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "emp_id" => $dtr->emp_id,
+              "store_id" => $dtr->store_id,
+              "author" => $dtr->author,
+              "company" => $dtr->company,
+              "dtr" => $dtr->dtr,
+              "date_created" => $dtr->date_created,
+              "status" => $dtr->status
+            ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
     
     
     /** Accounts **/
