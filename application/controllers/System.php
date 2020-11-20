@@ -530,17 +530,6 @@ class System extends Base_Controller{
 
         }
 
-
-
-        
-        
-        
-        
-       
-       
-        
-        
-     
     }
 
     public function floatNumber($number){
