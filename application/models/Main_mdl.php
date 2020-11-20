@@ -195,6 +195,11 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_validate_data($email){
+        $record = $this->db->select('*')->from('applications')->where('username', $email)->get()->row();
+        return $this->db->affected_rows() > 0 ? false : true; 
+    }
+
     public function record_upload_doc($data){
         $this->db->insert('records', $data);
         return $this->db->affected_rows() > 0 ? true : false;

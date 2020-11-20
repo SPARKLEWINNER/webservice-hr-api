@@ -38,13 +38,6 @@ $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
 $route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
 
-/* System */
-$route['internal/emails/(:any)']['get'] = 'record/emails_record/$1';
-$route['internal/logs/(:any)']['get'] = 'record/logs_record/$1';
-$route['internal/application/logs/(:any)']['get'] = 'record/application_record/$1';
-$route['internal/activity/logs/(:any)']['get'] = 'record/activity_record/$1';
-$route['internal/exams/logs/(:any)']['get'] = 'record/exam_logs_record/$1';
-
 $route['internal/wage/create']['post'] = 'record/wage_create_record';
 $route['internal/wage/assign']['post'] = 'record/wage_assign_record';
 $route['internal/wages/(:any)']['get'] = 'record/wages/$1';
@@ -100,11 +93,11 @@ $route['internal/orders/show/(:num)/(:num)']['get'] = 'orders/orders/$1/$2';
 $route['internal/orders/list/(:num)/(:num)/(:any)']['get'] = 'orders/orders_list/$1/$2/$3';
 
 /** Notifications **/
-$route['internal/notify/user']['post'] = 'accounts/user_notify'; 
+$route['internal/notify/user']['post'] = 'accounts/user_notify';
 
 
 /* Read Document */
-$route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2'; 
+$route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2';
 
 /* Profile */
 $route['internal/profile/reports']['post'] = 'system/create_report';
@@ -112,3 +105,10 @@ $route['internal/profile/reports']['post'] = 'system/create_report';
 /* Computations */
 $route['internal/record/dtr/create']['post'] = 'system/create_dtr';
 $route['internal/record/payroll/get/(:any)/(:any)']['get'] = 'system/payroll_record/$1/$2';
+
+/* Logs */
+$route['internal/emails/(:any)']['get'] = 'logs/emails_record/$1';
+$route['internal/logs/(:any)']['get'] = 'logs/logs_record/$1';
+$route['internal/application/logs/(:any)']['get'] = 'logs/application_record/$1';
+$route['internal/activity/logs/(:any)']['get'] = 'logs/activity_record/$1';
+$route['internal/exams/logs/(:any)']['get'] = 'logs/exam_logs_record/$1';

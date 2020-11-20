@@ -17,14 +17,20 @@ class Record extends Base_Controller
         parent::__construct();
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
-    
-           
+
+
     public function create_post(){
-        
+
 
         // $data = $this->validate_inpt(array('data','email'), 'post');
         $mg_email = $this->post('person_email');
         $generated = $this->generateReferenceCode($mg_email);
+
+        if($this->Main_mdl->record_validate_data($mg_email)){
+            $response = $this->response_code(422, "Email already exists", "");
+            return $this->set_response($response, 422);
+        }
+
         $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
         $app_data = array(
             'username' =>  $this->post('person_email'),
@@ -56,17 +62,17 @@ class Record extends Base_Controller
                             "email"=> $response['username'],
                             "password" => $response['reference_id'],
                             "help" => EMAIL_ADMIN,
-                            "portal" =>"www.portal.".$this->post('company').".com.ph" // to be change 
+                            "portal" =>"www.portal.".$this->post('company').".com.ph" // to be change
                         )
                     )],
                     "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
                 );
 
-   
+
                 $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
                 if($is_mailed == NULL){
                     $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details), $this->post('company'));
-                    $this->set_response(array("status" => 200, "data" => $response),  200); 
+                    $this->set_response(array("status" => 200, "data" => $response),  200);
                 }else{
                     $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", json_encode($email_details), $this->post('company'));
                 }
@@ -87,7 +93,7 @@ class Record extends Base_Controller
             if(!$response){
                 return $this->set_response($response, 422);
             }else{
-                $this->set_response(array("status" => 200, "data" => $response),  200); 
+                $this->set_response(array("status" => 200, "data" => $response),  200);
             }
         }else{
             $response = $this->response_code(422, "Server upload error", "");
@@ -116,9 +122,9 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }
-        
+
     }
 
     public function review_store_app_post(){
@@ -128,9 +134,9 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }
-        
+
     }
 
     public function wage_create_record_post(){
@@ -150,7 +156,7 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             $this->activity_logs($data["id"],"ADDWAGE","SUCCESS", json_encode($app_data), 0);
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }
 
     }
@@ -171,7 +177,7 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             $this->activity_logs($data["id"],"ASSIGNWAGESUCCESS","SUCCESS", json_encode($app_data), 0);
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }
 
     }
@@ -192,7 +198,7 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }else{
             $this->activity_logs($data["id"],"EXAMTAKE","SUCCESS", json_encode($app_data), 0);
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }
 
     }
@@ -220,7 +226,7 @@ class Record extends Base_Controller
     }
 
     public function wages_get($company = NULL){
-               
+
         if(empty($company) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -233,12 +239,12 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
 
     public function applicants_get($company = NULL){
-               
+
         if(empty($company) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -251,12 +257,12 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
 
     public function applicants_status_get($company = NULL, $status = 0){
-               
+
         if(empty($company) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -269,8 +275,8 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
 
     public function applicants_weekly_get($type = NULL, $company = NULL , $number = 0){
@@ -279,7 +285,7 @@ class Record extends Base_Controller
             $this->response_return($this->response_code (400,""));
             return false;
         }
-               
+
         if(empty($type)){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -298,8 +304,8 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
 
     public function applicants_pool_get($type = NULL, $company = NULL , $number = 0){
@@ -308,7 +314,7 @@ class Record extends Base_Controller
             $this->response_return($this->response_code (400,""));
             return false;
         }
-               
+
         if(empty($type)){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -327,11 +333,11 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-        
+
     }
 
     public function applicants_specific_get($company = NULL, $id = NULL){
-               
+
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -344,12 +350,12 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
-    
+
     public function applicants_specific_reviews_get($company = NULL, $id = NULL){
-               
+
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -362,14 +368,14 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
-    
+
     // Supervisor Requests
 
     public function applicants_ts_specific_get($company = NULL, $id = NULL){
-               
+
         if(empty($company) && empty($id) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -383,9 +389,9 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
-    
+
     public function applicants_ts_specific_reviews_get($company = NULL, $ref_id = NULL){
-               
+
         if(empty($company) && empty($ref_id) ){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -398,12 +404,12 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
 
     public function stores_record_get($company = NULL){
-               
+
         if(empty($company)){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -416,10 +422,10 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
+
+
     }
-    
+
     public function store_people_record_get($store = NULL, $company = NULL){
 
         if(empty($company) && empty($store)){
@@ -434,90 +440,30 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-       
-        
     }
-
-    public function emails_record_get($company = NULL){
-               
-        if(empty($company)){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-
-        $response = $this->Main_mdl->record_emails_pull($company);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-       
-        
-    }
-        
-    public function logs_record_get($company = NULL){
-               
-        if(empty($company)){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-
-        $response = $this->Main_mdl->record_logs_pull($company);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-       
-        
-    }
-        
-        
-    public function exam_logs_record_get($company = NULL){
-
-        if(empty($company)){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-
-        $response = $this->Main_mdl->record_exam_logs_pull($company);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-       
-        
-    }
-        
 
     public function review_record_patch(){
-
        if(empty($this->patch('status')) && empty($this->patch('id'))){
          $this->response_return($this->response_code(400,""));
          return false;
-       }     
-        
+       }
+
        $id = $this->patch('id'); // record_id
-       $status = $this->patch('status'); // [0 = not submitted / 1 = submitted for review / 2 = reviewed / 3 = completed ] -- status 
+       $status = $this->patch('status'); // [0 = not submitted / 1 = submitted for review / 2 = reviewed / 3 = completed ] -- status
 
        $data = array(
             "status" => $status
         );
-        
-        $response = $this->Main_mdl->submit_record($id,$data);
 
+        $response = $this->Main_mdl->submit_record($id,$data);
         if($response){
             return $this->set_response($response,  200);
 
         }else{
             $response = $this->response_code(422, "Unable to process your request", "");
-            return $this->set_response($response, 422);        
+            return $this->set_response($response, 422);
         }
-        
+
     }
-    
+
 }
