@@ -27,7 +27,8 @@ class Main_mdl extends Base_Model {
                         "lastname" => $acc->last_name,
                         "company" => $acc->company,
                         "profile" => $acc->profile,
-                        "user_level" => $acc->user_level
+                        "user_level" => $acc->user_level,
+                        "switchable" => $acc->switchable
                     );
                 }else{
 
@@ -393,7 +394,7 @@ class Main_mdl extends Base_Model {
 
     public function record_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY AND status = 0 ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
