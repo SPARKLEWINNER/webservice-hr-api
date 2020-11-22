@@ -397,9 +397,15 @@ class Main_mdl extends Base_Model {
     }
 
     public function record_day_pull($company, $days){
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
     }
 
     /* Pool */
