@@ -27,21 +27,23 @@ $route['internal/record/review_app']['post'] = 'recruitment/review_create';
 
 $route['internal/record/review']['patch'] = 'recruitment/review_update';
 
-$route['internal/record/(:any)']['get'] = 'recruitment/list_applicants_get/$1'; // summation for all
-$route['internal/record/(:any)/(:num)']['get'] = 'record/list_applicants_status/$1/$2'; // with filter (day/weekly) && no. of days
-$route['internal/record/sort/(:any)/(:any)/(:num)']['get'] = 'record/list_applicants_datecreated/$1/$2/$3';
-$route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'record/list_applicants_datecreated_get/$1/$2/$3';
+$route['internal/record/(:any)']['get'] = 'recruitment/list_applicants/$1'; // summation for all
+$route['internal/record/(:any)/(:num)']['get'] = 'recruitment/list_applicants_status/$1/$2'; // with filter (day/weekly) && no. of days
+$route['internal/record/sort/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated/$1/$2/$3';
+$route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated_get/$1/$2/$3';
 
 /* Store */
-$route['internal/system/create/store']['post'] = 'store/store_new';
+$route['internal/system/create/store']['post'] = 'store/store_new'; // admin
+ 
+$route['internal/record/review_store_app']['post'] = 'store/review_create_post'; // ts
 
-$route['internal/record/review_store_app']['post'] = 'store/review_create_post';
+$route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2'; // ts
+$route['internal/stores/(:any)']['get'] = 'store/list_stores/$1'; // admin
 
-$route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2';
 
 /* Finance */
 $route['internal/wage/create']['post'] = 'record/wage_create_record';
-$route['internal/wage/assign']['post'] = 'record/wage_assign_rec3ord';
+$route['internal/wage/assign']['post'] = 'record/wage_assign_record';
 $route['internal/wages/(:any)']['get'] = 'record/wages/$1';
 
 
@@ -51,12 +53,10 @@ $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applic
 
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
-$route['internal/stores/(:any)']['get'] = 'record/stores_record/$1';
-
 
 
 /* -- Emails */
-$route['internal/resend/email']['post'] = 'system/resend_email';
+$route['internal/resend/email']['post'] = 'system/create_email_request';
 $route['internal/system/update/email']['patch'] = 'system/update_email';
 
 /* -- People */
@@ -72,7 +72,6 @@ $route['internal/system/create/jobs']['post'] = 'system/create_job';
 $route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
 $route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';
 
-/* -- Stores */
 
 /* -- Exams */
 $route['internal/system/create/exams']['post'] = 'system/create_exams';
@@ -80,8 +79,8 @@ $route['internal/system/update/exams']['patch'] = 'system/update_exams';
 $route['internal/system/remove/exams/(:any)']['delete'] = 'system/remove_exams/$1';
 
 /* Documents CMS */
-$route['internal/system/create/requirements']['post'] = 'system/create_requirements';
-$route['internal/system/update/requirements']['post'] = 'system/update_requirements';
+$route['internal/system/create/requirements']['post'] = 'system/requirements_create';
+$route['internal/system/update/requirements']['post'] = 'system/requirements_update';
 
 /* User */
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
@@ -98,27 +97,19 @@ $route['internal/account/user/update']['patch'] = 'accounts/update_user';
 $route['internal/account/user/update/password']['patch'] = 'accounts/update_user_password';
 $route['internal/account/token/update']['patch'] = 'accounts/register_token';
 
-/** Orders **/
-$route['internal/orders/show/(:num)/(:num)']['get'] = 'orders/orders/$1/$2';
-$route['internal/orders/list/(:num)/(:num)/(:any)']['get'] = 'orders/orders_list/$1/$2/$3';
-
-/** Notifications **/
-$route['internal/notify/user']['post'] = 'accounts/user_notify';
-
-
 /* Read Document */
 $route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2';
 
 /* Profile */
-$route['internal/profile/reports']['post'] = 'system/create_report';
+$route['internal/profile/reports']['post'] = 'system/report_create';
 
 /* Computations */
 $route['internal/record/dtr/create']['post'] = 'system/create_dtr';
 $route['internal/record/payroll/get/(:any)/(:any)']['get'] = 'system/payroll_record/$1/$2';
 
 /* Logs */
-$route['internal/emails/(:any)']['get'] = 'logs/emails_record/$1';
-$route['internal/logs/(:any)']['get'] = 'logs/logs_record/$1';
-$route['internal/application/logs/(:any)']['get'] = 'logs/application_record/$1';
+$route['internal/emails/(:any)']['get'] = 'logs/list_email_records/$1';
+$route['internal/logs/(:any)']['get'] = 'logs/list_logs_record/$1';
+$route['internal/application/logs/(:any)']['get'] = 'logs/list_applicants_record/$1';
 $route['internal/activity/logs/(:any)']['get'] = 'logs/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'logs/exam_logs_record/$1';

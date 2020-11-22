@@ -62,42 +62,6 @@ class Accounts extends Base_Controller
     }
 
 
-    public function user_notify_post(){
-        if(empty($this->post('uid')) && empty($this->post('oid')) ){
-            $this->response_return($this->response_code(400,""));
-            return false;
-        }
-        
-
-        $uid = $this->post('uid'); // product_id
-        $oid = $this->post('oid'); // order id
-        $message = $this->post('message');
-        $status = $this->post('status');
-        $data = array(
-            "uid" => $uid,
-            "oid" => $oid,
-            "message" => $message,
-            "date_created" => date('Y-m-d H:i:s'),
-            "status" => $status
-        );
-        
-        
-        $response = $this->Main_mdl->notify_user($data);
-        
-        if($response){
-            if($status == 1){
-                $this->expo_notification($response['token'],$message);  
-            }
-            
-            return $this->set_response($response,  200);
-
-        }else{
-            $response = $this->response_code(422, "Unable to process your request", "");
-            return $this->set_response($response, 422);        
-        }
-        
-    }
-    
    public function update_user_patch(){
     
        if(empty($this->patch('id'))){

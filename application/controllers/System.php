@@ -9,7 +9,7 @@ class System extends Base_Controller{
 
     /* post */
 
-    public function resend_email_post(){
+    public function create_email_request_post(){
         $ref_id = $this->post('id');
         $response = $this->Main_mdl->record_get_system($ref_id);
         $email_details = array(
@@ -82,8 +82,7 @@ class System extends Base_Controller{
         }
     }
 
-
-    public function create_requirements_post(){
+    public function requirements_create_post(){
         $data = $this->validate_inpt(array('company','job_id','id','requirements'), 'post');
 
         $app_data = array(
@@ -104,27 +103,7 @@ class System extends Base_Controller{
         }
     }
 
-
-    public function update_requirements_post(){
-        $data = $this->validate_inpt(array('company','job_id','id','req_id','requirements'), 'post');
-        $req_id = $data['req_id'];
-        $app_data = array(
-            "company" => $data['company'],
-            "posted_by" => $data['id'],
-            "meta_key" => "requirements",
-            "meta_value" => json_encode($data)
-        );
-
-        $response = $this->Main_mdl->system_update_requirements($app_data, $req_id);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-    }
-
-    public function create_report_post(){
+    public function report_create_post(){
         $data = $this->validate_inpt(array('emp_id','name','company','details'), 'post');
 
         $app_data = array(
@@ -145,10 +124,29 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
+    
 
+    /* patch */
+    public function requirements_update_post(){
+        $data = $this->validate_inpt(array('company','job_id','id','req_id','requirements'), 'post');
+        $req_id = $data['req_id'];
+        $app_data = array(
+            "company" => $data['company'],
+            "posted_by" => $data['id'],
+            "meta_key" => "requirements",
+            "meta_value" => json_encode($data)
+        );
 
+        $response = $this->Main_mdl->system_update_requirements($app_data, $req_id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
 
-    public function assign_people_post(){
+    public function people_assign_store_post(){
         $data = $this->validate_inpt(array('id','user_id','store_id','company'), 'post');
 
         $app_data = array(
