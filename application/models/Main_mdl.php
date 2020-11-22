@@ -27,7 +27,8 @@ class Main_mdl extends Base_Model {
                         "lastname" => $acc->last_name,
                         "company" => $acc->company,
                         "profile" => $acc->profile,
-                        "user_level" => $acc->user_level
+                        "user_level" => $acc->user_level,
+                        "switchable" => $acc->switchable
                     );
                 }else{
 
@@ -194,6 +195,11 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_validate_data($email){
+        $record = $this->db->select('*')->from('applications')->where('username', $email)->get()->row();
+        return $this->db->affected_rows() > 0 ? false : true; 
+    }
+
     public function record_upload_doc($data){
         $this->db->insert('records', $data);
         return $this->db->affected_rows() > 0 ? true : false;
@@ -353,17 +359,20 @@ class Main_mdl extends Base_Model {
 
     public function wages_pull($company){
 
-        $query = "SELECT * FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
+        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
         $result = $this->db->query($query);
 
-        $compiled_dd = array();
-        foreach($result->result() as $k => $wages){
-            $compiled_dd[][$k] = $wages;
-            $query_jbs = "SELECT * FROM `settings` where `meta_key` = 'jobs' AND `id` = {$wages->job_id}"; 
-            $result_jbs = $this->db->query($query_jbs);
-
-            if($result_jbs->num_rows() > 0){
-                $compiled_dd['job'] = $result_jbs->result_array();
+        $compiled_dd = $result->result_array();
+        foreach($result->result_array() as $k => $wages){
+            $compiled_dd[$k] = $wages;
+            if($wages['store_id']){
+                $query_str = "SELECT * FROM `store` where `id` = {$wages['store_id']}"; 
+                $result_str = $this->db->query($query_str);
+    
+                if($result_str->num_rows() > 0){
+                    $compiled_dd[$k]['store'] =  $result_str->result_array();
+                }
+    
             }
 
 
@@ -390,7 +399,7 @@ class Main_mdl extends Base_Model {
 
     public function record_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY AND status = 0 ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
@@ -631,6 +640,61 @@ class Main_mdl extends Base_Model {
             return false;
         endif;
        
+    }
+
+    /* DTR */
+
+    public function system_record_dtr($data){
+        $this->db->insert('dtr', $data);
+        $inserted_id = $this->db->insert_id();
+        $dtr = $this->db->select('*')->from('dtr')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "emp_id" => $dtr->emp_id,
+              "store_id" => $dtr->store_id,
+              "author" => $dtr->author,
+              "company" => $dtr->company,
+              "dtr" => $dtr->dtr,
+              "date_created" => $dtr->date_created,
+              "status" => $dtr->status
+            ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
+    public function system_record_payroll($company, $store){
+        $employees = "SELECT * FROM  applications appl 
+        LEFT JOIN employee emd ON emd.applicant_id = appl.id
+        WHERE  appl.status = 6 AND appl.company = '{$company}'";
+        $result_emp = $this->db->query($employees);
+
+        $compiled_dd = $result_emp->result_array();
+        if($result_emp->num_rows() > 0){
+            foreach($result_emp->result_array() as $k => $emp){
+                $dtr = "SELECT * FROM dtr WHERE store_id = {$store} AND emp_id = {$emp["applicant_id"]}";
+                $result_dtr = $this->db->query($dtr);
+                if($result_dtr->num_rows() > 0){
+                    $compiled_dd[$k]['dtr'] =  $result_dtr->result_array();
+                }
+                
+            }
+
+            return ($result_emp->num_rows() > 0) ? $compiled_dd : false;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function system_record_wages_combine($store){
+        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg 
+        LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wgasg.store_id = '{$store}'"; 
+        $result = $this->db->query($query);
+        $compiled_dd = $result->result_array();
+        return ($result->num_rows() > 0) ? $compiled_dd : false;
     }
 
     
@@ -981,6 +1045,27 @@ class Main_mdl extends Base_Model {
         $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' AND id = {$id} ORDER BY id DESC";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
+    /* Reports */
+
+    public function system_record_report($data){
+        $this->db->insert('reports', $data);
+        $inserted_id = $this->db->insert_id();
+        $report = $this->db->select('*')->from('reports')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+              "id" => $inserted_id,
+              "company" => $report->company,
+              "name" => $report->name,
+              "details" => $report->details,
+              "status" => $report->status,
+              "date_created" => $report->date_created
+            ); 
+        else:
+            return false;
+        endif;
+       
     }
 
     /* Log activity */
