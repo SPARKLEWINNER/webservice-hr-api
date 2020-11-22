@@ -35,3 +35,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 ## Upload contents
 /fa-contents
 /fa-contents/uploads
+
+.cpanel.yml
+/application/config/database.php
