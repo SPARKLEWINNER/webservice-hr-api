@@ -7,7 +7,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class System extends Base_Controller{
 
 
-    /* post */ 
+    /* post */
 
     public function resend_email_post(){
         $ref_id = $this->post('id');
@@ -25,8 +25,8 @@ class System extends Base_Controller{
                     "email"=> $response['username'],
                     "password" => $response['reference_id'],
                     "help" => EMAIL_ADMIN,
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
-                    "portal" =>"http://portal.sparkles.com.ph/" // to be change 
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
+                    "portal" =>"http://portal.sparkles.com.ph/" // to be change
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
@@ -34,7 +34,7 @@ class System extends Base_Controller{
 
         $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
         if($is_mailed == NULL){
-            $this->set_response(array("status" => 200, "data" => $is_mailed),  200); 
+            $this->set_response(array("status" => 200, "data" => $is_mailed),  200);
         }else{
             $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", $response['email_details'], $response['company']);
         }
@@ -123,7 +123,7 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
-    
+
     public function create_report_post(){
         $data = $this->validate_inpt(array('emp_id','name','company','details'), 'post');
 
@@ -145,27 +145,8 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
-    
-    public function create_store_post(){
-        $data = $this->validate_inpt(array('name','company','created_by'), 'post');
 
-        $app_data = array(
-            "name" => $data['name'],
-            "details" =>  json_encode($this->post()),
-            "company" => $data['company'],
-            "created_by" => $data['created_by'],
-            "date_created" => date('Y-m-d H:i:s')
-        );
 
-        $response = $this->Main_mdl->system_record_store($app_data);
-
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-    }
 
     public function assign_people_post(){
         $data = $this->validate_inpt(array('id','user_id','store_id','company'), 'post');
@@ -215,8 +196,8 @@ class System extends Base_Controller{
                     "email"=> $response['email'],
                     "password" => $response['temp_password'],
                     "help" => EMAIL_ADMIN,
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change 
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
+                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
@@ -224,7 +205,7 @@ class System extends Base_Controller{
         $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
         if($is_mailed == NULL){
             $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "SUCCESS", json_encode($email_details), $response['company']);
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
             $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "FAILED", json_encode($email_details), $response['company']);
         }
@@ -242,7 +223,7 @@ class System extends Base_Controller{
 
         $response = $this->Main_mdl->system_record_people_password($app_data, $data['password']);
         if($response == NULL){
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
             return $this->set_response($response, 422);
         }else{
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
@@ -280,8 +261,8 @@ class System extends Base_Controller{
                     "email"=> $response['email'],
                     "password" => $response['temp_password'],
                     "help" => EMAIL_ADMIN,
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change 
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change 
+                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
+                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
@@ -289,7 +270,7 @@ class System extends Base_Controller{
         $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
         if($is_mailed == NULL){
             $this->email_logs('RESETPASSWORD',$response['id'], $email, 0, "SUCCESS", json_encode($email_details), $response['company']);
-            $this->set_response(array("status" => 200, "data" => $response),  200); 
+            $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
             $this->email_logs('RESETPASSWORD',$response['id'], $email, 0, "FAILED", json_encode($email_details), $response['company']);
         }
@@ -319,7 +300,7 @@ class System extends Base_Controller{
     }
 
 
-    /* get */ 
+    /* get */
 
     public function peoples_get($company = NULL){
         if(empty($company) ){
@@ -397,7 +378,7 @@ class System extends Base_Controller{
         }
     }
 
-    /* patch */ 
+    /* patch */
 
     public function update_exams_patch(){
         $data = $this->validate_inpt(array('company', 'title', 'exam_id', 'notice', 'job_id', 'link'), 'patch');
@@ -435,14 +416,14 @@ class System extends Base_Controller{
     }
 
 
-    /* delete */ 
+    /* delete */
 
     public function remove_exams_delete($exam_id = NULL){
         if(empty($exam_id) ){
             $this->response_return($this->response_code (400,""));
             return false;
         }
-        
+
         $response = $this->Main_mdl->system_record_remove_exams($exam_id);
         if($response){
             return $this->set_response(array("status" => 200, "message" => "Success removed Examination"),  200);
@@ -456,7 +437,7 @@ class System extends Base_Controller{
 
     public function computePayroll($response){
 
-            
+
         $rate_per_hr = $ot = $nsd = $ts = $ml = 0;
         $basic_pay = $otamt = $lateamt = $nsdamt = $tsamt = $mlamt = $gross_pay = $gross_pay_less = 0;
         $total_hrs = 0;
@@ -482,7 +463,7 @@ class System extends Base_Controller{
                     $sss = $declared_calc['sss_amt']; // sss deduction
                     $phic = $declared_calc['phl_amt']; // phl deduction
                     $hdmf = $declared_calc['hmdf_amt']; // hdmf deduction
-                }   
+                }
             }
 
             if($employee['dtr']){
@@ -505,9 +486,9 @@ class System extends Base_Controller{
                         $days = $this->floatNumber($total / 8);
                     }
 
-                    // iterate response 
-                    $dtrArr['employee']['basic_pay'] = $this->floatNumber($basic_pay = $rate_per_hr * $total); // basic pay 
-                    $dtrArr['employee']['omtamt'] = $omtamt = $ot * $otamt; // overtime 
+                    // iterate response
+                    $dtrArr['employee']['basic_pay'] = $this->floatNumber($basic_pay = $rate_per_hr * $total); // basic pay
+                    $dtrArr['employee']['omtamt'] = $omtamt = $ot * $otamt; // overtime
                     $dtrArr['employee']['lateamt'] = $lateamt = $lateamt * $late; // late
                     $dtrArr['employee']['nsdamt'] = $nsdamt = $nsdamt * $nsd;  // nsd
                     $dtrArr['employee']['tsamt'] = $tsamt = $days * $ts;  // ts allowance

@@ -5,6 +5,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 class Logs extends Base_Controller{
+    public  $data = [];
+    public  $auth = false;
+    public $method = "";
+    public $params = [];
+    public $new_acc_path = 'emails/new-account';
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->method = $_SERVER['REQUEST_METHOD'];
+    }
+
 
     /* post */
 
