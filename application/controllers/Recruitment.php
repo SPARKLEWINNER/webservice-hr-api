@@ -109,9 +109,10 @@ class Recruitment extends Base_Controller{
             return false;
         }
 
-        $response = $this->Main_mdl->record_weeks_pull($company, $number);
         if($type == "day" || $type == "days"){
             $response = $this->Main_mdl->record_day_pull($company, $number);
+        }else{
+            $response = $this->Main_mdl->record_weeks_pull($company, $number);
         }
 
         if($response){
