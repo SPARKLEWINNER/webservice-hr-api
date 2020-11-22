@@ -411,16 +411,27 @@ class Main_mdl extends Base_Model {
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week OR status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} week OR status = 0"; 
         $result = $this->db->query($query);
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
 
     public function record_pool_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
         $result = $this->db->query($query);
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
     
