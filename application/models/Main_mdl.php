@@ -390,8 +390,7 @@ class Main_mdl extends Base_Model {
     }
 
     public function record_weeks_pull($company, $weeks){
-
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week AND status = 0"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} OR AND status = 0"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -407,7 +406,7 @@ class Main_mdl extends Base_Model {
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week AND status = 0"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week OR status = 0"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
