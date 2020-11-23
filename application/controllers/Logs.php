@@ -43,7 +43,7 @@ class Logs extends Base_Controller{
             return false;
         }
 
-        $response = $this->Main_mdl->record_logs_pull($company);
+        $response = $this->Main_mdl->record_logs_pull($company, NULL);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
@@ -58,7 +58,7 @@ class Logs extends Base_Controller{
             return false;
         }
 
-        $response = $this->Main_mdl->record_logs_pull($company);
+        $response = $this->Main_mdl->record_logs_pull($company, "APPLICANT");
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{

@@ -372,7 +372,7 @@ class Base_Controller extends REST_Controller{
 
     /* Log Activities */
 
-    public function activity_logs($id,$type,$message,$information, $status){
+    public function activity_logs($id,$type,$message,$information, $status,$company){
 
         $log_data = array(
             'user' =>  $id,
@@ -380,7 +380,8 @@ class Base_Controller extends REST_Controller{
             'message' => $message,
             'information' => $information,
             'status' => $status,
-            'date' =>  date('Y-m-d H:i:s')
+            'date' =>  date('Y-m-d H:i:s'),
+            'company' => $company
         );
 
         $response = $this->Main_mdl->record_log($log_data);

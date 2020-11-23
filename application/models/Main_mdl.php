@@ -561,9 +561,13 @@ class Main_mdl extends Base_Model {
 
     }
     
-    public function record_logs_pull($company){
+    public function record_logs_pull($company, $type){
+        if($type != null){
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}' AND `type` = '{$type}'"; 
+        }else{
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}'"; 
+        }
 
-        $query = "SELECT * FROM `logs` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
