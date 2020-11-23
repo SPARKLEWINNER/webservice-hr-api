@@ -195,7 +195,7 @@ class System extends Base_Controller{
                     "password" => $response['temp_password'],
                     "help" => EMAIL_ADMIN,
                     // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
+                    "portal" =>"http://portal.".$data['company'].".com.ph/" // to be change
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
