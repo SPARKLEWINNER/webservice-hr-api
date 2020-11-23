@@ -20,7 +20,7 @@ class Finance extends Base_Controller{
    public function wage_create_record_post(){
             $data = $this->validate_inpt(array('id','company','name'), 'post');
             $app_data = array(
-                "id" => $data["id"],
+                "author" => $data["id"],
                 "name" => $data["name"],
                 "company" => $data["company"],
                 "date_created" => date('Y-m-d H:i:s'),
@@ -30,10 +30,10 @@ class Finance extends Base_Controller{
 
             $response = $this->Main_mdl->record_wage_data($app_data);
             if(!isset($response['status'])){
-                $this->activity_logs($data["id"],"WAGEFAILED","FAILED", json_encode($app_data), 1);
+                $this->activity_logs($data["id"],"WAGEFAILED","FAILED", json_encode($app_data), 1, $data["company"]);
                 return $this->set_response($response, 422);
             }else{
-                $this->activity_logs($data["id"],"ADDWAGE","SUCCESS", json_encode($app_data), 0);
+                $this->activity_logs($data["id"],"ADDWAGE","SUCCESS", json_encode($app_data), 0, $data["company"]);
                 $this->set_response(array("status" => 200, "data" => $response),  200);
             }
 

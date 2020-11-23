@@ -305,6 +305,7 @@ class Main_mdl extends Base_Model {
                 "name" => $wage->name,
                 "company" => $wage->company,
                 "data" => $wage->data,
+                "author" => $wage->author,
                 "date_created" => $wage->date_created,
                 "status" => $wage->status
             );  
