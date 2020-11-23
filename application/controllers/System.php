@@ -161,13 +161,16 @@ class System extends Base_Controller{
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
+            return $this->set_response(array("status" => 422, "message" => "Unable to process your request"), 422);
         }
     }
 
     public function create_people_post(){
         $data = $this->validate_inpt(array('company', 'fname', 'id', 'lname','email','access'), 'post');
+        if($this->Main_mdl->system_people_validate($data['email'])){
+            return $this->set_response(array("status" => 423, "message" => "Email already exists"), 422);
+        }
+
         $generate_password = $this->createPassword();
         $app_data = array(
             "company" => $data['company'],

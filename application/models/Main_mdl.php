@@ -196,8 +196,9 @@ class Main_mdl extends Base_Model {
     }
 
     public function record_validate_data($email){
-        $record = $this->db->select('*')->from('applications')->where('username', $email)->get()->row();
-        return $this->db->affected_rows() > 0 ? false : true; 
+        $query = "SELECT * FROM applications WHERE username = '{$email}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? true : false;
     }
 
     public function record_upload_doc($data){
@@ -1091,6 +1092,13 @@ class Main_mdl extends Base_Model {
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
+
+    public function system_people_validate($email){
+        $query = "SELECT * FROM users WHERE email = '{$email}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? true : false;
+    }
+
 
     /* Reports */
 
