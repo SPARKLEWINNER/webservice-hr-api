@@ -383,16 +383,28 @@ class Main_mdl extends Base_Model {
 
     public function record_status_pull($company, $status){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `status` = '{$status}' ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
     public function record_weeks_pull($company, $weeks){
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} OR status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
@@ -411,7 +423,7 @@ class Main_mdl extends Base_Model {
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} week OR status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -419,7 +431,7 @@ class Main_mdl extends Base_Model {
                 $arr_app[] = $app;
             }
         }
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
@@ -427,12 +439,13 @@ class Main_mdl extends Base_Model {
 
         $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
         $result = $this->db->query($query);
+        $arr_app = [];
         foreach($result->result_array() as $k => $app){
             if($app['company'] == $company){
                 $arr_app[] = $app;
             }
         }
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        return ($result->num_rows() > 0) ? $arr_app : false;
     }
     
     /* Specific */
