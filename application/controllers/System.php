@@ -200,12 +200,13 @@ class System extends Base_Controller{
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
         );
+
         $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
         if($is_mailed == NULL){
-            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "SUCCESS", json_encode($email_details), $response['company']);
+            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "SUCCESS", json_encode($email_details), $data['company']);
             $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
-            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "FAILED", json_encode($email_details), $response['company']);
+            $this->email_logs('NEWEMPLOYEE',$data['id'], $data['email'], 0, "FAILED", json_encode($email_details), $data['company']);
         }
     }
 
