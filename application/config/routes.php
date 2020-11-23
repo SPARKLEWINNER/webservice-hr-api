@@ -44,7 +44,7 @@ $route['internal/stores/(:any)']['get'] = 'store/list_stores/$1'; // admin
 /* Finance */
 $route['internal/wage/create']['post'] = 'finance/wage_create_record';
 $route['internal/wage/assign']['post'] = 'finance/wage_assign_record';
-$route['internal/wages/(:any)']['get'] = 'finance/wages/$1';
+$route['internal/wages/(:any)']['get'] = 'finance/list_wages/$1';
 
 
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';

@@ -17,6 +17,7 @@ class Finance extends Base_Controller{
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
 
+    /* post */
    public function wage_create_record_post(){
             $data = $this->validate_inpt(array('id','company','name'), 'post');
             $app_data = array(
@@ -60,6 +61,27 @@ class Finance extends Base_Controller{
         }
 
     }
+
+
+
+    /* get */
+    
+    public function list_wages_get($company = NULL){
+
+        if(empty($company) ){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->wages_pull($company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
 
 
 }

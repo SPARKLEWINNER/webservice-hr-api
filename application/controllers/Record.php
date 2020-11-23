@@ -135,24 +135,6 @@ class Record extends Base_Controller
         }
     }
 
-    public function wages_get($company = NULL){
-
-        if(empty($company) ){
-            $this->response_return($this->response_code (400,""));
-            return false;
-        }
-
-        $response = $this->Main_mdl->wages_pull($company);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-
-
-    }
-
 
 
 
