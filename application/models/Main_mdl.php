@@ -317,16 +317,18 @@ class Main_mdl extends Base_Model {
     public function record_wage_assign_data($data){
         $this->db->insert('wage_assigning', $data);
         $inserted_id = $this->db->insert_id();
-        $wage = $this->db->select('*')->from('wages')->where('id', $data['emp_id'])->get()->row();
+        $wage = $this->db->select('*')->from('wages')->where('id', $data['wage_id'])->get()->row();
 
         if($this->db->affected_rows() > 0):    
             return array(
-                "id" => $data['emp_id'],
+                "id" => $wage->id,
                 "name" => $wage->name,
                 "company" => $wage->company,
                 "data" => $wage->data,
                 "date_created" => $wage->date_created,
-                "status" => $wage->status
+                "status" => $wage->status,
+                "store_id" => $data['store_id'],
+                "assign_id" => $inserted_id
             );  
         else:
             return false;
@@ -360,24 +362,18 @@ class Main_mdl extends Base_Model {
     }
 
     public function wages_pull($company){
-
-        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
+        $query = "SELECT * FROM wages wg WHERE company = '{$company}'"; 
         $result = $this->db->query($query);
-
         $compiled_dd = $result->result_array();
         foreach($result->result_array() as $k => $wages){
-            $compiled_dd[$k] = $wages;
-            if($wages['store_id']){
-                $query_str = "SELECT * FROM `store` where `id` = {$wages['store_id']}"; 
-                $result_str = $this->db->query($query_str);
-    
-                if($result_str->num_rows() > 0){
-                    $compiled_dd[$k]['store'] =  $result_str->result_array();
-                }
-    
+            $asg_wages =  "SELECT wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned, st.*
+            FROM wage_assigning wgasg
+            LEFT JOIN store st ON st.id = wgasg.store_id WHERE wgasg.company = '{$company}' AND wgasg.wage_id = {$wages['id']}"; 
+            $asg_result = $this->db->query($asg_wages);
+
+            if($asg_result->num_rows() > 0){
+                $compiled_dd[$k]['store'] =  $asg_result->result_array();
             }
-
-
         }
         return ($result->num_rows() > 0) ? $compiled_dd : false;
 
@@ -685,7 +681,6 @@ class Main_mdl extends Base_Model {
         if($this->db->affected_rows() > 0):    
             return array(
               "id" => $inserted_id,
-              "emp_id" => $dtr->emp_id,
               "store_id" => $dtr->store_id,
               "author" => $dtr->author,
               "company" => $dtr->company,
@@ -693,6 +688,32 @@ class Main_mdl extends Base_Model {
               "date_created" => $dtr->date_created,
               "status" => $dtr->status
             ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
+
+    public function system_record_dtr_list($company,$store_id){
+        $query = "SELECT * FROM dtr WHERE `company` = '{$company}' AND `store_id` = {$store_id}";
+        $result = $this->db->query($query);
+        $dtr = $result->result_array();
+        if($result->num_rows() > 0): 
+            return $dtr;
+        else:
+            return false;
+        endif;
+       
+    }
+
+    public function system_record_wage_list($store_id,$company){
+        $query = "SELECT * FROM wages wg 
+        LEFT JOIN wage_assigning wasg ON wasg.wage_id = wg.id WHERE wasg.company = '{$company}' AND wasg.store_id = {$store_id}";
+        $result = $this->db->query($query);
+        $dtr = $result->result_array();
+        if($result->num_rows() > 0): 
+            return $dtr;
         else:
             return false;
         endif;

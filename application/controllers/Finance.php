@@ -53,10 +53,10 @@ class Finance extends Base_Controller{
 
         $response = $this->Main_mdl->record_wage_assign_data($app_data);
         if(!isset($response['status'])){
-            $this->activity_logs($data["id"],"WAGEFAILEDASSIGN","FAILED", json_encode($app_data), 1);
+            $this->activity_logs($data["id"],"WAGEFAILEDASSIGN","FAILED", json_encode($app_data), 1, $data["company"]);
             return $this->set_response($response, 422);
         }else{
-            $this->activity_logs($data["id"],"ASSIGNWAGESUCCESS","SUCCESS", json_encode($app_data), 0);
+            $this->activity_logs($data["id"],"ASSIGNWAGESUCCESS","SUCCESS", json_encode($app_data), 0, $data["company"]);
             $this->set_response(array("status" => 200, "data" => $response),  200);
         }
 

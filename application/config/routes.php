@@ -41,6 +41,9 @@ $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2
 $route['internal/stores/(:any)']['get'] = 'store/list_stores/$1'; // admin
 
 
+$route['internal/stores/dtr/list/(:any)/(:any)']['get'] = 'system/list_dtr/$1/$2';
+$route['internal/stores/wage/(:any)/(:any)']['get'] = 'system/list_wage/$1/$2';
+
 /* Finance */
 $route['internal/wage/create']['post'] = 'finance/wage_create_record';
 $route['internal/wage/assign']['post'] = 'finance/wage_assign_record';

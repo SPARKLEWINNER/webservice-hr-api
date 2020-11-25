@@ -279,12 +279,13 @@ class System extends Base_Controller{
     }
 
     public function create_dtr_post(){
-        $data = $this->validate_inpt(array('id','company','store_id', 'emp_id', 'dtr'), 'post');
+        $data = $this->validate_inpt(array('id','company','store', 'dtr', 'start_date', 'end_date'), 'post');
 
         $app_data = array(
             "company" => $data['company'],
-            "store_id" => $data['store_id'],
-            "emp_id" => $data['emp_id'],
+            "store_id" => $data['store'],
+            "start_date" => $data['start_date'],
+            "end_date" => $data['end_date'],
             "author" => $data['id'],
             "dtr" =>  json_encode($this->post()),
             "date_created" => date('Y-m-d H:i:s'),
@@ -292,7 +293,6 @@ class System extends Base_Controller{
         );
 
         $response = $this->Main_mdl->system_record_dtr($app_data);
-
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
@@ -300,6 +300,39 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
+
+    public function list_dtr_get($company = NULL, $store_id = NULL){
+        if(empty($company) && empty($store_id)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->system_record_dtr_list($company,$store_id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+        
+    }
+
+    public function list_wage_get($store_id = NULL, $company = NULL){
+        if(empty($company) && empty($store_id)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->system_record_wage_list($store_id,$company);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+        
+    }
+
 
 
     /* get */
