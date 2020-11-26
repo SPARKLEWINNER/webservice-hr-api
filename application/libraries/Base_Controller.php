@@ -129,7 +129,7 @@ class Base_Controller extends REST_Controller{
         $img = $file['name'];
         $tmp = $file['tmp_name'];
         $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
-        $path = 'uploads/docs/';
+        $path = '/uploads/docs/';
         $request = 'doc';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
         $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
@@ -154,9 +154,14 @@ class Base_Controller extends REST_Controller{
                 "company" => $company,
                 "date_uploaded" => date('Y-m-d H:i:s'),
             );
+
+    
             if (in_array($ext, $valid_ext)) {
-				$path = $path . strtolower($name);
+                $path = $path . strtolower($name);
+
+      
 				if (move_uploaded_file($tmp, $path)) {
+
                     $record_upload['status'] = 0;
                     $record_upload['message'] = json_encode($file);
                     $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
