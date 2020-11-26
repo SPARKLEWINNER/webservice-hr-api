@@ -52,6 +52,10 @@ class Auth extends Base_Controller
                     $response['route'] = "hr/";
                 }
 
+                if($data['user_level'] == 7){
+                    $response['route'] = "finance/";
+                }
+
 
                 if($data['user_level'] == 10){
                     $response['route'] = "applicant/";

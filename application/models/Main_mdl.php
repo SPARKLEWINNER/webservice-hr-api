@@ -27,7 +27,8 @@ class Main_mdl extends Base_Model {
                         "lastname" => $acc->last_name,
                         "company" => $acc->company,
                         "profile" => $acc->profile,
-                        "user_level" => $acc->user_level
+                        "user_level" => $acc->user_level,
+                        "switchable" => $acc->switchable
                     );
                 }else{
 
@@ -194,6 +195,12 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_validate_data($email){
+        $query = "SELECT * FROM applications WHERE username = '{$email}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? true : false;
+    }
+
     public function record_upload_doc($data){
         $this->db->insert('records', $data);
         return $this->db->affected_rows() > 0 ? true : false;
@@ -298,6 +305,7 @@ class Main_mdl extends Base_Model {
                 "name" => $wage->name,
                 "company" => $wage->company,
                 "data" => $wage->data,
+                "author" => $wage->author,
                 "date_created" => $wage->date_created,
                 "status" => $wage->status
             );  
@@ -309,16 +317,18 @@ class Main_mdl extends Base_Model {
     public function record_wage_assign_data($data){
         $this->db->insert('wage_assigning', $data);
         $inserted_id = $this->db->insert_id();
-        $wage = $this->db->select('*')->from('wages')->where('id', $data['emp_id'])->get()->row();
+        $wage = $this->db->select('*')->from('wages')->where('id', $data['wage_id'])->get()->row();
 
         if($this->db->affected_rows() > 0):    
             return array(
-                "id" => $data['emp_id'],
+                "id" => $wage->id,
                 "name" => $wage->name,
                 "company" => $wage->company,
                 "data" => $wage->data,
                 "date_created" => $wage->date_created,
-                "status" => $wage->status
+                "status" => $wage->status,
+                "store_id" => $data['store_id'],
+                "assign_id" => $inserted_id
             );  
         else:
             return false;
@@ -352,24 +362,18 @@ class Main_mdl extends Base_Model {
     }
 
     public function wages_pull($company){
-
-        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wg.company = '{$company}'"; 
+        $query = "SELECT * FROM wages wg WHERE company = '{$company}'"; 
         $result = $this->db->query($query);
-
         $compiled_dd = $result->result_array();
         foreach($result->result_array() as $k => $wages){
-            $compiled_dd[$k] = $wages;
-            if($wages['store_id']){
-                $query_str = "SELECT * FROM `store` where `id` = {$wages['store_id']}"; 
-                $result_str = $this->db->query($query_str);
-    
-                if($result_str->num_rows() > 0){
-                    $compiled_dd[$k]['store'] =  $result_str->result_array();
-                }
-    
+            $asg_wages =  "SELECT wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned, st.*
+            FROM wage_assigning wgasg
+            LEFT JOIN store st ON st.id = wgasg.store_id WHERE wgasg.company = '{$company}' AND wgasg.wage_id = {$wages['id']}"; 
+            $asg_result = $this->db->query($asg_wages);
+
+            if($asg_result->num_rows() > 0){
+                $compiled_dd[$k]['store'] =  $asg_result->result_array();
             }
-
-
         }
         return ($result->num_rows() > 0) ? $compiled_dd : false;
 
@@ -377,41 +381,69 @@ class Main_mdl extends Base_Model {
 
     public function record_status_pull($company, $status){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND `status` = '{$status}' ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
     public function record_weeks_pull($company, $weeks){
-
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week AND status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
     public function record_day_pull($company, $days){
-
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY AND status = 0 ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
     }
 
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created < now() - interval {$weeks} week AND status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
 
     }
 
     public function record_pool_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}' AND date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
     }
     
     /* Specific */
@@ -527,9 +559,13 @@ class Main_mdl extends Base_Model {
 
     }
     
-    public function record_logs_pull($company){
+    public function record_logs_pull($company, $type){
+        if($type != null){
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}' AND `type` = '{$type}'"; 
+        }else{
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}'"; 
+        }
 
-        $query = "SELECT * FROM `logs` WHERE `company` = '{$company}'"; 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -645,7 +681,6 @@ class Main_mdl extends Base_Model {
         if($this->db->affected_rows() > 0):    
             return array(
               "id" => $inserted_id,
-              "emp_id" => $dtr->emp_id,
               "store_id" => $dtr->store_id,
               "author" => $dtr->author,
               "company" => $dtr->company,
@@ -653,6 +688,32 @@ class Main_mdl extends Base_Model {
               "date_created" => $dtr->date_created,
               "status" => $dtr->status
             ); 
+        else:
+            return false;
+        endif;
+       
+    }
+
+
+    public function system_record_dtr_list($company,$store_id){
+        $query = "SELECT * FROM dtr WHERE `company` = '{$company}' AND `store_id` = {$store_id}";
+        $result = $this->db->query($query);
+        $dtr = $result->result_array();
+        if($result->num_rows() > 0): 
+            return $dtr;
+        else:
+            return false;
+        endif;
+       
+    }
+
+    public function system_record_wage_list($store_id,$company){
+        $query = "SELECT * FROM wages wg 
+        LEFT JOIN wage_assigning wasg ON wasg.wage_id = wg.id WHERE wasg.company = '{$company}' AND wasg.store_id = {$store_id}";
+        $result = $this->db->query($query);
+        $dtr = $result->result_array();
+        if($result->num_rows() > 0): 
+            return $dtr;
         else:
             return false;
         endif;
@@ -1032,7 +1093,20 @@ class Main_mdl extends Base_Model {
     public function system_people_pull($company){
         $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' ORDER BY id DESC";
         $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        $user_arr = array();
+        foreach($result->result_array() as $users){
+            if($users['user_level'] == 5){
+
+                $query_store = "SELECT * FROM assigning asg LEFT JOIN store st ON asg.store_id = st.id
+                WHERE asg.emp_id = {$users['id']}";
+                $store = $this->db->query($query_store)->result_array();
+                if($store){
+                    $users['assigned'] = $store;
+                }
+            }
+            $user_arr[] = $users;
+        }
+        return ($result->num_rows() > 0) ? $user_arr : false;
     }
     
     public function system_people_specific_pull($company, $id){
@@ -1040,6 +1114,13 @@ class Main_mdl extends Base_Model {
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
+
+    public function system_people_validate($email){
+        $query = "SELECT * FROM users WHERE email = '{$email}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? true : false;
+    }
+
 
     /* Reports */
 
