@@ -129,10 +129,16 @@ class Base_Controller extends REST_Controller{
         $img = $file['name'];
         $tmp = $file['tmp_name'];
         $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
-        $path = '/uploads/docs/';
+        $path = 'uploads/docs/';
         $request = 'doc';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
         $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
+        
+        if(!file_exists($path)) 
+        {
+            mkdir($path, 0777, true);
+        }
+
         if($file){
             // $config = array(
             //     'upload_path' => "uploads/",
