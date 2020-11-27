@@ -1266,6 +1266,42 @@ class Main_mdl extends Base_Model {
         endif;
     }
 
+    public function system_record_uploading_status($data){
+        $this->db->insert('settings', $data);
+        $inserted_id = $this->db->insert_id();
+        $isUpload = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+            "id" => $inserted_id,
+            "company" => $isUpload->company,
+            "posted_by" => $isUpload->posted_by,
+            "meta_key" => $isUpload->meta_key,
+            "meta_value" => $isUpload->meta_value,
+            "date_created" => $isUpload->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+    }
+
+    
+    public function system_update_uploading_status($data, $us_id){
+        $this->db->where('id', $us_id);
+        $this->db->update('settings', $data);
+        $jobs = $this->db->select('*')->from('settings')->where('id', $us_id)->get()->row();
+        if($this->db->affected_rows() > 0):    
+            return array(
+                "id" => $us_id,
+                "company" => $jobs->company,
+                "posted_by" => $jobs->posted_by,
+                "meta_key" => $jobs->meta_key,
+                "meta_value" => $jobs->meta_value,
+                "date_created" => $jobs->date_created,
+            ); 
+        else:
+            return false;
+        endif;
+    }
 
     /* Email */
 
@@ -1353,23 +1389,41 @@ class Main_mdl extends Base_Model {
             foreach($jobs_result as $key => $value){
                 $jobs_result[$key]['exams'] = array();
                 $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
-                $exams_result = $this->db->query($exams)->result_array();
+                $exams_result = $this->db->query($exams);
 
                 $jobs_result[$key]['requirements'] = array();
                 $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
-                $requirements_result = $this->db->query($requirements)->result_array();
-                foreach($requirements_result as $kr => $vr){
-                    if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
-                        $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                $requirements_result = $this->db->query($requirements);
+
+                $jobs_result[$key]['isUpload'] = array();
+                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'"; 
+                $isUpload_result = $this->db->query($isUpload);
+
+                if($requirements_result->num_rows() > 0){
+                    $requirements_result = $requirements_result->result_array();
+                    foreach($requirements_result as $kr => $vr){
+                        if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
+                            $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                        }
                     }
                 }
 
-                foreach($exams_result as $k => $v){
-                    
-                    if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
-                        $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                if($exams_result->num_rows() > 0){
+                    $exams_result = $exams_result->result_array();
+                    foreach($exams_result as $k => $v){
+                        if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
+                            $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                        }
                     }
+                }
 
+                if($isUpload_result->num_rows() > 0){
+                    $isUpload_result = $isUpload_result->result_array();
+                    foreach($isUpload_result as $ku => $v){
+                        if($value['id'] == json_decode($isUpload_result[$ku]['meta_value'])->job_id){
+                            $jobs_result[$key]['isUpload'][] =  $isUpload_result[$ku];
+                        }
+                    }
                 }
             }
             
@@ -1389,26 +1443,46 @@ class Main_mdl extends Base_Model {
             foreach($jobs_result as $key => $value){
                 $jobs_result[$key]['exams'] = array();
                 $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
-                $exams_result = $this->db->query($exams)->result_array();
+                $exams_result = $this->db->query($exams);
 
                 $jobs_result[$key]['requirements'] = array();
                 $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
-                $requirements_result = $this->db->query($requirements)->result_array();
-                foreach($requirements_result as $kr => $vr){
-                    if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
-                        $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                $requirements_result = $this->db->query($requirements);
+
+                $jobs_result[$key]['isUpload'] = array();
+                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'"; 
+                $isUpload_result = $this->db->query($isUpload);
+
+                if($requirements_result->num_rows() > 0){
+                    $requirements_result = $requirements_result->result_array();
+                    foreach($requirements_result as $kr => $vr){
+                        if($value['id'] == json_decode($requirements_result[$kr]['meta_value'])->job_id){
+                            $jobs_result[$key]['requirements'][] =  $requirements_result[$kr];
+                        }
                     }
                 }
 
-                foreach($exams_result as $k => $v){
-                    if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
-                        $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                if($exams_result->num_rows() > 0){
+                    $exams_result = $exams_result->result_array();
+                    foreach($exams_result as $k => $v){
+                        if($value['id'] == json_decode($exams_result[$k]['meta_value'])->job_id){
+                            $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                        }
                     }
+                }
 
+                if($isUpload_result->num_rows() > 0){
+                    $isUpload_result = $isUpload_result->result_array();
+                    foreach($isUpload_result as $ku => $v){
+                        if($value['id'] == json_decode($isUpload_result[$ku]['meta_value'])->job_id){
+                            $jobs_result[$key]['isUpload'][] =  $isUpload_result[$ku];
+                        }
+                    }
                 }
             }
             
         }
+
         return ($result->num_rows() > 0) ? $jobs_result : false;
         
     }
