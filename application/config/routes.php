@@ -72,7 +72,7 @@ $route['internal/system/specific/people/(:any)/(:num)']['get'] = 'system/people_
 
 /* -- Jobs */
 $route['internal/system/create/jobs']['post'] = 'system/create_job';
-$route['internal/system/jobs/(:any)/(:any)']['get'] = 'system/jobs_records/$1/$2';
+$route['internal/system/jobs/(:any)']['get'] = 'system/jobs_records/$1';
 $route['internal/system/specific/jobs/(:any)/(:any)']['get'] = 'system/job_specific_records/$1/$2';
 
 
@@ -85,6 +85,8 @@ $route['internal/system/remove/exams/(:any)']['delete'] = 'system/remove_exams/$
 $route['internal/system/create/requirements']['post'] = 'system/requirements_create';
 $route['internal/system/update/requirements']['post'] = 'system/requirements_update';
 
+$route['internal/system/create/upload/status']['post'] = 'system/upload_status_create';
+$route['internal/system/update/upload/status']['patch'] = 'system/upload_status_update';
 /* User */
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 

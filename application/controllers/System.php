@@ -124,6 +124,45 @@ class System extends Base_Controller{
             return $this->set_response($response, 422);
         }
     }
+
+    
+    public function upload_status_create_post(){
+        $data = $this->validate_inpt(array('company','job_id','id','status','email'), 'post');
+        $app_data = array(
+            "company" => $data['company'],
+            "posted_by" => $data['id'],
+            "meta_key" => "uploading_status",
+            "meta_value" => json_encode($data),
+            "date_created" => date('Y-m-d H:i:s')
+        );
+        $response = $this->Main_mdl->system_record_uploading_status($app_data);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+    
+    
+    public function upload_status_update_patch(){
+        $data = $this->validate_inpt(array('company','job_id','id','status','email', 'us-id'), 'patch');
+        $us_id = $data['us-id'];
+        $app_data = array(
+            "company" => $data['company'],
+            "posted_by" => $data['id'],
+            "meta_key" => "uploading_status",
+            "meta_value" => json_encode($data),
+        );
+        $response = $this->Main_mdl->system_update_uploading_status($app_data, $us_id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+    
     
 
     /* patch */
@@ -374,6 +413,7 @@ class System extends Base_Controller{
         }
 
         $response = $this->Main_mdl->system_jobs_pull($company,$id,"jobs");
+
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
