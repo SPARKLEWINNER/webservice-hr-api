@@ -86,7 +86,6 @@ class Record extends Base_Controller
         $data = $this->validate_inpt(array('company','id'), 'post');
 
         var_dump($_FILES['file']);
-        die();
         $upload_proc = $this->upload_doc($_FILES['file'], $data['id'], $data['company']);
         $this->activity_logs($data['id'], 'DOCUMENTLOG', json_encode($_FILES['file']), json_encode($upload_proc), "DOCUMENTLOG", filter_var($upload_proc, FILTER_VALIDATE_BOOLEAN));
         if($upload_proc){
