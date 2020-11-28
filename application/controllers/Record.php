@@ -89,12 +89,13 @@ class Record extends Base_Controller
         if($upload_proc){
             $response = $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
             if(!$response){
+                $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
                 return $this->set_response($response, 422);
             }else{
                 $this->set_response(array("status" => 200, "data" => $response),  200);
             }
         }else{
-            $response = $this->response_code(422, "Server upload error", "");
+            $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
             return $this->set_response($response, 422);
         }
     }

@@ -188,6 +188,24 @@ class Base_Controller extends REST_Controller{
         }
     }
     
+    public function do_upload($file,$doc_id,$company) { 
+        $config['upload_path']   = '/uploads/docs'; 
+        $config['allowed_types'] ='jpeg|jpg|png|gif|bmp|txt|doc|docx|pdf'; 
+        $config['max_size']      = 100; 
+        $this->load->library('upload', $config);
+           
+        if ( ! $this->upload->do_upload('userfile')) {
+           $error = array('error' => $this->upload->display_errors()); 
+           var_dump($error);
+        }
+           
+        else { 
+           $data = array('upload_data' => $this->upload->data()); 
+           $this->load->view('upload_success', $data); 
+        } 
+     } 
+
+
     public function upload_profile($file,$ref_id){
       
         
