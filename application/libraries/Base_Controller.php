@@ -3,16 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 date_default_timezone_set('Asia/Manila');
 require APPPATH . '/libraries/REST_Controller.php';
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
-header("Access-Control-Allow-Headers: X-API-KEY, X-API-TOKEN, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-header('Content-Type: application/json');    
-header('Content-Type: multipart/form-data');    
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    die();
-    exit;       
-}
 
 class Base_Controller extends REST_Controller{
 
@@ -36,6 +26,17 @@ class Base_Controller extends REST_Controller{
     function __construct()
     {
         parent::__construct($config = 'rest');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
+        header("Access-Control-Allow-Headers: X-API-KEY, X-API-TOKEN, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header('Content-Type: application/json');    
+        header('Content-Type: multipart/form-data');    
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            die();
+            exit;       
+        }
+
         // $this->auth_access();
         $this->models();
         $this->data();
@@ -172,7 +173,7 @@ class Base_Controller extends REST_Controller{
                     $this->Main_mdl->record_upload_activity($record_upload);
                     return array(
                         'link' => $this->documentStorage.$final_name,
-                        'name' => $name
+                        'name' => $final_name
                     );
 
 				}else{
