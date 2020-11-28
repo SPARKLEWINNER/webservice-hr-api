@@ -128,11 +128,7 @@ class Base_Controller extends REST_Controller{
     public function upload_doc($file,$doc_id,$company){
         $img = $file['name'];
         $tmp = $file['tmp_name'];
-        $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
         $path = 'uploads/docs/';
-        $request = 'doc';
-        $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
-        $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
         
         if(!file_exists($path)) 
         {
@@ -140,25 +136,19 @@ class Base_Controller extends REST_Controller{
         }
 
         if($file){
-            // $config = array(
-            //     'upload_path' => "uploads/",
-            //     'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
-            //     'overwrite' => FALSE,
-            //     'max_size' => "20480",
-            //     'file_name' => $name
-            // );
-            // $this->load->library('upload', $config);
-            // $this->upload->initialize($config); 
+            $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
+            $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+
             $record_upload = array(
                 "applicant_id" => $doc_id,
                 "company" => $company,
                 "date_uploaded" => date('Y-m-d H:i:s'),
             );
 
-    
-            if (in_array($ext, $valid_ext)) {
-                $path = $path . strtolower($name);
+            $final_name = $doc_id."-".strtolower($doc_id.time().'1.'.$ext);
+            $path = $path . strtolower($final_name);
 
+            if (in_array($ext, $valid_ext)) {
       
 				if (move_uploaded_file($tmp, $path)) {
 
@@ -170,9 +160,9 @@ class Base_Controller extends REST_Controller{
                         "applicant_id" => $doc_id,
                         "doc_name" => $file['name'],
                         "doc_type" => $file['type'],
-                        "doc_file" => addslashes(file_get_contents($this->documentStorage.$name)),
+                        "doc_file" => addslashes(file_get_contents($this->documentStorage.$final_name)),
                         "doc_size" => $file['size'],
-                        "doc_link" => $this->documentStorage.$name,
+                        "doc_link" => $this->documentStorage.$final_name,
                         "date_created" => date('Y-m-d H:i:s'),
                         "status" => 0,
                     );
@@ -180,51 +170,20 @@ class Base_Controller extends REST_Controller{
                     $this->Main_mdl->record_upload_doc($data);
                     $this->Main_mdl->record_upload_activity($record_upload);
                     return array(
-                        'link' => $this->documentStorage.$name,
+                        'link' => $this->documentStorage.$final_name,
                         'name' => $name
                     );
-				}else{
 
+				}else{
                     $record_upload['message'] = json_encode(array('error' => $file['error']) );
                     $record_upload['status'] = 1;
                     $record_upload["type"] = "FAILEDDOCUMENTUPLOAD";
                     $this->Main_mdl->record_upload_activity($record_upload);
                 }
             }
-            /*
-            var_dump($this->upload->display_errors());
-
-            if (!$this->upload->do_upload('file')) {
-                $record_upload['message'] = json_encode(array('error' => $this->upload->display_errors()) );
-                $record_upload['status'] = 1;
-                $record_upload["type"] = "FAILEDDOCUMENTUPLOAD";
-                $this->Main_mdl->record_upload_activity($record_upload);
-            }else{
-                    $record_upload['status'] = 0;
-                    $record_upload['message'] = json_encode($this->upload->data());
-                    $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
-                     $data = array(
-                        "applicant_id" => $doc_id,
-                        "doc_name" => $file['name'],
-                        "doc_type" => $file['type'],
-                        "doc_size" => $file['size'],
-                        "doc_link" => $this->documentStorage.$name,
-                        "date_created" => date('Y-m-d H:i:s'),
-                        "status" => 0,
-                    );
-
-                    $this->Main_mdl->record_upload_doc($data);
-                    $this->Main_mdl->record_upload_activity($record_upload);
-                    return array(
-                        'link' => $this->documentStorage.$name,
-                        'name' => $name
-                    );
-            }
-            */
         }else{
             return false;
         }
-
     }
     
     public function upload_profile($file,$ref_id){
