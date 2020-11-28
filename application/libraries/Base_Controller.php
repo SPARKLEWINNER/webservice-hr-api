@@ -192,11 +192,12 @@ class Base_Controller extends REST_Controller{
         $config['upload_path']   = '/uploads/docs'; 
         $config['allowed_types'] ='jpeg|jpg|png|gif|bmp|txt|doc|docx|pdf'; 
         $config['max_size']      = 100; 
+        $config['max_height']    = 768;  
         $this->load->library('upload', $config);
            
         if ( ! $this->upload->do_upload('userfile')) {
            $error = array('error' => $this->upload->display_errors()); 
-           var_dump($error);
+           $this->load->view('upload_form', $error); 
         }
            
         else { 
