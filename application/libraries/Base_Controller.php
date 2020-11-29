@@ -160,7 +160,7 @@ class Base_Controller extends REST_Controller{
                 $path = $path . strtolower($name);
 
 
-				if (move_uploaded_file($tmp, $path)) {
+                if (move_uploaded_file($tmp, $path)) {
 
                     $record_upload['status'] = 0;
                     $record_upload['message'] = json_encode($file);
@@ -183,7 +183,7 @@ class Base_Controller extends REST_Controller{
                         'link' => $this->documentStorage.$name,
                         'name' => $name
                     );
-				}else{
+                }else{
 
                     $record_upload['message'] = json_encode(array('error' => $file['error']) );
                     $record_upload['status'] = 1;

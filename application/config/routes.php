@@ -7,9 +7,6 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['internal/deploy'] = 'main/deploy';
 
-
-
-
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/logout']['post'] = 'auth/logout';
@@ -34,7 +31,7 @@ $route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_a
 
 /* Store */
 $route['internal/system/create/store']['post'] = 'store/store_new'; // admin
- 
+
 $route['internal/record/review_store_app']['post'] = 'store/review_create_post'; // ts
 
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2'; // ts
