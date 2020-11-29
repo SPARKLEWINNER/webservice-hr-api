@@ -4,9 +4,10 @@ date_default_timezone_set('Asia/Manila');
 require APPPATH . '/libraries/REST_Controller.php';
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
-header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type, Content-Length, Accept-Encoding');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 header('Content-Type: application/json');
+header('Content-Type: multipart/form-data');
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     die();
 }
