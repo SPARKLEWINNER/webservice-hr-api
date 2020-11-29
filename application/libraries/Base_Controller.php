@@ -4,12 +4,11 @@ date_default_timezone_set('Asia/Manila');
 require APPPATH . '/libraries/REST_Controller.php';
 
 header('Access-Control-Allow-Origin: *');
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
-    header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type');
-    header('Content-Type: application/json');    
-    header('Content-Type: multipart/form-data');    
-    exit;       
+header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS, PATCH');
+header('Access-Control-Allow-Headers: X-API-KEY,  X-API-TOKEN,Content-Type, Content-Length, Accept-Encoding');
+header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    die();
 }
 
 class Base_Controller extends REST_Controller{
@@ -26,7 +25,7 @@ class Base_Controller extends REST_Controller{
 
     public $default_client = "mobileapp-client";
     public $default_auth_key = "simplerestapi";
-    
+
     public $documentStorage = DEFAULT_URI."uploads/docs/";
     public $profileStorage = DEFAULT_URI."uploads/";
 
@@ -58,9 +57,9 @@ class Base_Controller extends REST_Controller{
     {
         $header_client = $this->input->get_request_header('Client-Service', TRUE);
         $header_key  = $this->input->get_request_header('Auth-Key', TRUE);
-        
+
         if($header_client != $this->default_client && $header_key != $this->default_auth_key) return $this->response_return($this->response_code(401,""));
-        
+
         return true;
     }
 
@@ -83,12 +82,12 @@ class Base_Controller extends REST_Controller{
                 $response =  $this->success["message"] = $message;
                 $status = REST_Controller::HTTP_OK;
                 break;
-            
+
             case 400:
                 $response =  $this->bad_request;
                 $status = REST_Controller::HTTP_BAD_REQUEST;
             break;
-            
+
             case 401:
                 $response =  $this->unauthorize;
                 $status = REST_Controller::HTTP_UNAUTHORIZED;
@@ -104,7 +103,7 @@ class Base_Controller extends REST_Controller{
                 $status = REST_Controller::HTTP_BAD_REQUEST;
                 break;
 
-            case 500: 
+            case 500:
                 $response =  $this->internal;
                 $status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
                 break;
@@ -122,7 +121,7 @@ class Base_Controller extends REST_Controller{
         }
         return $response;
     }
-    
+
         /* Upload files */
 
     public function upload_doc($file,$doc_id,$company){
@@ -133,8 +132,8 @@ class Base_Controller extends REST_Controller{
         $request = 'doc';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
         $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
-        
-        if(!file_exists($path)) 
+
+        if(!file_exists($path))
         {
             mkdir($path, 0777, true);
         }
@@ -148,24 +147,24 @@ class Base_Controller extends REST_Controller{
             //     'file_name' => $name
             // );
             // $this->load->library('upload', $config);
-            // $this->upload->initialize($config); 
+            // $this->upload->initialize($config);
             $record_upload = array(
                 "applicant_id" => $doc_id,
                 "company" => $company,
                 "date_uploaded" => date('Y-m-d H:i:s'),
             );
 
-    
+
             if (in_array($ext, $valid_ext)) {
                 $path = $path . strtolower($name);
 
-      
+
 				if (move_uploaded_file($tmp, $path)) {
 
                     $record_upload['status'] = 0;
                     $record_upload['message'] = json_encode($file);
                     $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
-                    
+
                      $data = array(
                         "applicant_id" => $doc_id,
                         "doc_name" => $file['name'],
@@ -226,10 +225,10 @@ class Base_Controller extends REST_Controller{
         }
 
     }
-    
+
     public function upload_profile($file,$ref_id){
-      
-        
+
+
         $path = 'uploads/';
         $request = 'profile';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp');
@@ -241,8 +240,8 @@ class Base_Controller extends REST_Controller{
 
 
             $final_image = strtolower($ref_id.time().'1.'.$ext);
-            
-            if(!file_exists($path)) 
+
+            if(!file_exists($path))
             {
                 mkdir($path, 0777, true);
             }
@@ -262,7 +261,7 @@ class Base_Controller extends REST_Controller{
 
         }
     }
-   
+
 
 
     /* Validate inputs */
@@ -301,7 +300,7 @@ class Base_Controller extends REST_Controller{
 
         return $ref_code;
     }
-    
+
     public function generate_password(){
 
         $seed = str_split('abcdefghijklmnopqrstuvwxyz'. 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'. '0123456789)'); // and any other characters
@@ -346,7 +345,7 @@ class Base_Controller extends REST_Controller{
 
     public function send_email($email, $type, $company, $subject, $receiver_email)
     {
-          
+
           $data['info'] = $receiver_email;
           $template = $this->load->view($type, $data, true);
           $config = array(
@@ -457,8 +456,8 @@ class Base_Controller extends REST_Controller{
         );
     }
 
-    
 
-      
-    
+
+
+
 }
