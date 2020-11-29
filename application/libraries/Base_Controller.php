@@ -140,15 +140,7 @@ class Base_Controller extends REST_Controller{
         }
 
         if($file){
-            // $config = array(
-            //     'upload_path' => "uploads/",
-            //     'allowed_types' => "gif|jpg|png|jpeg|JPEG|JPG|PNG|GIF|txt|doc|docx|pdf|PDF|DOCX|DOC",
-            //     'overwrite' => FALSE,
-            //     'max_size' => "20480",
-            //     'file_name' => $name
-            // );
-            // $this->load->library('upload', $config);
-            // $this->upload->initialize($config);
+
             $record_upload = array(
                 "applicant_id" => $doc_id,
                 "company" => $company,
@@ -191,36 +183,7 @@ class Base_Controller extends REST_Controller{
                     $this->Main_mdl->record_upload_activity($record_upload);
                 }
             }
-            /*
-            var_dump($this->upload->display_errors());
 
-            if (!$this->upload->do_upload('file')) {
-                $record_upload['message'] = json_encode(array('error' => $this->upload->display_errors()) );
-                $record_upload['status'] = 1;
-                $record_upload["type"] = "FAILEDDOCUMENTUPLOAD";
-                $this->Main_mdl->record_upload_activity($record_upload);
-            }else{
-                    $record_upload['status'] = 0;
-                    $record_upload['message'] = json_encode($this->upload->data());
-                    $record_upload["type"] = "SUCCESSDOCUMENTUPLOAD";
-                     $data = array(
-                        "applicant_id" => $doc_id,
-                        "doc_name" => $file['name'],
-                        "doc_type" => $file['type'],
-                        "doc_size" => $file['size'],
-                        "doc_link" => $this->documentStorage.$name,
-                        "date_created" => date('Y-m-d H:i:s'),
-                        "status" => 0,
-                    );
-
-                    $this->Main_mdl->record_upload_doc($data);
-                    $this->Main_mdl->record_upload_activity($record_upload);
-                    return array(
-                        'link' => $this->documentStorage.$name,
-                        'name' => $name
-                    );
-            }
-            */
         }else{
             return false;
         }
