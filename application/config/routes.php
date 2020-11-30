@@ -100,7 +100,7 @@ $route['internal/account/user/update/password']['patch'] = 'accounts/update_user
 $route['internal/account/token/update']['patch'] = 'accounts/register_token';
 
 /* Read Document */
-$route['uploads/docs/(:any)/(:any)'] = 'main/view_document/$1/$2';
+$route['uploads/docs/(:any)/(:any)/(:any)'] = 'main/view_document/$1/$2/$3';
 
 /* Profile */
 $route['internal/profile/reports']['post'] = 'system/report_create';

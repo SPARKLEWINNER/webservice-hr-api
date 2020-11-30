@@ -17,8 +17,6 @@ class Main extends Base_Controller
 
     public function view_document($id = NULL, $company = NULL){
         $result['fetch'] =  $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
-        header("Content-type: " . $row["imageType"]);
-        echo $row["imageData"];
     }
 
 

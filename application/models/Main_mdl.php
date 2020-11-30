@@ -8,11 +8,11 @@ class Main_mdl extends Base_Model {
 
     public function __construct () {
         parent::__construct();
-    
+
     }
 
     public function login($email, $password){
-        
+
         $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
         if(isset($acc)){
             if(password_verify($password,  $acc->password)){
@@ -117,7 +117,7 @@ class Main_mdl extends Base_Model {
     public function resetUser($data){
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
         if(!$acc) return $this->response_code(204,"", "");
-        
+
         if($acc->token === "" || empty($acc->token)) return $this->response_code(204,"Invalid token","");
 
         if($data['hash'] ==  $acc->token):
@@ -143,15 +143,15 @@ class Main_mdl extends Base_Model {
     }
 
     /** Exams **/
-    
+
     public function exam_data($data){
 
         $this->db->insert('exams', $data);
         $inserted_id = $this->db->insert_id();
-        
+
         $exam = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
 
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $this->db->insert_id(),
                 "applicant_id" => $exam->applicant_id,
@@ -161,22 +161,22 @@ class Main_mdl extends Base_Model {
                 "score" => $exam->score,
                 "exam_status" => $exam->status,
                 "reviewer" => $exam->reviewer,
-            );  
+            );
         else: return false;
         endif;
 
     }
-    
+
     /** Records **/
-    
+
     public function record_data($data){
 
         $this->db->insert('applications', $data);
         $inserted_id = $this->db->insert_id();
-        
+
         $record = $this->db->select('*')->from('applications')->where('id', $inserted_id)->get()->row();
 
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $this->db->insert_id(),
                 "applicant_id" => $record->applicant_id,
@@ -189,7 +189,7 @@ class Main_mdl extends Base_Model {
                 "username" => $record->username,
                 "company" => $record->company,
                 "profile" => $record->profile
-            );  
+            );
         else: return false;
         endif;
 
@@ -210,37 +210,35 @@ class Main_mdl extends Base_Model {
         $this->db->insert('upload', $data);
         return $this->db->affected_rows() > 0 ? true : false;
     }
-    
-    
+
+
     public function records_doc_pull($id,$company){
         $validate_status = $this->db->select('*')->from('applications')->where('id', $id)->get()->row();
         // if($validate_status->status != 5){
         //     $this->db->where('id', $id);
         //     $this->db->update('applications', array("status" => 5));
         // }
-        if($this->db->affected_rows() > 0):    
-            $query = "SELECT * FROM records WHERE applicant_id = {$id}";
-            $result = $this->db->query($query);
-            if($result){
-                return $result->result_array();
-            }else{
-                return false;
-            }
-        else: return false;
-        endif;
+          $query = "SELECT * FROM records WHERE applicant_id = {$id}";
+          $result = $this->db->query($query);
+          if($result->num_rows() > 0){
+              return $result->result_array();
+          }else{
+              return false;
+          }
+
     }
 
     public function record_review_data($id,$data){
 
         $this->db->insert('reviews', $data);
         $inserted_id = $this->db->insert_id();
-        
+
         $record = $this->db->select('*')->from('reviews')->where('id', $inserted_id)->get()->row();
 
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             $this->db->where('id', $id);
             $this->db->update('applications', array("status" => 3));
-    
+
             return array(
                 "id" => $inserted_id,
                 "applicant_id" => $record->applicant_id,
@@ -248,16 +246,16 @@ class Main_mdl extends Base_Model {
                 "recruitment" => $record->recruitment,
                 "reviewer" => $record->recruitment_reviewer,
                 "assess_evaluations" => $record->assess_evaluation
-            );  
+            );
         else: return false;
         endif;
 
-    }    
+    }
 
     public function record_applying_for($job_id, $applicant_id){
 
         $result = $this->db->select('*')->from('applications')->where('id', $applicant_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             if($result->applying_for == 0){
                 $this->db->where('id', $applicant_id);
                 $this->db->update('applications', array("applying_for" => $job_id));
@@ -277,11 +275,11 @@ class Main_mdl extends Base_Model {
         $this->db->where('applicant_id', $app_id);
         $this->db->update('reviews', $app_data);
 
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             $record = $this->db->select('*')->from('reviews')->where('applicant_id', $app_id)->get()->row();
             $this->db->where('id', $app_id);
             $this->db->update('applications', array("status" => 4));
-    
+
             return array(
                 "id" => $app_id,
                 "applicant_id" => $record->applicant_id,
@@ -289,17 +287,17 @@ class Main_mdl extends Base_Model {
                 "recruitment" => $record->recruitment,
                 "reviewer" => $record->reviewer,
                 "reviewer_status" => $record->review_status
-            );  
+            );
         else: return false;
         endif;
 
-    }    
+    }
 
     public function record_wage_data($data){
         $this->db->insert('wages', $data);
         $inserted_id = $this->db->insert_id();
         $wage = $this->db->select('*')->from('wages')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $inserted_id,
                 "name" => $wage->name,
@@ -308,18 +306,18 @@ class Main_mdl extends Base_Model {
                 "author" => $wage->author,
                 "date_created" => $wage->date_created,
                 "status" => $wage->status
-            );  
+            );
         else:
             return false;
         endif;
-    }    
+    }
 
     public function record_wage_assign_data($data){
         $this->db->insert('wage_assigning', $data);
         $inserted_id = $this->db->insert_id();
         $wage = $this->db->select('*')->from('wages')->where('id', $data['wage_id'])->get()->row();
 
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $wage->id,
                 "name" => $wage->name,
@@ -329,17 +327,17 @@ class Main_mdl extends Base_Model {
                 "status" => $wage->status,
                 "store_id" => $data['store_id'],
                 "assign_id" => $inserted_id
-            );  
+            );
         else:
             return false;
         endif;
-    }    
+    }
 
     public function record_exam_data($data){
         $this->db->insert('exams', $data);
         $inserted_id = $this->db->insert_id();
         $exams = $this->db->select('*')->from('exams')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $inserted_id,
                 "applicant_id" => $exams->applicant_id,
@@ -347,28 +345,28 @@ class Main_mdl extends Base_Model {
                 "exam_id" => $exams->exam_id,
                 "date_created" => $exams->date_created,
                 "status" => $exams->status,
-            );  
+            );
         else:
             return false;
         endif;
-    }    
+    }
 
     public function record_pull($company){
 
-        $query = "SELECT * FROM `applications` where `company` = '{$company}'"; 
+        $query = "SELECT * FROM `applications` where `company` = '{$company}'";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
 
     public function wages_pull($company){
-        $query = "SELECT * FROM wages wg WHERE company = '{$company}'"; 
+        $query = "SELECT * FROM wages wg WHERE company = '{$company}'";
         $result = $this->db->query($query);
         $compiled_dd = $result->result_array();
         foreach($result->result_array() as $k => $wages){
             $asg_wages =  "SELECT wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned, st.*
             FROM wage_assigning wgasg
-            LEFT JOIN store st ON st.id = wgasg.store_id WHERE wgasg.company = '{$company}' AND wgasg.wage_id = {$wages['id']}"; 
+            LEFT JOIN store st ON st.id = wgasg.store_id WHERE wgasg.company = '{$company}' AND wgasg.wage_id = {$wages['id']}";
             $asg_result = $this->db->query($asg_wages);
 
             if($asg_result->num_rows() > 0){
@@ -381,7 +379,7 @@ class Main_mdl extends Base_Model {
 
     public function record_status_pull($company, $status){
 
-        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -394,7 +392,7 @@ class Main_mdl extends Base_Model {
     }
 
     public function record_weeks_pull($company, $weeks){
-        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -407,7 +405,7 @@ class Main_mdl extends Base_Model {
     }
 
     public function record_day_pull($company, $days){
-        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -421,7 +419,7 @@ class Main_mdl extends Base_Model {
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
-        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0"; 
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -435,7 +433,7 @@ class Main_mdl extends Base_Model {
 
     public function record_pool_day_pull($company, $days){
 
-        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY"; 
+        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
@@ -445,11 +443,11 @@ class Main_mdl extends Base_Model {
         }
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
-    
+
     /* Specific */
     public function record_specific_pull($company, $id){
 
-        $query = "SELECT app.*, st.meta_value FROM `applications` app  
+        $query = "SELECT app.*, st.meta_value FROM `applications` app
         LEFT JOIN `settings` st ON app.applying_for = st.id WHERE app.company = '{$company}' AND app.id = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
         $data = $result->result_array();
@@ -468,10 +466,10 @@ class Main_mdl extends Base_Model {
 
 
     }
-    
+
     public function record_reviews_pull($company, $id){
 
-        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1"; 
+        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
@@ -481,7 +479,7 @@ class Main_mdl extends Base_Model {
 
     public function record_ts_specific_pull($company, $ref_id){
 
-        $query = "SELECT app.*, st.meta_value FROM `applications` app  
+        $query = "SELECT app.*, st.meta_value FROM `applications` app
         LEFT JOIN `settings` st ON app.applying_for = st.id WHERE app.company = '{$company}' AND app.reference_id = '{$ref_id}' LIMIT 1";
         $result = $this->db->query($query);
         $data = $result->result_array();
@@ -494,24 +492,24 @@ class Main_mdl extends Base_Model {
             return false;
         }
     }
-    
+
     public function record_ts_reviews_pull($company, $ref_id){
         $apl = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->where('company', $company)->get()->row();
-        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$apl->id}' LIMIT 1"; 
+        $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$apl->id}' LIMIT 1";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
-    
+
     public function record_stores_pull($company){
 
-        $query = "SELECT * FROM `store` WHERE `company` = '{$company}'"; 
+        $query = "SELECT * FROM `store` WHERE `company` = '{$company}'";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
-    
-    
+
+
     public function records_store_people_pull($company, $store_id){
 
         $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls";
@@ -523,18 +521,18 @@ class Main_mdl extends Base_Model {
                 $specific_r = array('applicant_id' => $apls['id'], 'company' => $company, 'store' => $store_id);
                 $review = $this->db->select('*')->from('reviews')->where($specific_r)->get()->row_array();
                 if(!empty($review) && $review['applicant_id'] == $apls['id']):
-                    
+
                     if($review['assess_evaluation'] == 1):
                         $store = $this->db->select('*')->from('store')->where('id', $store_id)->where('company', $company)->get()->row();
                         $job = $this->db->select('*')->from('settings')->where('id', json_decode($apls['applying_for']))->where('company', $company)->get()->row();
 
 
                         if(!empty($store) && !empty($job)){
-                            $apls['review'] = $review; 
-                            $apls['review_status'] = $review['review_status']; 
-                            $apls['store_name'] = $store->name; 
-                            $apls['store_id'] = $store->id; 
-                            $apls['job_title'] = json_decode($job->meta_value)->title; 
+                            $apls['review'] = $review;
+                            $apls['review_status'] = $review['review_status'];
+                            $apls['store_name'] = $store->name;
+                            $apls['store_id'] = $store->id;
+                            $apls['job_title'] = json_decode($job->meta_value)->title;
                             $return_array[] = $apls;
                         }
 
@@ -547,40 +545,40 @@ class Main_mdl extends Base_Model {
             return false;
         }
 
-       
+
 
     }
-    
+
     public function record_emails_pull($company){
 
-        $query = "SELECT * FROM `system` WHERE `company` = '{$company}'"; 
+        $query = "SELECT * FROM `system` WHERE `company` = '{$company}'";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
-    
+
     public function record_logs_pull($company, $type){
         if($type != null){
-            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}' AND `type` = '{$type}'"; 
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}' AND `type` = '{$type}'";
         }else{
-            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}'"; 
+            $query = "SELECT * FROM `activity` WHERE `company` = '{$company}'";
         }
 
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
-    
+
     public function record_exam_logs_pull($company){
 
-        $applicants = "SELECT * FROM `applications` where `company` = '{$company}'"; 
+        $applicants = "SELECT * FROM `applications` where `company` = '{$company}'";
         $result = $this->db->query($applicants);
         if($result->num_rows() > 0){
             $app_res = $result->result_array();
 
             foreach($app_res as $key => $value){
                 $app_res[$key]['exams'] = array();
-                $exams = "SELECT * FROM exams"; 
+                $exams = "SELECT * FROM exams";
                 $exams_takers = $this->db->query($exams)->result_array();
 
                 foreach($exams_takers as $k => $v){
@@ -599,16 +597,16 @@ class Main_mdl extends Base_Model {
                     }
                 }
             }
-            
+
         }
         return ($result->num_rows() > 0) ? $app_res : false;
 
     }
-    
+
     public function record_patch_data($data,$status){
         $this->db->where('id', $data['id']);
         $this->db->update('applications', array("status" => $status));
-    
+
         if($this->db->affected_rows() > 0):
             $result = $this->db->select('id,status')->from('applications')->where('id', $data['id'])->get()->row();
             return array(
@@ -629,17 +627,17 @@ class Main_mdl extends Base_Model {
             $this->db->delete("records");
             return ($this->db->affected_rows() > 0) ? array("Removed successfully") : false;
         }
-        
+
         $this->db->where('id', $record_id);
         $this->db->delete('records');
         return ($this->db->affected_rows() > 0) ? true : false;
     }
-    
+
     public function submit_record($id,$data){
-    
+
         $this->db->where('id', $id);
         $this->db->update('records', $data);
-    
+
         if($this->db->affected_rows() > 0):
             $record = $this->db->select('id,status')->from('records')->where('id', $id)->get()->row();
             return array(
@@ -657,7 +655,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('store', $data);
         $inserted_id = $this->db->insert_id();
         $store = $this->db->select('*')->from('store')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $inserted_id,
               "name" => $store->name,
@@ -665,11 +663,11 @@ class Main_mdl extends Base_Model {
               "company" => $store->company,
               "status" => $store->status,
               "date_created" => $store->date_created
-            ); 
+            );
         else:
             return false;
         endif;
-       
+
     }
 
     /* DTR */
@@ -678,7 +676,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('dtr', $data);
         $inserted_id = $this->db->insert_id();
         $dtr = $this->db->select('*')->from('dtr')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $inserted_id,
               "store_id" => $dtr->store_id,
@@ -687,11 +685,11 @@ class Main_mdl extends Base_Model {
               "dtr" => $dtr->dtr,
               "date_created" => $dtr->date_created,
               "status" => $dtr->status
-            ); 
+            );
         else:
             return false;
         endif;
-       
+
     }
 
 
@@ -699,29 +697,29 @@ class Main_mdl extends Base_Model {
         $query = "SELECT * FROM dtr WHERE `company` = '{$company}' AND `store_id` = {$store_id}";
         $result = $this->db->query($query);
         $dtr = $result->result_array();
-        if($result->num_rows() > 0): 
+        if($result->num_rows() > 0):
             return $dtr;
         else:
             return false;
         endif;
-       
+
     }
 
     public function system_record_wage_list($store_id,$company){
-        $query = "SELECT * FROM wages wg 
+        $query = "SELECT * FROM wages wg
         LEFT JOIN wage_assigning wasg ON wasg.wage_id = wg.id WHERE wasg.company = '{$company}' AND wasg.store_id = {$store_id}";
         $result = $this->db->query($query);
         $dtr = $result->result_array();
-        if($result->num_rows() > 0): 
+        if($result->num_rows() > 0):
             return $dtr;
         else:
             return false;
         endif;
-       
+
     }
 
     public function system_record_payroll($company, $store){
-        $employees = "SELECT * FROM  applications appl 
+        $employees = "SELECT * FROM  applications appl
         LEFT JOIN employee emd ON emd.applicant_id = appl.id
         WHERE  appl.status = 6 AND appl.company = '{$company}'";
         $result_emp = $this->db->query($employees);
@@ -734,42 +732,42 @@ class Main_mdl extends Base_Model {
                 if($result_dtr->num_rows() > 0){
                     $compiled_dd[$k]['dtr'] =  $result_dtr->result_array();
                 }
-                
+
             }
 
             return ($result_emp->num_rows() > 0) ? $compiled_dd : false;
         }else{
             return false;
         }
-        
+
     }
 
     public function system_record_wages_combine($store){
-        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg 
-        LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wgasg.store_id = '{$store}'"; 
+        $query = "SELECT wg.*, wgasg.id AS assigning_id, wgasg.store_id, wgasg.date_assigned FROM wages wg
+        LEFT JOIN wage_assigning wgasg ON wgasg.wage_id = wg.id  WHERE wgasg.store_id = '{$store}'";
         $result = $this->db->query($query);
         $compiled_dd = $result->result_array();
         return ($result->num_rows() > 0) ? $compiled_dd : false;
     }
 
-    
-    
+
+
     /** Accounts **/
-    
+
     public function new_user($data){
-        
+
         $validate_email = "SELECT * FROM users WHERE email = '{$data['email']}'";
         $result_vd = $this->db->query($validate_email);
-        
+
         if($result_vd->num_rows() > 0){
             return $this->response_code(204,"Email already exist", "");
         }else{
             $this->db->insert('users', $data);
             $inserted_id = $this->db->insert_id();
-            
+
             $record = $this->db->select('id,first_name,last_name,email,profile,date_created,filename')->from('users')->where('id', $inserted_id)->get()->row();
-            
-            if($this->db->affected_rows() > 0):    
+
+            if($this->db->affected_rows() > 0):
                 return array(
                   "id" => $this->db->insert_id(),
                   "first_name" => $record->first_name,
@@ -778,36 +776,36 @@ class Main_mdl extends Base_Model {
                   "profile" => $record->profile,
                   "filename" => $record->filename,
                   "date_created" => $record->date_created,
-                );  
+                );
             else: return false;
             endif;
         }
-    
 
-  
+
+
     }
-    
+
     public function check_user($uid, $product_id){
         $query = "SELECT * FROM users WHERE id = {$uid} AND  product_id = {$product_id} ORDER BY id DESC";
         $result = $this->db->query($query);
 
         return ($result->num_rows() > 0) ? true : false;
     }
-        
+
     public function user_pull($id){
-        
+
         $query = "SELECT * FROM applications WHERE id = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
     }
 
-    
+
     public function update_user($uid,$post_id,$data){
         $this->db->where('post_id', $post_id);
         $this->db->where('meta_key', '_price');
         $this->db->update('wp_postmeta', $data);
-        
+
         $acc = $this->db->select('id,email,first_name,last_name,profile,product_id')->from('users')->where('id', $uid)->get()->row();
         $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key','_price')->where('post_id',$acc->product_id)->get()->row();
         $id = $acc->id;
@@ -823,27 +821,27 @@ class Main_mdl extends Base_Model {
             "product_id" => $acc->product_id,
             "rate" => $woocom_meta->meta_value
         );
-            
+
         return ($this->db->affected_rows() > 0) ? $result : false;
     }
-    
+
     public function update_details_user($id,$data){
        $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('id', $id)->get()->row();
        $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key','_price')->where('post_id',$acc->product_id)->get()->row();
        $woocom_details = "SELECT p.*, ( SELECT guid FROM wp_posts WHERE id = m.meta_value ) AS imgurl,  (SELECT meta_value FROM wp_postmeta pm WHERE meta_key='_wp_attachment_metadata' AND pm.post_id=m.meta_value ) AS imgdetails FROM wp_posts p
        LEFT JOIN  wp_postmeta m ON(p.id = m.post_id AND m.meta_key =  '_thumbnail_id' ) WHERE p.post_type =  'product' AND p.id= {$acc->product_id}";
        $woo_details = $this->db->query($woocom_details);
-             
+
        if($woo_details->num_rows() > 0){
           $woo_details = $woo_details->result()[0];
        }
-                  
+
         if(!$acc || $acc->email != $data['old']) return $this->response_code(204,"User invalid details", "");
-       
-        $new_email = array("email"=> $data['new']);  
+
+        $new_email = array("email"=> $data['new']);
         $this->db->where('id', $id);
         $this->db->update('users', $new_email);
-    
+
         if($this->db->affected_rows() > 0):
             return array(
                "id" => $id,
@@ -858,36 +856,36 @@ class Main_mdl extends Base_Model {
             return false;
         endif;
     }
-    
-    
+
+
     public function update_user_password($id, $passwords){
-       
+
         $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('id', $id)->get()->row();
         $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key','_price')->where('post_id',$acc->product_id)->get()->row();
         $woocom_details = "SELECT p.*, ( SELECT guid FROM wp_posts WHERE id = m.meta_value ) AS imgurl,  (SELECT meta_value FROM wp_postmeta pm WHERE meta_key='_wp_attachment_metadata' AND pm.post_id=m.meta_value ) AS imgdetails FROM wp_posts p
         LEFT JOIN  wp_postmeta m ON(p.id = m.post_id AND m.meta_key =  '_thumbnail_id' ) WHERE p.post_type =  'product' AND p.id= {$acc->product_id}";
         $woo_details = $this->db->query($woocom_details);
-         
+
         if($woo_details->num_rows() > 0){
             $woo_details = $woo_details->result()[0];
         }
-       
+
         $grab_password =  $acc->password;
         $grab_email =  $acc->email;
         $id = $acc->id;
-        
+
 
         if(!$acc) return $this->response_code(204,"User invalid", "");
-        
+
         if(password_verify($passwords['old'],  $grab_password)):
             $data = array(
                 "password" => password_hash($passwords['new'], PASSWORD_DEFAULT)
             );
-         
-        
+
+
             $this->db->where('id', $id);
             $this->db->update('users', $data);
-       
+
             if($this->db->affected_rows() > 0):
                 return array(
                     "id" => $id,
@@ -900,40 +898,40 @@ class Main_mdl extends Base_Model {
                 );
             else:
               return $this->response_code(204,"User unable to change current password", "");
-            endif;   
+            endif;
         else:
           return $this->response_code(204,"User invalid current password", "");
 
         endif;
     }
-    
-    
+
+
     public function set_token($uid, $data){
         $this->db->where('id', $uid);
         $this->db->update('users', $data);
-        
+
         $acc = $this->db->select('id,token')->from('users')->where('id', $uid)->get()->row();
-        
+
         if(!$acc) return $this->response_code(204,"User invalid", "");
         $result = array(
             "id" => $acc->id,
             "token" => $acc->token
         );
         return ($this->db->affected_rows() > 0) ? $result : false;
-        
+
     }
 
 
     /** Notification **/
-    
+
     public function notify_user($data){
 
         $this->db->insert('notifications', $data);
         $inserted_id = $this->db->insert_id();
-        
+
         $notify = $this->db->select('*')->from('notifications')->where('id', $inserted_id)->get()->row();
         $token = $this->db->select('token')->from('users')->where('product_id',$notify->uid)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $this->db->insert_id(),
               "uid" => $notify->uid,
@@ -942,12 +940,12 @@ class Main_mdl extends Base_Model {
               "status" => $notify->status,
               "date_created" => $notify->date_created,
               "token" => $token->token
-            );  
+            );
         else: return false;
         endif;
-  
+
     }
-    
+
 
 /*
     public function generate_token($password, $grab_password, $id, $grab_email){
@@ -964,22 +962,22 @@ class Main_mdl extends Base_Model {
                     'expired_at' => $expired_at
                 )
             );
-            
+
             if ($result === FALSE):
                 return $this->response_code(500,"", "");
             else:
-                
+
                 return $this->response_code(200, 'Successfully login.',
-                    array('id' => $id, 
+                    array('id' => $id,
                     'token' => $token
                 ));
-                
+
             endif;
 
         endif;
 
     }
- */   
+ */
     public function logout()
     {
         $users_id  = $this->input->get_request_header('User-ID', TRUE);
@@ -987,7 +985,7 @@ class Main_mdl extends Base_Model {
 
         $token_validity = $this->db->select('user_id, token')->from('user_token')->where('user_id', $users_id)->where('token', $token)->get()->row();
 
-        if(!$token_validity) return $this->response_code(401,"", ""); 
+        if(!$token_validity) return $this->response_code(401,"", "");
 
         $this->db->where('user_id',$users_id)->where('token',$token)->delete('user_token');
         return $this->response_code(200, '', '');
@@ -1000,7 +998,7 @@ class Main_mdl extends Base_Model {
             $this->db->insert('users', $data);
             $inserted_id = $this->db->insert_id();
             $people = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
-            if($this->db->affected_rows() > 0):    
+            if($this->db->affected_rows() > 0):
                 return array(
                   "id" => $inserted_id,
                   "company" => $people->company,
@@ -1010,7 +1008,7 @@ class Main_mdl extends Base_Model {
                   "user_level" => $people->user_level,
                   "date_created" => $people->date_created,
                   "temp_password" => $temp_password,
-                ); 
+                );
             else:
                 return false;
             endif;
@@ -1053,7 +1051,7 @@ class Main_mdl extends Base_Model {
             $this->db->where('id', $validate_acc->id);
             $this->db->update('users', $data);
             $people = $this->db->select('*')->from('users')->where('id', $validate_acc->id)->get()->row();
-            if($this->db->affected_rows() > 0):    
+            if($this->db->affected_rows() > 0):
                 return array(
                   "id" => $validate_acc->id,
                   "company" => $people->company,
@@ -1063,7 +1061,7 @@ class Main_mdl extends Base_Model {
                   "user_level" => $people->user_level,
                   "date_created" => $people->date_created,
                   "temp_password" => $temp_password,
-                ); 
+                );
             else:
                 return false;
             endif;
@@ -1076,20 +1074,20 @@ class Main_mdl extends Base_Model {
             $this->db->insert('assigning', $data);
             $inserted_id = $this->db->insert_id();
             $assign = $this->db->select('*')->from('assigning')->where('id', $inserted_id)->get()->row();
-            if($this->db->affected_rows() > 0):    
+            if($this->db->affected_rows() > 0):
                 return array(
                   "id" => $inserted_id,
                   "emp_id" => $assign->emp_id,
                   "store_id" => $assign->store_id,
                   "company" => $assign->company,
                   "date_assigned" => $assign->date_assigned,
-                ); 
+                );
             else:
                 return false;
             endif;
     }
 
-    
+
     public function system_people_pull($company){
         $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' ORDER BY id DESC";
         $result = $this->db->query($query);
@@ -1108,7 +1106,7 @@ class Main_mdl extends Base_Model {
         }
         return ($result->num_rows() > 0) ? $user_arr : false;
     }
-    
+
     public function system_people_specific_pull($company, $id){
         $query = "SELECT * FROM users WHERE user_level != 3 AND  company = '{$company}' AND id = {$id} ORDER BY id DESC";
         $result = $this->db->query($query);
@@ -1128,7 +1126,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('reports', $data);
         $inserted_id = $this->db->insert_id();
         $report = $this->db->select('*')->from('reports')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $inserted_id,
               "company" => $report->company,
@@ -1136,21 +1134,21 @@ class Main_mdl extends Base_Model {
               "details" => $report->details,
               "status" => $report->status,
               "date_created" => $report->date_created
-            ); 
+            );
         else:
             return false;
         endif;
-       
+
     }
 
     /* Log activity */
 
-        
+
     public function record_log($data){
         $this->db->insert('activity', $data);
         return $this->db->affected_rows() != 1  ? false : true;
     }
-        
+
     public function record_system($data){
         $this->db->insert('system', $data);
         return $this->db->affected_rows() != 1  ? false : true;
@@ -1161,7 +1159,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('settings', $data);
         $inserted_id = $this->db->insert_id();
         $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $inserted_id,
               "company" => $jobs->company,
@@ -1169,18 +1167,18 @@ class Main_mdl extends Base_Model {
               "meta_key" => $jobs->meta_key,
               "meta_value" => $jobs->meta_value,
               "date_created" => $jobs->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
-       
+
     }
 
     public function system_record_exams($data){
         $this->db->insert('settings', $data);
         $inserted_id = $this->db->insert_id();
         $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
               "id" => $inserted_id,
               "company" => $jobs->company,
@@ -1188,7 +1186,7 @@ class Main_mdl extends Base_Model {
               "meta_key" => $jobs->meta_key,
               "meta_value" => $jobs->meta_value,
               "date_created" => $jobs->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
@@ -1198,7 +1196,7 @@ class Main_mdl extends Base_Model {
 
         $this->db->where('id', $exam_id);
         $this->db->update('settings', $data);
-    
+
         if($this->db->affected_rows() > 0):
             $jobs = $this->db->select('*')->from('settings')->where('id', $exam_id)->get()->row();
             return array(
@@ -1208,7 +1206,7 @@ class Main_mdl extends Base_Model {
                 "meta_key" => $jobs->meta_key,
                 "meta_value" => $jobs->meta_value,
                 "date_created" => $jobs->date_created,
-              ); 
+              );
         else:
             return false;
         endif;
@@ -1233,7 +1231,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('settings', $data);
         $inserted_id = $this->db->insert_id();
         $jobs = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
             "id" => $inserted_id,
             "company" => $jobs->company,
@@ -1241,7 +1239,7 @@ class Main_mdl extends Base_Model {
             "meta_key" => $jobs->meta_key,
             "meta_value" => $jobs->meta_value,
             "date_created" => $jobs->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
@@ -1252,7 +1250,7 @@ class Main_mdl extends Base_Model {
         $this->db->where('id', $req_id);
         $this->db->update('settings', $data);
         $jobs = $this->db->select('*')->from('settings')->where('id', $req_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $req_id,
                 "company" => $jobs->company,
@@ -1260,7 +1258,7 @@ class Main_mdl extends Base_Model {
                 "meta_key" => $jobs->meta_key,
                 "meta_value" => $jobs->meta_value,
                 "date_created" => $jobs->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
@@ -1270,7 +1268,7 @@ class Main_mdl extends Base_Model {
         $this->db->insert('settings', $data);
         $inserted_id = $this->db->insert_id();
         $isUpload = $this->db->select('*')->from('settings')->where('id', $inserted_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
             "id" => $inserted_id,
             "company" => $isUpload->company,
@@ -1278,18 +1276,18 @@ class Main_mdl extends Base_Model {
             "meta_key" => $isUpload->meta_key,
             "meta_value" => $isUpload->meta_value,
             "date_created" => $isUpload->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
     }
 
-    
+
     public function system_update_uploading_status($data, $us_id){
         $this->db->where('id', $us_id);
         $this->db->update('settings', $data);
         $jobs = $this->db->select('*')->from('settings')->where('id', $us_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
             return array(
                 "id" => $us_id,
                 "company" => $jobs->company,
@@ -1297,7 +1295,7 @@ class Main_mdl extends Base_Model {
                 "meta_key" => $jobs->meta_key,
                 "meta_value" => $jobs->meta_value,
                 "date_created" => $jobs->date_created,
-            ); 
+            );
         else:
             return false;
         endif;
@@ -1307,18 +1305,18 @@ class Main_mdl extends Base_Model {
 
     public function system_record_update_email($data,$email_id){
         $applicants = $this->db->select('*')->from('applications')->where('reference_id', $email_id)->get()->row();
-        if($this->db->affected_rows() > 0):    
+        if($this->db->affected_rows() > 0):
 
             $profile = json_decode($applicants->data);
             $profile->person_email = $applicants->username = $data['email'];
             $update_application = array(
               "data" => json_encode($profile),
               "username" => $applicants->username
-            ); 
+            );
 
             $this->db->where('reference_id', $email_id);
             $this->db->update('applications', $update_application);
-        
+
             if($this->db->affected_rows() > 0):
 
                 // get the system table's data
@@ -1328,8 +1326,8 @@ class Main_mdl extends Base_Model {
                 $mail_new_data = array(
                   "data" => json_encode($mail_data),
                   "email" => $data['email']
-                ); 
-    
+                );
+
                 $this->db->where('user', $email_id);
                 $this->db->update('system', $mail_new_data);
 
@@ -1342,7 +1340,7 @@ class Main_mdl extends Base_Model {
                         "message" => $system->message,
                         "data" => $system->data,
                         "email" => $system->email,
-                    ); 
+                    );
 
                 else:
                     return false;
@@ -1374,13 +1372,13 @@ class Main_mdl extends Base_Model {
         }else{
             return false;
         }
-        
+
 
     }
 
     public function system_jobs_pull($company,$id,$jobs){
-  
-        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}'"; 
+
+        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}'";
         $result = $this->db->query($jobs);
         if($result->num_rows() > 0){
             $jobs_result = $result->result_array();
@@ -1388,15 +1386,15 @@ class Main_mdl extends Base_Model {
 
             foreach($jobs_result as $key => $value){
                 $jobs_result[$key]['exams'] = array();
-                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
+                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'";
                 $exams_result = $this->db->query($exams);
 
                 $jobs_result[$key]['requirements'] = array();
-                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
+                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'";
                 $requirements_result = $this->db->query($requirements);
 
                 $jobs_result[$key]['isUpload'] = array();
-                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'"; 
+                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'";
                 $isUpload_result = $this->db->query($isUpload);
 
                 if($requirements_result->num_rows() > 0){
@@ -1426,31 +1424,31 @@ class Main_mdl extends Base_Model {
                     }
                 }
             }
-            
+
         }
         return ($result->num_rows() > 0) ? $jobs_result : false;
-        
+
     }
 
     public function system_jobs_specific_pull($company,$job_id,$jobs){
-  
-        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}' AND id = {$job_id} LIMIT 1"; 
-        
+
+        $jobs = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = '{$jobs}' AND id = {$job_id} LIMIT 1";
+
         $result = $this->db->query($jobs);
         if($result->num_rows() > 0){
             $jobs_result = $result->result_array();
 
             foreach($jobs_result as $key => $value){
                 $jobs_result[$key]['exams'] = array();
-                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'"; 
+                $exams = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'exams'";
                 $exams_result = $this->db->query($exams);
 
                 $jobs_result[$key]['requirements'] = array();
-                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'"; 
+                $requirements = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'requirements'";
                 $requirements_result = $this->db->query($requirements);
 
                 $jobs_result[$key]['isUpload'] = array();
-                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'"; 
+                $isUpload = "SELECT * FROM `settings` where `company` = '{$company}' AND `meta_key` = 'uploading_status'";
                 $isUpload_result = $this->db->query($isUpload);
 
                 if($requirements_result->num_rows() > 0){
@@ -1480,10 +1478,10 @@ class Main_mdl extends Base_Model {
                     }
                 }
             }
-            
+
         }
 
         return ($result->num_rows() > 0) ? $jobs_result : false;
-        
+
     }
 }

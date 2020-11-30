@@ -89,6 +89,7 @@ class Record extends Base_Controller
         $this->activity_logs($data['id'], 'DOCUMENTLOG', json_encode($_FILES['file']), json_encode($upload_proc), "DOCUMENTLOG", filter_var($upload_proc, FILTER_VALIDATE_BOOLEAN));
         if($upload_proc){
             $response = $this->Main_mdl->records_doc_pull($data['id'], $data['company']);
+
             if(!$response){
                 $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
                 return $this->set_response($response, 422);

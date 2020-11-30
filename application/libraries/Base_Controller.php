@@ -27,7 +27,7 @@ class Base_Controller extends REST_Controller{
     public $default_client = "mobileapp-client";
     public $default_auth_key = "simplerestapi";
 
-    public $documentStorage = DEFAULT_URI."uploads/docs/";
+    public $documentStorage = DEFAULT_URI."uploads/docs";
     public $profileStorage = DEFAULT_URI."uploads/";
 
 
@@ -132,11 +132,15 @@ class Base_Controller extends REST_Controller{
         $path = 'uploads/docs/';
         $request = 'doc';
         $valid_ext = array('jpeg', 'jpg', 'png', 'gif', 'bmp','txt','doc','docx','pdf');
-        $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower($doc_id.time().'1.'.$ext);
-
+        $name = filter_var($doc_id, FILTER_SANITIZE_STRING)."-".strtolower(uniqid(true).".".$ext);
+        $segrate_folder = $path.$doc_id."/";
         if(!file_exists($path))
         {
             mkdir($path, 0777, true);
+        }
+
+        if(!file_exists($segrate_folder)){
+          mkdir($segrate_folder, 0777, true);
         }
 
         if($file){
@@ -149,9 +153,7 @@ class Base_Controller extends REST_Controller{
 
 
             if (in_array($ext, $valid_ext)) {
-                $path = $path . strtolower($name);
-
-
+                $path = $segrate_folder . strtolower($name);
                 if (move_uploaded_file($tmp, $path)) {
 
                     $record_upload['status'] = 0;
@@ -162,9 +164,8 @@ class Base_Controller extends REST_Controller{
                         "applicant_id" => $doc_id,
                         "doc_name" => $file['name'],
                         "doc_type" => $file['type'],
-                        "doc_file" => addslashes(file_get_contents($this->documentStorage.$name)),
                         "doc_size" => $file['size'],
-                        "doc_link" => $this->documentStorage.$name,
+                        "doc_link" => DEFAULT_URI.$segrate_folder.$name,
                         "date_created" => date('Y-m-d H:i:s'),
                         "status" => 0,
                     );
@@ -172,7 +173,7 @@ class Base_Controller extends REST_Controller{
                     $this->Main_mdl->record_upload_doc($data);
                     $this->Main_mdl->record_upload_activity($record_upload);
                     return array(
-                        'link' => $this->documentStorage.$name,
+                        'link' => DEFAULT_URI.$segrate_folder.$name,
                         'name' => $name
                     );
                 }else{
@@ -420,8 +421,10 @@ class Base_Controller extends REST_Controller{
         );
     }
 
-
-
-
+    function mt_random_float($min, $max) {
+        $float_part = mt_rand(0, mt_getrandmax())/mt_getrandmax();
+        $integer_part = mt_rand($min, $max - 1);
+        return $integer_part + $float_part;
+    }
 
 }
