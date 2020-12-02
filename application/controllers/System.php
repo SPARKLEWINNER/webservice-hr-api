@@ -34,6 +34,7 @@ class System extends Base_Controller{
         );
 
         $is_mailed = $this->send_email_sg($response['company'], EMAIL_NEW_APPLICANT, $email_details);
+        var_dump($is_mailed);
         if($is_mailed == NULL){
             $this->set_response(array("status" => 200, "data" => $is_mailed),  200);
         }else{

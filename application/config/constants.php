@@ -112,7 +112,7 @@ define('EMAIL_FORGOT_PASSWORD','Forgot Password');
 /* Send Grid */
 
 define('EMAIL_SG_ENDPOINT', 'https://api.sendgrid.com/v3/mail/send');
-define('EMAIL_SG_TOKEN', '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');
+define('EMAIL_SG_TOKEN', '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');
 
 /* Send Grid - Templates */
 define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');
