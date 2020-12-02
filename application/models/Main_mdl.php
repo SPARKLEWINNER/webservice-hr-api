@@ -1376,7 +1376,7 @@ class Main_mdl extends Base_Model {
                     "reference_id" => $applicant->reference_id,
                     "username" => $applicant->username,
                     "company" => $applicant->company,
-                    "email_details" => $system->row()->data,
+                    "data" => $system->row()->data,
                 );
             }else{
                 return array(
