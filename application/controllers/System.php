@@ -12,6 +12,7 @@ class System extends Base_Controller{
     public function create_email_request_post(){
         $ref_id = $this->post('id');
         $response = $this->Main_mdl->record_get_system($ref_id);
+    
         $email_details = array(
             "from" => array(
                 "email" => "system@".$response['company'].".com.ph"
@@ -36,7 +37,7 @@ class System extends Base_Controller{
         if($is_mailed == NULL){
             $this->set_response(array("status" => 200, "data" => $is_mailed),  200);
         }else{
-            $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", $response['email_details'], $response['company']);
+            $this->email_logs('NEWAPPLICANT',$response['reference_id'], $response['username'], 0, "FAILED", $response['data'], $response['company']);
         }
     }
 
