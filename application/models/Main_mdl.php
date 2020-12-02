@@ -1360,15 +1360,25 @@ class Main_mdl extends Base_Model {
 
 
     public function record_get_system($ref_id){
-        $applicant = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->get()->row();
-        $system = $this->db->select('*')->from('system')->where('user', $ref_id)->get()->row();
-        if($this->db->affected_rows() > 0){
-            return array(
-                "reference_id" => $applicant->reference_id,
-                "username" => $applicant->username,
-                "company" => $applicant->company,
-                "email_details" => $system->data,
-            );
+        $applicant = $this->db->select('*')->from('applications')->where('reference_id', $ref_id)->get();
+        $system = $this->db->select('*')->from('system')->where('user', $ref_id)->get();
+
+        if($applicant->num_rows() > 0){
+            $applicant = $applicant->row();
+            if($system->num_rows() > 0){
+                return array(
+                    "reference_id" => $applicant->reference_id,
+                    "username" => $applicant->username,
+                    "company" => $applicant->company,
+                    "email_details" => $system->row()->data,
+                );
+            }else{
+                return array(
+                    "reference_id" => $applicant->reference_id,
+                    "username" => $applicant->username,
+                    "company" => $applicant->company,
+                ); 
+            }
         }else{
             return false;
         }

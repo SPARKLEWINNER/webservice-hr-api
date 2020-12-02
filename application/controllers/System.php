@@ -24,9 +24,9 @@ class System extends Base_Controller{
                 "dynamic_template_data" => array(
                     "email"=> $response['username'],
                     "password" => $response['reference_id'],
-                    "help" => EMAIL_ADMIN,
+                    "help" => "system@".$response['company'].".com.ph",
                     // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.sparkles.com.ph/" // to be change
+                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
