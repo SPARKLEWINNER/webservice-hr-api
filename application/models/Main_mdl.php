@@ -1320,19 +1320,20 @@ class Main_mdl extends Base_Model {
             if($this->db->affected_rows() > 0):
 
                 // get the system table's data
-                $system = $this->db->select('*')->from('system')->where('user', $email_id)->get()->row();
-                $mail_data = json_decode($system->data);
-                $mail_data->personalizations[0]->to = $mail_data->personalizations[0]->dynamic_template_data->email = $data['email'];
-                $mail_new_data = array(
-                  "data" => json_encode($mail_data),
-                  "email" => $data['email']
-                );
+                $system = $this->db->select('*')->from('system')->where('user', $email_id)->get();
 
-                $this->db->where('user', $email_id);
-                $this->db->update('system', $mail_new_data);
+                if($system->num_rows() > 0){
+                    $system = $system->row();
+                    $mail_data = json_decode($system->data);
+                    $mail_data->personalizations[0]->to = $mail_data->personalizations[0]->dynamic_template_data->email = $data['email'];
+                    $mail_new_data = array(
+                      "data" => json_encode($mail_data),
+                      "email" => $data['email']
+                    );
+    
+                    $this->db->where('user', $email_id);
+                    $this->db->update('system', $mail_new_data);
 
-                if($this->db->affected_rows() > 0):
-                    $system = $this->db->select('*')->from('system')->where('user', $email_id)->get()->row();
                     return array(
                         "id" => $system->id,
                         "user" => $system->user,
@@ -1342,9 +1343,14 @@ class Main_mdl extends Base_Model {
                         "email" => $system->email,
                     );
 
-                else:
-                    return false;
-                endif; // update for system table
+                }else{
+                    return array(
+                        "id" => $applicants->id,
+                        "user" => $applicants->reference_id,
+                        "email" => $applicants->username,
+                    );
+                }
+
 
             else:
                 return false;

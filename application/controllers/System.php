@@ -481,7 +481,10 @@ class System extends Base_Controller{
             "email" => $data['email']
         );
 
+
         $response = $this->Main_mdl->system_record_update_email($app_data, $email_id);
+        
+
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{
