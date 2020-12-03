@@ -17,7 +17,7 @@ if ($_SERVER['HTTP_HOST'] == "localhost") :
 	$password = ""; //macos mysql
 else:
 	$hostname = "localhost";
-	$database = "webapi_staging_portal";
+	$database = "webapi_portal";
 	$username = "webapi_livedev";
 	$password = "qj5FHv6d4So2";
 endif;
