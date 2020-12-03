@@ -25,7 +25,7 @@ class Record extends Base_Controller
         $generated = $this->generateReferenceCode($mg_email);
 
         if($this->Main_mdl->record_validate_data($mg_email)){
-            $response = $this->response_code(422, "Email already exists", "");
+            $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
             return $this->set_response($response, 422);
         }
 
@@ -39,7 +39,7 @@ class Record extends Base_Controller
             'date_created' => date('Y-m-d H:i:s')
         );
 
-
+        
         if($upload_proc){
             $response = $this->Main_mdl->record_data($app_data);
             if(!isset($response['status'])){
@@ -77,8 +77,7 @@ class Record extends Base_Controller
             }
         }else{
             $this->appl_logs($app_data['username'],"APPLICANT","FAILED", json_encode($app_data), 0, $app_data['company']);
-            $response = $this->response_code(422, "Server upload error", "");
-            return $this->set_response($response, 422);
+            return $this->response_code(422, array("status" => 422, "message" => "Server upload error."), "");
         }
     }
 
