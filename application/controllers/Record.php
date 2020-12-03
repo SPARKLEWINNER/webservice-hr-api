@@ -44,7 +44,7 @@ class Record extends Base_Controller
             $response = $this->Main_mdl->record_data($app_data);
             if(!isset($response['status'])){
                 $this->appl_logs($app_data['username'],"APPLICANT","FAILED", json_encode($app_data), 0, $this->post('company'));
-                return $this->set_response($response, 422);
+                return $this->response_code(422, array("status" => 422, "message" => "Failed to Submit Form application"), "");
             }else{
                 $this->appl_logs($app_data['username'],"APPLICANT","SUCCESS", json_encode($app_data), 1, $this->post('company'));
                 $email_details = array(
