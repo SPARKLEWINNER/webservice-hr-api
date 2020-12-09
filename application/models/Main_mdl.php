@@ -571,15 +571,16 @@ class Main_mdl extends Base_Model {
 
     public function record_exam_logs_pull($company){
 
-        $applicants = "SELECT * FROM `applications` where `company` = '{$company}'";
+        $applicants = "SELECT * FROM `applications` WHERE `company` = '{$company}' ORDER  BY `id`";
         $result = $this->db->query($applicants);
         if($result->num_rows() > 0){
             $app_res = $result->result_array();
-
             foreach($app_res as $key => $value){
                 $app_res[$key]['exams'] = array();
                 $exams = "SELECT * FROM exams";
                 $exams_takers = $this->db->query($exams)->result_array();
+
+                
 
                 foreach($exams_takers as $k => $v){
                     if($value['id'] == $exams_takers[$k]['applicant_id']){
@@ -599,6 +600,7 @@ class Main_mdl extends Base_Model {
             }
 
         }
+
         return ($result->num_rows() > 0) ? $app_res : false;
 
     }
@@ -1499,5 +1501,30 @@ class Main_mdl extends Base_Model {
 
         return ($result->num_rows() > 0) ? $jobs_result : false;
 
+    }
+
+    public function record_exam_pull($data){
+        $jobs = "SELECT * FROM `settings` where `company` = '{$data['company']}' AND `meta_key` = 'jobs' AND id = {$data["job_id"]} LIMIT 1";
+        $result = $this->db->query($jobs);
+        
+        if ($result->num_rows() > 0) {
+            $jobs_result = $result->result_array();
+
+            foreach ($jobs_result as $key => $value) {
+                $jobs_result[$key]['exams'] = array();
+                $exams = "SELECT * FROM `settings` WHERE `id` = {$data['exam_id']}";
+                $exams_result = $this->db->query($exams);
+
+                if($exams_result->num_rows() > 0){
+                    $exams_result = $exams_result->result_array();
+                    foreach($exams_result as $k => $v){
+                        $jobs_result[$key]['exams'][] =  $exams_result[$k];
+                    }
+                }
+                
+            }
+        }
+
+        return ($result->num_rows() > 0) ? $jobs_result[0] : false;
     }
 }

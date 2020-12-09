@@ -115,3 +115,6 @@ $route['internal/logs/(:any)']['get'] = 'logs/list_logs_record/$1';
 $route['internal/application/logs/(:any)']['get'] = 'logs/list_applicants_record/$1';
 $route['internal/activity/logs/(:any)']['get'] = 'logs/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'logs/exam_logs_record/$1';
+
+/* Mail */
+$route['internal/exams/email']['post'] = 'logs/exams_email';

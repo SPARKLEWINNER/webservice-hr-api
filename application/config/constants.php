@@ -117,6 +117,7 @@ define('EMAIL_SG_TOKEN', 'SG.8TEOkDfBTPW4RzQLAX6PUg.XUwF0iXC3HyyR8wRQ1ob1d6hZ_TO
 /* Send Grid - Templates */
 define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');
 define('EMAIL_SGTEMPLATE_NEW_EMPLOYEE', 'd-7c8ed25584454e49a362ea84f1b1bbc9');
+define('EMAIL_SGTEMPLATE_EXAMRETAKE', 'd-0a238c782cbd4721bef0973f260288db');
 
 define('PORTAL_LINK','http://portal.sparkles.com.ph/');
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');

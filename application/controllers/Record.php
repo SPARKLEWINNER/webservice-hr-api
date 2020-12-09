@@ -113,10 +113,10 @@ class Record extends Base_Controller
         $response = $this->Main_mdl->record_exam_data($app_data);
         $this->Main_mdl->record_applying_for($data['job'], $data['id']);
         if(!isset($response['status'])){
-            $this->activity_logs($data["id"],"EXAMTAKE","FAILED", json_encode($app_data), 1);
+            $this->activity_logs($data["id"],  "EXAMTAKE", "FAILED", json_encode($data), json_encode($app_data), 1);
             return $this->set_response($response, 422);
         }else{
-            $this->activity_logs($data["id"],"EXAMTAKE","SUCCESS", json_encode($app_data), 0);
+            $this->activity_logs($data["id"],  "EXAMTAKE", "SUCCESS", json_encode($data), json_encode($app_data), 0);
             $this->set_response(array("status" => 200, "data" => $response),  200);
         }
 
