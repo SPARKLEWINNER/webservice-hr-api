@@ -274,7 +274,7 @@ class Main_mdl extends Base_Model {
                 'notice' => $record->notice,
                 'data' => $record->data,
                 'status' => $record->status,
-                'date_created' => $record->date_created,
+                'date_created' => date('Y-m-d H:i:s'),
             );
         else: return false;
         endif;
@@ -499,6 +499,14 @@ class Main_mdl extends Base_Model {
     public function record_reviews_pull($company, $id){
 
         $query = "SELECT * FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
+    public function record_specific_document_pull($company, $id){
+
+        $query = "SELECT * FROM `reviews_doc` WHERE `appl_company` = '{$company}' AND `appl_id` = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 

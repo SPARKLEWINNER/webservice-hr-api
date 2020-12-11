@@ -50,6 +50,7 @@ $route['internal/wages/(:any)']['get'] = 'finance/list_wages/$1';
 
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
+$route['internal/record/specific/reviews/documents/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews__documents/$1/$2';
 
 
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
