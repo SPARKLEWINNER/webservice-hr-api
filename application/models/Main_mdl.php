@@ -445,6 +445,34 @@ class Main_mdl extends Base_Model {
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
 
+    /* Documents */
+    public function record_documents_pull($company, $status){
+
+        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC";
+        $result = $this->db->query($query);
+        $arr_app = [];
+        foreach($result->result_array() as $k => $app){
+            if($app['company'] == $company){
+                $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
+                $reviews = $this->db->query($reviews_query);
+                $arr_app[] = $app;
+
+                if($reviews->num_rows() > 0){
+                    $arr_app[$k]['reviews'][] = $reviews->result_array();
+                }
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
+
+    }
+    public function record_specifics_reviews_pull($id){
+
+        $query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$id}";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
     /* Pool */
     public function record_pool_weeks_pull($company, $weeks){
 
