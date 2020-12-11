@@ -457,15 +457,14 @@ class Main_mdl extends Base_Model {
         $result = $this->db->query($query);
         $arr_app = [];
         foreach($result->result_array() as $k => $app){
-            $arr_app[$k]['reviews'] = array();
+            $arr_app[$k] = $app;
             if($app['company'] == $company){
                 $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
                 $reviews = $this->db->query($reviews_query);
-                $arr_app[] = $app;
                 if($reviews->num_rows() > 0){
                     foreach($reviews->result_array() as $kk => $kv){
                         if($kv['appl_id'] == $app['id']){
-                            $arr_app[$k]['reviews'] = $reviews->result_array();
+                            $arr_app[$k]['reviews'][] = $reviews->result_array();
                         }
                     }
                 }
