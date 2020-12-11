@@ -461,9 +461,8 @@ class Main_mdl extends Base_Model {
                 $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
                 $reviews = $this->db->query($reviews_query);
                 $arr_app[] = $app;
-
                 if($reviews->num_rows() > 0){
-                    $arr_app[$k]['reviews'][] = $reviews->result_array();
+                    $arr_app[$k]['reviews'] = $reviews->result_array();
                 }
             }
         }
