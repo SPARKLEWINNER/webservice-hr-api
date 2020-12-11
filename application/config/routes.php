@@ -21,6 +21,7 @@ $route['internal/record/upload/documents']['post'] = 'record/applicant_document_
 
 /* Recruitment */
 $route['internal/record/review_app']['post'] = 'recruitment/review_create';
+$route['internal/record/review_app/documents']['post'] = 'recruitment/review_create_document';
 
 $route['internal/record/review']['patch'] = 'recruitment/review_update';
 

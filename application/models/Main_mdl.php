@@ -252,6 +252,35 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_review_doc_data($data){
+
+        $this->db->insert('reviews_doc', $data);
+        $inserted_id = $this->db->insert_id();
+
+        $record = $this->db->select('*')->from('reviews_doc')->where('id', $inserted_id)->get()->row();
+
+        if($this->db->affected_rows() > 0):
+
+            $status = array(0 => 5, 1 => 80, 2 => 4);
+            $this->db->where('id', $data['appl_id']);
+            $this->db->update('applications', array("status" => $status[$data['status']]));
+    
+            return array(
+                "id" => $inserted_id,
+                'applicant_id' => $record->appl_id,
+                'applicant_company' => $record->appl_company,
+                'author_id' => $record->author_id,
+                'author_company' => $record->author_company,
+                'notice' => $record->notice,
+                'data' => $record->data,
+                'status' => $record->status,
+                'date_created' => $record->date_created,
+            );
+        else: return false;
+        endif;
+
+    }
+
     public function record_applying_for($job_id, $applicant_id){
 
         $result = $this->db->select('*')->from('applications')->where('id', $applicant_id)->get()->row();
