@@ -264,7 +264,12 @@ class Main_mdl extends Base_Model {
             $status = array(0 => 5, 1 => 80, 2 => 4);
             $this->db->where('id', $data['appl_id']);
             $this->db->update('applications', array("status" => $status[$data['status']]));
-    
+            
+            if($status[$data['status']] == 5){
+                $this->db->where('id', $data['appl_id']);
+                $this->db->update('reviews_doc', array("status" => 0));
+            }
+            
             return array(
                 "id" => $inserted_id,
                 'applicant_id' => $record->appl_id,
@@ -534,7 +539,7 @@ class Main_mdl extends Base_Model {
 
     public function record_specific_document_pull($company, $id){
 
-        $query = "SELECT * FROM `reviews_doc` WHERE `appl_company` = '{$company}' AND `appl_id` = '{$id}' LIMIT 1";
+        $query = "SELECT * FROM `reviews_doc` WHERE `appl_company` = '{$company}' AND `appl_id` = '{$id}'";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
