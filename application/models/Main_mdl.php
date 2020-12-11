@@ -462,7 +462,11 @@ class Main_mdl extends Base_Model {
                 $reviews = $this->db->query($reviews_query);
                 $arr_app[] = $app;
                 if($reviews->num_rows() > 0){
-                    $arr_app[$k]['reviews'] = $reviews->result_array();
+                    foreach($reviews->result_array() as $kk => $kv){
+                        if($kv['appl_id'] == $app['id']){
+                            $arr_app[$k]['reviews'] = $reviews->result_array();
+                        }
+                    }
                 }
             }
         }
