@@ -583,6 +583,17 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function record_stores_account_pull($company){
+
+        $query = "SELECT *, usr.id AS usr_id, strs.id AS str_id FROM `users` usr
+        LEFT JOIN `assigning` asg ON usr.id = asg.emp_id
+        LEFT JOIN `store` strs ON asg.store_id = strs.id
+        WHERE strs.company = '{$company}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+
+    }
+
 
     public function records_store_people_pull($company, $store_id){
 
@@ -745,6 +756,22 @@ class Main_mdl extends Base_Model {
         endif;
 
     }
+
+    public function system_record_new_password($arr,$data){
+
+        $this->db->where('id', $arr['id']);
+        $this->db->update('users', $data);
+        if($this->db->affected_rows() > 0):
+            $store = $this->db->select('*')->from('users')->where('id', $arr['id'])->get()->row();
+            return array(
+                "id" => $arr['id']
+            );
+        else:
+            return false;
+        endif;
+    }
+
+
 
     /* DTR */
 
