@@ -66,6 +66,7 @@ class Main_mdl extends Base_Model {
 
         else{
             $check_temporary_account = $this->temporary_login($email, $password);
+
             if(!$check_temporary_account) return $this->response_code(204,"User invalid", "");
             return $check_temporary_account;
 
@@ -73,10 +74,13 @@ class Main_mdl extends Base_Model {
     }
 
     public function temporary_login($email, $password){
-        $statement = array('username' => $email, 'reference_id' => $password);
+        $statement = array('username' => $email);
         $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+        if(empty($acc->password)){
+            $statement = array('username' => $email, 'reference_id' => $password);
+        }
 
-        if($acc == null){
+        if(!password_verify($password, $acc->password)){
             return false;
         }else{
             return array(
@@ -103,44 +107,92 @@ class Main_mdl extends Base_Model {
     }
 
     public function retrieveUser($email, $password){
-        $acc = $this->db->select('id,email,first_name,last_name,profile,company')->from('users')->where('email', $email)->get()->row();
-        if(!$acc) return $this->response_code(204,"User invalid", "");
-        $update = array("password"=> $password, "token" => $password);
-        $this->db->where('id', $acc->id);
-        $this->db->update('users', $update);
+        $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable')->from('users')->where('email', $email)->get()->row();
+        
+        if(!$acc){ // not employee
+            $acc = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
 
-        return array(
-            "id" => $acc->id,
-            "company" => $acc->company,
-        );
+            if(!$acc) return $this->response_code(204,"User invalid", "");
+            $update = array("password"=> $password, "token" => $password);
+            $this->db->where('id', $acc->id);
+            $this->db->update('applications', $update);
+            return array(
+                "id" => $acc->id,
+                "company" => $acc->company,
+                "switchable" => 0,
+            );
+            
+        }else{
+            $update = array("password"=> $password, "token" => $password);
+            $this->db->where('id', $acc->id);
+            $this->db->update('users', $update);
+            return array(
+                "id" => $acc->id,
+                "company" => $acc->company,
+                "switchable" => $acc->switchable,
+            );
+        }
+
+
     }
 
     public function resetUser($data){
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
-        if(!$acc) return $this->response_code(204,"", "");
+        if(!$acc) {
+            $applicant = $this->db->select('id,username,company,password,token')->from('applications')->where('username', $data['email'])->get()->row();
+            
+            if($applicant){
 
-        if($acc->token === "" || empty($acc->token)) return $this->response_code(204,"Invalid token","");
+                if($applicant->token === "" || empty($applicant->token)) return $this->response_code(204,"Invalid token","");
+                if($data['hash'] ==  $applicant->token):
+    
+                    $update = array(
+                        "password" => password_hash($data['password'], PASSWORD_DEFAULT),
+                        "token" => ""
+                    );
+                    $this->db->where('id', $applicant->id);
+                    $this->db->update('applications', $update);
+        
+                    return array(
+                        "id" => $applicant->id,
+                        "email" =>$applicant->username,
+                        "company" => $applicant->company
+                    );
+        
+                else:
+                  return false;
+                endif;
 
-        if($data['hash'] ==  $acc->token):
+            }else{
+                return $this->response_code(204,"User Invalid","");
+            }
+        }
+        else{
+            
+            if($acc->token === "" || empty($acc->token)) return $this->response_code(204,"Invalid token","");
+    
+            if($data['hash'] ==  $acc->token):
+    
+                $update = array(
+                    "password" => password_hash($data['password'], PASSWORD_DEFAULT),
+                    "token" => ""
+                );
+                $this->db->where('id', $acc->id);
+                $this->db->update('users', $update);
+    
+                return array(
+                    "id" => $acc->id,
+                    "email" =>$acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "profile" => $acc->profile
+                );
+    
+            else:
+              return false;
+            endif;
+        }
 
-            $update = array(
-                "password" => password_hash($data['password'], PASSWORD_DEFAULT),
-                "token" => ""
-            );
-            $this->db->where('id', $acc->id);
-            $this->db->update('users', $update);
-
-            return array(
-                "id" => $acc->id,
-                "email" =>$acc->email,
-                "firstname" => $acc->first_name,
-                "lastname" => $acc->last_name,
-                "profile" => $acc->profile
-            );
-
-        else:
-          return false;
-        endif;
     }
 
     /** Exams **/

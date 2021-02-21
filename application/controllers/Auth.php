@@ -99,6 +99,10 @@ class Auth extends Base_Controller
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
 
+            if($result['switchable'] == 1 ){
+                $data['company'] = json_decode($result['company'])->company[0];
+            }
+
             $email_details = array(
                 "from" => array(
                     "email" => "Reset Password <no-reply@".$data['company'].".com.ph>"
@@ -118,6 +122,7 @@ class Auth extends Base_Controller
                 )],
                 "template_id" => EMAIL_SGTEMPLATE_FORGOTPASSWORD
             );
+
 
             
             $process = $this->send_email_sg($data['email'],EMAIL_SGTEMPLATE_FORGOTPASSWORD,$email_details);
