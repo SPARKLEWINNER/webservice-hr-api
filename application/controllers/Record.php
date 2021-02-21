@@ -49,7 +49,7 @@ class Record extends Base_Controller
                 $this->appl_logs($app_data['username'],"APPLICANT","SUCCESS", json_encode($app_data), 1, $this->post('company'));
                 $email_details = array(
                     "from" => array(
-                        "email" => "system@".$this->post('company').".com.ph"
+                        "email" => ucfirst($this->post('company'))." - Recruitment Account <no-reply@".$this->post('company').".com.ph>",
                     ),
                     "personalizations" => [array(
                         "to" => [array(

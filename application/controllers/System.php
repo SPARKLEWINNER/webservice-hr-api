@@ -226,7 +226,7 @@ class System extends Base_Controller{
         $response = $this->Main_mdl->system_record_people($app_data, $generate_password['temp_password']);
         $email_details = array(
             "from" => array(
-                "email" => "system@".$response['company'].".com.ph"
+                "email" => ucfirst($data('company'))." - Account credentials <no-reply@".$data('company').".com.ph>",
             ),
             "personalizations" => [array(
                 "to" => [array(
@@ -292,6 +292,7 @@ class System extends Base_Controller{
         $response = $this->Main_mdl->system_record_reset_people($app_data, $generate_password['temp_password']);
         $email_details = array(
             "from" => array(
+                "email" => "Reset Password <no-reply@".$response('company').".com.ph>",
                 "email" => "system@".$response['company'].".com.ph"
             ),
             "personalizations" => [array(

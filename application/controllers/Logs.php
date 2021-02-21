@@ -28,7 +28,7 @@ class Logs extends Base_Controller{
             $decode = json_decode($response['exams'][0]['meta_value']);
             $email_details = array(
                 "from" => array(
-                    "email" => "system@".$data['company'].".com.ph"
+                    "email" => "Exam Link <no-reply@".$data['company'].".com.ph>"
                 ),
                 "personalizations" => [array(
                     "to" => [array(
