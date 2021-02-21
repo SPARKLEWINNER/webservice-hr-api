@@ -92,13 +92,36 @@ class Auth extends Base_Controller
         $data['temp'] = $this->generate_password()['temp_password'];
         $data['hash'] = $data['temp'];
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['temp']);
+
         if(!array_key_exists("status",$result)){
             $data['id'] = $result['id'];
+            $data['company'] = $result['company'];
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
+
+            $email_details = array(
+                "from" => array(
+                    "email" => "Reset Password <no-reply@".$data['company'].".com.ph>"
+                ),
+                "personalizations" => [array(
+                    "to" => [array(
+                        "email" => $data['email']
+                    )],
+                    "subject" => EMAIL_NEW_APPLICANT,
+                    "dynamic_template_data" => array(
+                        "email"=> $data['email'],
+                        "help" => EMAIL_ADMIN,
+                        "portal" =>"www.portal.".$data['company'].".com.ph", // to be change,
+                        "title" => "Forgot Password",
+                        "temp" => $data['temp']
+                    )
+                )],
+                "template_id" => EMAIL_SGTEMPLATE_FORGOTPASSWORD
+            );
+
             
-            $process = $this->send_email($data['email'],$this->forgot_acc_path, EMAIL_FORGOT_PASSWORD,array($data));
-            if(!$process){
+            $process = $this->send_email_sg($data['email'],EMAIL_SGTEMPLATE_FORGOTPASSWORD,$email_details);
+            if($process != NULL){
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);
             }

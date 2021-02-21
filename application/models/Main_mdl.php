@@ -103,7 +103,7 @@ class Main_mdl extends Base_Model {
     }
 
     public function retrieveUser($email, $password){
-        $acc = $this->db->select('id,email,first_name,last_name,profile')->from('users')->where('email', $email)->get()->row();
+        $acc = $this->db->select('id,email,first_name,last_name,profile,company')->from('users')->where('email', $email)->get()->row();
         if(!$acc) return $this->response_code(204,"User invalid", "");
         $update = array("password"=> $password, "token" => $password);
         $this->db->where('id', $acc->id);
@@ -111,6 +111,7 @@ class Main_mdl extends Base_Model {
 
         return array(
             "id" => $acc->id,
+            "company" => $acc->company,
         );
     }
 
