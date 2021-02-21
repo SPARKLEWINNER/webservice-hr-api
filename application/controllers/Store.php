@@ -51,7 +51,7 @@ class Store extends Base_Controller{
 
     public function store_new_post(){
         $data = $this->validate_inpt(array('name','company','created_by'), 'post');
-
+        $generate_password = $this->createPassword();
         $app_data = array(
             "name" => $data['name'],
             "details" =>  json_encode($this->post()),
@@ -59,11 +59,30 @@ class Store extends Base_Controller{
             "created_by" => $data['created_by'],
             "date_created" => date('Y-m-d H:i:s')
         );
+        
+        $acc_data = array(
+            "email" =>  $this->post('email'),
+            "first_name" =>  $this->post('store_type'),
+            "last_name" => $data['name'],
+            "user_level" => $this->post('type'),
+            "company" => $data['company'],
+            "password" => $generate_password['hashed_password'],
+            "temp_password" => $generate_password['temp_password'],
+            "date_created" => date('Y-m-d H:i:s')
+        );
 
         $response = $this->Main_mdl->system_record_store($app_data);
-
         if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
+
+            // create user 
+            $response_acc = $this->Main_mdl->system_record_store_acc_assg($acc_data, $response['id']);
+            if($response_acc){
+                return $this->set_response(array("status" => 200, "data" => $response_acc),  200);
+            }else{
+                $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+                return $this->set_response($response, 422);
+            }
+
         }else{
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);

@@ -757,6 +757,42 @@ class Main_mdl extends Base_Model {
 
     }
 
+    public function system_record_store_acc_assg($data, $store_id){
+        $this->db->insert('users', $data);
+        $inserted_id = $this->db->insert_id();
+        $user = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
+        if($this->db->affected_rows() > 0):
+
+            $asg_data = array(
+                "emp_id" => $inserted_id,
+                "store_id" => $store_id,
+                "company" => $data['company'],
+                "date_assigned" => date('Y-m-d H:i:s')
+            );
+
+ 
+            $this->db->insert('assigning', $asg_data);
+            if($this->db->affected_rows() > 0):
+                return array(
+                    "id" => $inserted_id,
+                    "first_name" => $user->first_name,
+                    "last_name" => $user->last_name,
+                    "company" => $user->company,
+                    "user" => $user->user_level
+                  );
+            else:
+                return false;
+            endif;
+
+
+        else:
+            return false;
+        endif;
+
+    }
+
+
+
     public function system_record_new_password($arr,$data){
 
         $this->db->where('id', $arr['id']);
@@ -764,12 +800,13 @@ class Main_mdl extends Base_Model {
         if($this->db->affected_rows() > 0):
             $store = $this->db->select('*')->from('users')->where('id', $arr['id'])->get()->row();
             return array(
-                "id" => $arr['id']
+                "id" => $store->id
             );
         else:
             return false;
         endif;
     }
+
 
 
 
