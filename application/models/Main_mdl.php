@@ -78,11 +78,16 @@ class Main_mdl extends Base_Model {
         $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
         if(empty($acc->password)){
             $statement = array('username' => $email, 'reference_id' => $password);
+            $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+        }else{
+            if(!password_verify($password, $acc->password)){
+                return false;
+            }else{
+                return true;
+            }
         }
 
-        if(!password_verify($password, $acc->password)){
-            return false;
-        }else{
+        if($acc){
             return array(
                 "id" => $acc->id,
                 "applicant_id" => $acc->applicant_id,
@@ -98,7 +103,11 @@ class Main_mdl extends Base_Model {
                 "profile" => $acc->profile,
                 "company" => $acc->company
             );
+
+        }else{
+            return false;
         }
+            
     }
 
     public function recordToken($id, $token){
