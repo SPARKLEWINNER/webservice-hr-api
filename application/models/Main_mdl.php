@@ -83,7 +83,8 @@ class Main_mdl extends Base_Model {
             if(!password_verify($password, $acc->password)){
                 return false;
             }else{
-                return true;
+                $statement = array('username' => $email);
+                $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
             }
         }
 
