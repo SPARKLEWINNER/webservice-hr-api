@@ -640,7 +640,7 @@ class Main_mdl extends Base_Model {
 
     public function record_stores_pull($company){
 
-        $query = "SELECT * FROM `store` WHERE `company` = '{$company}'";
+        $query = "SELECT * FROM `store` WHERE `company` = '{$company}' ORDER BY `name` ASC";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
 
