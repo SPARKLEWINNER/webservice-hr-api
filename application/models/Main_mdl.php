@@ -116,6 +116,7 @@ class Main_mdl extends Base_Model {
         $this->db->update('keys', array("key" => $token));
     }
 
+
     public function retrieveUser($email, $password){
         $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable')->from('users')->where('email', $email)->get()->row();
         
@@ -145,6 +146,36 @@ class Main_mdl extends Base_Model {
 
 
     }
+
+    public function verifyUser($data){
+        $acc = $this->db->select('*')->from('users')->where('id', $data['id'])->get()->row();
+        if($acc->user_level == 5){
+            $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+            $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+            return array(
+                "id" => $acc->id,
+                "email" =>$acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+                "store_id" => $store->id,
+                "store_name" => $store->name
+            );
+        }else{
+            return array(
+                "id" => $acc->id,
+                "email" =>$acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+            );
+        }
+    }
+
 
     public function resetUser($data){
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
@@ -719,7 +750,7 @@ class Main_mdl extends Base_Model {
 
     public function record_exam_logs_pull($company){
 
-        $applicants = "SELECT * FROM `applications` WHERE `company` = '{$company}' ORDER  BY `id`";
+        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 2 month AND  `company` = '{$company}' ORDER BY `id`";
         $result = $this->db->query($applicants);
         if($result->num_rows() > 0){
             $app_res = $result->result_array();
