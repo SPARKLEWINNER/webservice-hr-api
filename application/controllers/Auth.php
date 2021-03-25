@@ -168,5 +168,11 @@ class Auth extends Base_Controller
         $output['token'] = AUTHORIZATION::generateToken($tokenData);
         $this->set_response($output, REST_Controller::HTTP_OK);
     }
-
+    
+    public function me_post($token = NULL)
+    {
+        $data = $this->validate_inpt(array('id'), 'post');
+        $response = $this->Main_mdl->verifyUser($data);
+        $this->set_response(array("status" => 200, "data" => $response), 200);
+    }
 }
