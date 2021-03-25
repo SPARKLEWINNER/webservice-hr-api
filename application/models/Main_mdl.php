@@ -750,7 +750,7 @@ class Main_mdl extends Base_Model {
 
     public function record_exam_logs_pull($company){
 
-        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 2 month AND  `company` = '{$company}' ORDER BY `id`";
+        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 1 month AND  `company` = '{$company}' ORDER BY `id`";
         $result = $this->db->query($applicants);
         if($result->num_rows() > 0){
             $app_res = $result->result_array();
