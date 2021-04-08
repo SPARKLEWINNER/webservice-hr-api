@@ -142,6 +142,37 @@ class Main_mdl extends Base_Model
         }
     }
 
+    public function verifyUser($data)
+    {
+        $acc = $this->db->select('*')->from('users')->where('id', $data['id'])->get()->row();
+        if ($acc->user_level == 5) {
+            $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+            $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+            return array(
+                "id" => $acc->id,
+                "email" => $acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+                "store_id" => $store->id,
+                "store_name" => $store->name
+            );
+        } else {
+            return array(
+                "id" => $acc->id,
+                "email" => $acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+            );
+        }
+    }
+
+
     public function resetUser($data)
     {
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
@@ -786,7 +817,7 @@ class Main_mdl extends Base_Model
     public function record_exam_logs_pull($company)
     {
 
-        $applicants = "SELECT * FROM `applications` WHERE `company` = '{$company}' ORDER  BY `id`";
+        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 2 month AND  `company` = '{$company}' ORDER BY `id`";
         $result = $this->db->query($applicants);
         if ($result->num_rows() > 0) {
             $app_res = $result->result_array();
@@ -1296,18 +1327,18 @@ class Main_mdl extends Base_Model
     {
         $validate_acc = $this->db->select('*')->from('users')->where('email', $data['email'])->get()->row();
         if ($validate_acc->num_rows() == 0) {
-            if (password_verify($old_password,  $acc->password)) {
+            if (password_verify($old_password,  $validate_acc->password)) {
                 $this->db->where('id', $validate_acc->id);
                 $this->db->update('users', $data);
                 if ($this->db->affected_rows() > 0) :
                     return array(
-                        "id" => $acc->id,
-                        "email" => $acc->email,
-                        "firstname" => $acc->first_name,
-                        "lastname" => $acc->last_name,
-                        "company" => $acc->company,
-                        "profile" => $acc->profile,
-                        "user_level" => $acc->user_level
+                        "id" => $validate_acc->id,
+                        "email" => $validate_acc->email,
+                        "firstname" => $validate_acc->first_name,
+                        "lastname" => $validate_acc->last_name,
+                        "company" => $validate_acc->company,
+                        "profile" => $validate_acc->profile,
+                        "user_level" => $validate_acc->user_level
                     );
                 else :
                     return $this->response_code(204, "User invalid", "");

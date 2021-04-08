@@ -12,6 +12,7 @@ $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['patch'] = 'auth/reset';
+$route['internal/auth/validate']['post'] = 'auth/me/$1';
 
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1
