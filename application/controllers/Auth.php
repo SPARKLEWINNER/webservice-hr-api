@@ -17,75 +17,76 @@ class Auth extends Base_Controller
         $this->method = $_SERVER['REQUEST_METHOD'];
     }
 
-    public function login_post(){
+    public function login_post()
+    {
 
 
-        $data = $this->validate_inpt(array('email','password'), 'post');
+        $data = $this->validate_inpt(array('email', 'password'), 'post');
 
-        $response = $this->Main_mdl->login($data['email'],$data['password']);
-        if($response === FALSE):
+        $response = $this->Main_mdl->login($data['email'], $data['password']);
+        if ($response === FALSE) :
             $response = $this->response_code(422, "User Invalid", "");
             return $this->set_response($response, 422);
-        else:
-            if(!array_key_exists("status",$response)){
+        else :
+            if (!array_key_exists("status", $response)) {
                 $data = $response;
                 $response['timestamp'] = date("Y-m-d H:i:s");
                 $response['token'] = AUTHORIZATION::generateToken($data);
 
-                if($data['user_level'] == 2){
+                if ($data['user_level'] == 2) {
                     $response['route'] = "employee/";
                 }
 
-                if($data['user_level'] == 3){
+                if ($data['user_level'] == 3) {
                     $response['route'] = "admin/";
                 }
 
-                if($data['user_level'] == 4){
+                if ($data['user_level'] == 4) {
                     $response['route'] = "hr/";
                 }
 
-                if($data['user_level'] == 5){
+                if ($data['user_level'] == 5) {
                     $response['route'] = "supervisor/";
                 }
 
-                if($data['user_level'] == 6){
+                if ($data['user_level'] == 6) {
                     $response['route'] = "hr/";
                 }
 
-                if($data['user_level'] == 7){
+                if ($data['user_level'] == 7) {
                     $response['route'] = "finance/";
                 }
 
+                if ($data['user_level'] == 8) {
+                    $response['route'] = "training/";
+                }
 
-                if($data['user_level'] == 10){
+                if ($data['user_level'] == 10) {
                     $response['route'] = "applicant/";
                 }
-                
+
                 // $this->Main_mdl->recordToken($data['id'],$response['token']);
                 $this->set_response(array("status" => 200, "data" => $response), 200);
-                    
-            }else{
+            } else {
                 $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
                 return $this->set_response($response, 422);
-
             }
         endif;
     }
 
-	public function logout_post()
-	{
-        if($this->auth_request() === false) return $this->response_return($this->response_code(401,""));
-          
+    public function logout_post()
+    {
+        if ($this->auth_request() === false) return $this->response_return($this->response_code(401, ""));
+
         $response = $this->Main_mdl->logout();
-        
-        if($response === FALSE):
+
+        if ($response === FALSE) :
             return $this->response_return($response);
         endif;
-        
-        return $this->response_return($response);
 
+        return $this->response_return($response);
     }
-    
+
     public function forgot_post()
     {
         $data = $this->validate_inpt(array('email'), 'post');
@@ -93,19 +94,19 @@ class Auth extends Base_Controller
         $data['hash'] = $data['temp'];
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['temp']);
 
-        if(!array_key_exists("status",$result)){
+        if (!array_key_exists("status", $result)) {
             $data['id'] = $result['id'];
             $data['company'] = $result['company'];
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
 
-            if($result['switchable'] == 1 ){
+            if ($result['switchable'] == 1) {
                 $data['company'] = json_decode($result['company'])->company[0];
             }
 
             $email_details = array(
                 "from" => array(
-                    "email" => "Reset Password <no-reply@".$data['company'].".com.ph>"
+                    "email" => "Reset Password <no-reply@" . $data['company'] . ".com.ph>"
                 ),
                 "personalizations" => [array(
                     "to" => [array(
@@ -113,9 +114,9 @@ class Auth extends Base_Controller
                     )],
                     "subject" => EMAIL_NEW_APPLICANT,
                     "dynamic_template_data" => array(
-                        "email"=> $data['email'],
+                        "email" => $data['email'],
                         "help" => EMAIL_ADMIN,
-                        "portal" =>"www.portal.".$data['company'].".com.ph", // to be change,
+                        "portal" => "www.portal." . $data['company'] . ".com.ph", // to be change,
                         "title" => "Forgot Password",
                         "temp" => $data['temp']
                     )
@@ -124,40 +125,37 @@ class Auth extends Base_Controller
             );
 
 
-            
-            $process = $this->send_email_sg($data['email'],EMAIL_SGTEMPLATE_FORGOTPASSWORD,$email_details);
-            if($process != NULL){
+
+            $process = $this->send_email_sg($data['email'], EMAIL_SGTEMPLATE_FORGOTPASSWORD, $email_details);
+            if ($process != NULL) {
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);
             }
             $this->set_response($data,  200);
-        }else{
+        } else {
             $response = $this->response_code(422, "", "");
             return $this->set_response($response, 422);
-            
         }
-
     }
-    
+
     public function reset_patch()
     {
         $data = $this->validate_inpt(array('hash', 'email', 'password'), 'patch');
         $result = $this->Main_mdl->resetUser($data);
-        if(!array_key_exists("status",$result)){
+        if (!array_key_exists("status", $result)) {
             $data['id'] = $result['id'];
             $data['timestamp'] = date("Y-m-d H:i:s");
             $data['token'] = AUTHORIZATION::generateToken($data);
-            
-            if(!$result){
+
+            if (!$result) {
                 $response = $this->response_code(422, "Invalid token", "");
                 return $this->set_response($response, 422);
             }
-            
+
             $this->set_response($data,  200);
-        }else{
+        } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "User Invalid"), "");
             return $this->set_response($response, 422);
-            
         }
     }
 
@@ -168,5 +166,4 @@ class Auth extends Base_Controller
         $output['token'] = AUTHORIZATION::generateToken($tokenData);
         $this->set_response($output, REST_Controller::HTTP_OK);
     }
-
 }

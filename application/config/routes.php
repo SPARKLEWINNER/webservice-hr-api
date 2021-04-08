@@ -16,12 +16,15 @@ $route['internal/auth/reset']['patch'] = 'auth/reset';
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1
 $route['internal/record/exam']['post'] = 'record/applicant_exam_create'; // step 2
-$route['internal/record/upload/documents']['post'] = 'record/applicant_document_create'; // step 4
+$route['internal/record/upload/documents']['post'] = 'record/applicant_document_create'; // step 5
+$route['internal/record/documents/(:any)']['get'] = 'record/applicant_documents/$1'; // step 5.5
+$route['internal/record/documents/uploaded/(:any)/(:any)']['get'] = 'record/applicant_document_lists/$1/$2'; // step 5.1 - admin
 
 
 /* Recruitment */
 $route['internal/record/review_app']['post'] = 'recruitment/review_create';
 $route['internal/record/review_app/documents']['post'] = 'recruitment/review_create_document';
+$route['internal/record/recruitment/final']['post'] = 'recruitment/recruitment_final';
 
 $route['internal/record/review']['patch'] = 'recruitment/review_update';
 
@@ -50,12 +53,12 @@ $route['internal/wage/assign']['post'] = 'finance/wage_assign_record';
 $route['internal/wages/(:any)']['get'] = 'finance/list_wages/$1';
 
 $route['internal/record/documents/(:any)/(:num)']['get'] = 'record/applicants_specific_reviews_documents/$1/$2'; // with filter (day/weekly) && no. of days
-$route['internal/record/documents/specific/notices/(:num)']['get'] = 'record/applicants_specific_documents/$1'; 
+$route['internal/record/documents/specific/notices/(:num)']['get'] = 'record/applicants_specific_documents/$1';
 
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';
 $route['internal/record/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews/$1/$2';
 $route['internal/record/specific/reviews/documents/(:any)/(:any)']['get'] = 'record/applicants_specific_reviews__documents/$1/$2';
-
+$route['internal/record/specific/documents/(:any)/(:any)']['get'] = 'record/applicant_document_lists/$1/$2';
 
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
 
@@ -123,4 +126,10 @@ $route['internal/activity/logs/(:any)']['get'] = 'logs/activity_record/$1';
 $route['internal/exams/logs/(:any)']['get'] = 'logs/exam_logs_record/$1';
 
 /* Mail */
+
 $route['internal/exams/email']['post'] = 'logs/exams_email';
+
+/* Training */
+$route['internal/record/training/(:any)']['get'] = 'training/list_employee/$1'; // summation for all
+$route['internal/record/training/(:any)/(:num)']['get'] = 'training/list_employee_status/$1/$2';
+$route['internal/record/employee/specific/(:any)']['get'] = 'training/employee_specific/$1';

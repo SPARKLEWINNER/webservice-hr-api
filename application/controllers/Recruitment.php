@@ -4,7 +4,8 @@ date_default_timezone_set('Asia/Manila');
 defined('BASEPATH') or exit('No direct script access allowed');
 
 
-class Recruitment extends Base_Controller{
+class Recruitment extends Base_Controller
+{
     public  $data = [];
     public  $auth = false;
     public $method = "";
@@ -19,12 +20,13 @@ class Recruitment extends Base_Controller{
 
     /* Patch */
 
-    public function review_update_patch(){
+    public function review_update_patch()
+    {
         $data = $this->validate_inpt(array('id'), 'patch');
         $response = $this->Main_mdl->record_patch_data($data, 1);
-        if($response){
+        if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
+        } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
@@ -33,8 +35,9 @@ class Recruitment extends Base_Controller{
 
     /* Post */
 
-    public function review_create_post(){
-        $data = $this->validate_inpt(array('data','company','id','reviewer','assess_evaluation', 'store','refernce_id'), 'post');
+    public function review_create_post()
+    {
+        $data = $this->validate_inpt(array('data', 'company', 'id', 'reviewer', 'assess_evaluation', 'store', 'refernce_id'), 'post');
         $mg_id = $this->post('id');
 
 
@@ -49,19 +52,19 @@ class Recruitment extends Base_Controller{
             'date_created' => date('Y-m-d H:i:s')
         );
 
-        $response = $this->Main_mdl->record_review_data($mg_id,$app_data);
-        if(!isset($response['status'])){
+        $response = $this->Main_mdl->record_review_data($mg_id, $app_data);
+        if (!isset($response['status'])) {
             return $this->set_response($response, 422);
-        }else{
+        } else {
             // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
             $this->set_response(array("status" => 200, "data" => $response),  200);
         }
-
     }
 
-    
-    public function review_create_document_post(){
-        $data = $this->validate_inpt(array('company','id','appl_company','appl_id', 'notice','status'), 'post');
+
+    public function review_create_document_post()
+    {
+        $data = $this->validate_inpt(array('company', 'id', 'appl_company', 'appl_id', 'notice', 'status'), 'post');
         $app_data = array(
             'appl_id' => $data['appl_id'],
             'appl_company' => $data['appl_company'],
@@ -73,79 +76,96 @@ class Recruitment extends Base_Controller{
         );
 
         $response = $this->Main_mdl->record_review_doc_data($app_data);
-        if(!isset($response['status'])){
+        if (!isset($response['status'])) {
             return $this->set_response($response, 422);
-        }else{
+        } else {
             // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
             $this->set_response(array("status" => 200, "data" => $response),  200);
         }
+    }
 
+    public function recruitment_final_post()
+    {
+        $data = $this->validate_inpt(array('author', 'appl_company', 'appl_id', 'notice', 'status'), 'post');
+        $app_data = array(
+            'appl_id' => $data['appl_id'],
+            'status' => 0,
+            'date_created' => date('Y-m-d H:i:s'),
+            'company' => $data['appl_company'],
+            'notice' => $data['notice'],
+            'author' => $data['author'],
+        );
+
+        $response = $this->Main_mdl->record_for_training($app_data);
+        if (!isset($response['status'])) {
+            return $this->set_response($response, 422);
+        } else {
+            // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
+            $this->set_response(array("status" => 200, "data" => $response),  200);
+        }
     }
 
     /* Get */
 
-    public function list_applicants_get($company = NULL){
+    public function list_applicants_get($company = NULL)
+    {
 
-        if(empty($company) ){
-            $this->response_return($this->response_code (400,""));
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
             return false;
         }
 
         $response = $this->Main_mdl->record_pull($company);
-        if($response){
+        if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
+        } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-
-
     }
 
 
-    public function list_applicants_status_get($company = NULL, $status = 0){
+    public function list_applicants_status_get($company = NULL, $status = 0)
+    {
 
-        if(empty($company) ){
-            $this->response_return($this->response_code (400,""));
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
             return false;
         }
 
         $response = $this->Main_mdl->record_status_pull($company, $status);
-        if($response){
+        if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
+        } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
     }
 
-    public function list_applicants_datecreated_get($type = NULL, $company = NULL , $number = 0){
+    public function list_applicants_datecreated_get($type = NULL, $company = NULL, $number = 0)
+    {
 
-        if(empty($company) && empty($number)){
-            $this->response_return($this->response_code (400,""));
+        if (empty($company) && empty($number)) {
+            $this->response_return($this->response_code(400, ""));
             return false;
         }
 
-        if(empty($type)){
-            $this->response_return($this->response_code (400,""));
+        if (empty($type)) {
+            $this->response_return($this->response_code(400, ""));
             return false;
         }
 
-        if($type == "day" || $type == "days"){
+        if ($type == "day" || $type == "days") {
             $response = $this->Main_mdl->record_day_pull($company, $number);
-        }else{
+        } else {
             $response = $this->Main_mdl->record_weeks_pull($company, $number);
         }
 
-        if($response){
+        if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
+        } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
         }
-
-
     }
-
-
 }
