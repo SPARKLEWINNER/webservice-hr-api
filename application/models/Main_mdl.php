@@ -756,6 +756,14 @@ class Main_mdl extends Base_Model
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 
+    public function record_stores_details_pull($id, $company)
+    {
+
+        $query = "SELECT * FROM store WHERE company = '{$company}' AND id = {$id}";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
 
     public function records_store_people_pull($company, $store_id)
     {

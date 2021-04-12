@@ -38,10 +38,11 @@ $route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_a
 $route['internal/system/create/store']['post'] = 'store/store_new'; // admin
 $route['internal/system/update/store/account']['patch'] = 'store/store_new_password'; // admin
 
-$route['internal/record/review_store_app']['post'] = 'store/review_create_post'; // ts
+$route['internal/record/review_store_app']['post'] = 'store/review_create'; // ts
 
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2'; // ts
-$route['internal/stores/(:any)']['get'] = 'store/list_stores/$1'; // admin
+$route['internal/stores/(:any)']['get'] = 'store/list_stores/$1';
+$route['internal/store/(:num)/(:any)']['get'] = 'store/store_details/$1/$2'; // admin
 $route['internal/stores/accounts/(:any)']['get'] = 'store/list_stores_accounts/$1'; // ts accounts
 
 
