@@ -211,6 +211,10 @@ class System extends Base_Controller{
             return $this->set_response(array("status" => 423, "message" => "Email already exists"), 422);
         }
 
+        if (!$this->validate_inpt_email($this->post('email'))) {
+            return  $this->set_response(array("status" => 423, "message" => "Email not valid"), 422);
+        }
+          
         $generate_password = $this->createPassword();
         $app_data = array(
             "company" => $data['company'],
@@ -226,7 +230,7 @@ class System extends Base_Controller{
         $response = $this->Main_mdl->system_record_people($app_data, $generate_password['temp_password']);
         $email_details = array(
             "from" => array(
-                "email" => ucfirst($data('company'))." - Account credentials <no-reply@".$data('company').".com.ph>",
+                "email" => ucfirst($data['company'])." - Account credentials <no-reply@".$data['company'].".com.ph>",
             ),
             "personalizations" => [array(
                 "to" => [array(
@@ -282,6 +286,11 @@ class System extends Base_Controller{
             return false;
         }
 
+        if (!$this->validate_inpt_email($this->post('email'))) {
+            return  $this->set_response(array("status" => 423, "message" => "Email not valid"), 422);
+        }
+          
+
         $generate_password = $this->createPassword();
         $app_data = array(
             "email" => $email,
@@ -292,7 +301,7 @@ class System extends Base_Controller{
         $response = $this->Main_mdl->system_record_reset_people($app_data, $generate_password['temp_password']);
         $email_details = array(
             "from" => array(
-                "email" => "Reset Password <no-reply@".$response('company').".com.ph>",
+                "email" => "Reset Password <no-reply@".$response['company'].".com.ph>",
                 "email" => "system@".$response['company'].".com.ph"
             ),
             "personalizations" => [array(

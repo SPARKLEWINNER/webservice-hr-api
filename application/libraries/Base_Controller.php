@@ -254,6 +254,20 @@ class Base_Controller extends REST_Controller{
         return $data;
     }
 
+    public function validate_inpt_email($email){
+        $success = true;
+        if (!filter_var((string) $email, FILTER_VALIDATE_EMAIL)) {
+            $success = false;
+        }
+        if ($success) {
+            $domain = ltrim(stristr($email, '@'), '@') . '.';
+            if (!checkdnsrr($domain, 'MX')) {
+                $success = false;
+            }
+        }
+        return $success;
+    }
+
     /* Auto generate code */
 
     public function generateReferenceCode($b)
