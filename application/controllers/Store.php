@@ -18,24 +18,9 @@ class Store extends Base_Controller{
     }
 
     /* Patch */
-    public function store_new_password_patch(){
-        $data = $this->validate_inpt(array('id'), 'patch');
-        $generate_password = $this->createPassword();
-        $app_data = array(
-            "password" => $generate_password['hashed_password'],
-            "temp_password" => $generate_password['temp_password']
-        );
 
-        $response = $this->Main_mdl->system_record_new_password($data, $app_data);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
-        }else{
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
-            return $this->set_response($response, 422);
-        }
-    }
-
-
+    
+    
     /* Post */
     public function review_create_post(){
         $data = $this->validate_inpt(array('company','id', 'reviewer', 'store_assess','review_status'), 'post');
@@ -48,6 +33,30 @@ class Store extends Base_Controller{
         }
 
     }
+
+    public function store_new_password_post(){
+
+        $id = $this->post('id');
+        if(empty($id)){
+            $this->response_return($this->response_code (201,"Invalid data sent"));
+            return false;
+        }
+
+        $generate_password = $this->createPassword();
+        $app_data = array(
+            "password" => $generate_password['hashed_password'],
+            "temp_password" => $generate_password['temp_password']
+        );
+
+        $response = $this->Main_mdl->system_record_new_password($id, $app_data);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
 
     public function store_new_post(){
         $data = $this->validate_inpt(array('name','company','created_by'), 'post');

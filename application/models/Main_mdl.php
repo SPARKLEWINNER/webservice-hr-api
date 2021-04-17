@@ -963,13 +963,12 @@ class Main_mdl extends Base_Model
 
 
 
-    public function system_record_new_password($arr, $data)
+    public function system_record_new_password($id, $data)
     {
-
-        $this->db->where('id', $arr['id']);
+        $this->db->where('id', $id);
         $this->db->update('users', $data);
         if ($this->db->affected_rows() > 0) :
-            $store = $this->db->select('*')->from('users')->where('id', $arr['id'])->get()->row();
+            $store = $this->db->select('*')->from('users')->where('id', $id)->get()->row();
             return array(
                 "id" => $store->id
             );
