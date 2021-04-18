@@ -34,6 +34,7 @@ $route['internal/record/(:any)/(:num)']['get'] = 'recruitment/list_applicants_st
 $route['internal/record/sort/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated/$1/$2/$3';
 $route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated_get/$1/$2/$3';
 
+$route['internal/record/document/update']['post'] = 'record/applicant_document_archive';
 /* Store */
 $route['internal/system/create/store']['post'] = 'store/store_new'; // admin
 $route['internal/system/update/store/account']['post'] = 'store/store_new_password'; // admin

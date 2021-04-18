@@ -533,6 +533,47 @@ class Main_mdl extends Base_Model
         endif;
     }
 
+    public function record_document_data_patch($data, $docid, $status)
+    {
+        $this->db->where('id', $docid);
+        $this->db->update('documents', array("status" => $status));
+
+
+        $this->db->insert('documents', $data);
+        $inserted_id = $this->db->insert_id();
+        $documents = $this->db->select('*')->from('documents')->where('id', $inserted_id)->get()->row();
+        if ($this->db->affected_rows() > 0) :
+            return array(
+                "id" => $inserted_id,
+                "applicant_id" => $documents->applicant_id,
+                "url" => $documents->url,
+                "doctype" => $documents->doctype,
+                "created" => $documents->created,
+                "status" => $documents->status,
+                "archive" => $documents->archive
+            );
+        else :
+            return false;
+        endif;
+    }
+
+    public function record_document_archive_patch($data, $docid, $applicant_id)
+    {
+        $this->db->where('id', $docid);
+        $this->db->update('documents', $data);
+        if ($this->db->affected_rows() > 0) :
+            $record = $this->db->select('id,applicant_id,status,archive')->from('documents')->where('id', $docid)->get()->row();
+            return array(
+                "id" => $record->id,
+                "applicant_id" => $record->applicant_id,
+                "status" => $record->status,
+                "archive" => $record->archive
+            );
+        else :
+            return false;
+        endif;
+    }
+
     public function documents_pull($id)
     {
 
@@ -759,7 +800,10 @@ class Main_mdl extends Base_Model
     public function record_stores_details_pull($id, $company)
     {
 
-        $query = "SELECT * FROM store WHERE company = '{$company}' AND id = {$id}";
+        $query = "SELECT strs.*, usr.email FROM store strs 
+        LEFT JOIN assigning asg ON strs.id = asg.store_id
+        LEFT JOIN users usr ON asg.emp_id = usr.id
+        WHERE strs.company = '{$company}' AND strs.id = {$id}";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }

@@ -86,24 +86,38 @@ class Record extends Base_Controller
     {
 
         $data = $this->validate_inpt(array('company', 'id', 'name', 'type'), 'post');
+        $status = $archive = 0;
+        if(!empty($this->post('docid'))){
+            $status = 1;
+        }
 
         $this->activity_logs($data['id'], 'DOCUMENTLOG', $data['type'], $data['name'], "DOCUMENTLOG", filter_var($data['name'], FILTER_VALIDATE_BOOLEAN));
+        $app_data = array(
+            "applicant_id" => $data['id'],
+            "name" => $data['name'],
+            "company" => $data['company'],
+            "doctype" => $data['type'],
+            "created" => date('Y-m-d H:i:s'),
+            "status" => 0,
+            "archive" => 0,
+            "url" => AWS_S3_URL . $data['name']
+        );
+
         if ($data['name']) {
             $isExisting = $this->Main_mdl->records_doc_pull($data['id'], $data['type']);
             if ($isExisting) {
-                $response = $this->response_code(422, array("status" => 422, "message" =>  "Please wait for the recruiter to validate your initial file submitted before."));
-                return $this->set_response($response, 422);
+                if(!empty($this->post('docid'))){
+                    $result = $this->Main_mdl->record_document_data_patch($app_data, $this->post('docid'), $status);
+
+                    if ($result) {
+                        $this->set_response(array("status" => 200, "data" => $result),  200);
+                    } else {
+                        $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
+                        return $this->set_response($response, 422);
+                    }
+
+                }
             } else {
-                $app_data = array(
-                    "applicant_id" => $data['id'],
-                    "name" => $data['name'],
-                    "company" => $data['company'],
-                    "doctype" => $data['type'],
-                    "created" => date('Y-m-d H:i:s'),
-                    "status" => 0,
-                    "archive" => 0,
-                    "url" => AWS_S3_URL . $data['name']
-                );
                 $result = $this->Main_mdl->record_document_data($app_data);
                 if ($result) {
                     $this->set_response(array("status" => 200, "data" => $result),  200);
@@ -116,6 +130,30 @@ class Record extends Base_Controller
             $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
             return $this->set_response($response, 422);
         }
+    }
+
+    public function applicant_document_archive_post()
+    {
+
+        $data = $this->validate_inpt(array('id', 'applicant_id', 'type'), 'post');
+        if(empty($data['applicant_id']) || empty($data['id'])){
+            $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
+            return $this->set_response($response, 422);
+        }
+
+        $app_data = array(
+            "status" => $data['type'],
+            "archive" => $data['type']
+        );
+
+        $result = $this->Main_mdl->record_document_archive_patch($app_data, $data['id'], $data['applicant_id']);
+        if ($result) {
+            $this->set_response(array("status" => 200, "data" => $result),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
+            return $this->set_response($response, 422);
+        }
+
     }
 
     public function applicant_exam_create_post()
