@@ -262,8 +262,8 @@ class Record extends Base_Controller
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {
-            $response = $this->response_code(201, array("status" => 201, "message" => "No data found."));
-            return $this->set_response($response, 201);
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
         }
     }
 
