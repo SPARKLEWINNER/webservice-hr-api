@@ -1212,20 +1212,27 @@ class Main_mdl extends Base_Model
         endif;
     }
 
+    public function user_update_details($data, $id){
+        $arr = array(
+            "first_name" => $data['firstname'],
+            "last_name" => $data['lastname'],
+            "email" => $data['email'],
+        );
+
+        $this->db->where('id', $id);
+        $this->db->update('users', $arr);
+        if ($this->db->affected_rows() > 0) :
+            return $data;
+        else :
+            return false;
+        endif;
+    }
+
 
     public function update_user_password($id, $passwords)
     {
 
-        $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('id', $id)->get()->row();
-        $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key', '_price')->where('post_id', $acc->product_id)->get()->row();
-        $woocom_details = "SELECT p.*, ( SELECT guid FROM wp_posts WHERE id = m.meta_value ) AS imgurl,  (SELECT meta_value FROM wp_postmeta pm WHERE meta_key='_wp_attachment_metadata' AND pm.post_id=m.meta_value ) AS imgdetails FROM wp_posts p
-        LEFT JOIN  wp_postmeta m ON(p.id = m.post_id AND m.meta_key =  '_thumbnail_id' ) WHERE p.post_type =  'product' AND p.id= {$acc->product_id}";
-        $woo_details = $this->db->query($woocom_details);
-
-        if ($woo_details->num_rows() > 0) {
-            $woo_details = $woo_details->result()[0];
-        }
-
+        $acc = $this->db->select('password,id,email,first_name,last_name,user_level')->from('users')->where('id', $id)->get()->row();
         $grab_password =  $acc->password;
         $grab_email =  $acc->email;
         $id = $acc->id;
@@ -1245,12 +1252,10 @@ class Main_mdl extends Base_Model
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $id,
-                    "email" => $grab_email,
-                    "firstname" => $woo_details->post_title,
-                    "lastname" => " ",
-                    "profile" => $woo_details->imgurl,
-                    "product_id" => $acc->product_id,
-                    "rate" => $woocom_meta->meta_value,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "user_level" => $acc->user_level
                 );
             else :
                 return $this->response_code(204, "User unable to change current password", "");
