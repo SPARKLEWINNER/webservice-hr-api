@@ -30,13 +30,13 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
 
-        $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
+        $upload_proc = "http://api.sparkles.com.ph/uploads/emqu75bc216195070021.jpg";
         $app_data = array(
             'username' =>  $this->post('person_email'),
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
-            'profile' =>  $upload_proc['link'],
+            'profile' =>  $upload_proc,
             'date_created' => date('Y-m-d H:i:s')
         );
 
