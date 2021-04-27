@@ -108,6 +108,25 @@ class Main_mdl extends Base_Model
         }
     }
 
+    public function workplace_logIN($email, $password)
+    {
+        $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
+
+        if(!isset($acc) && !password_verify($password,  $acc->password)) return false;
+
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+        return array(
+            "id" => $acc->id,
+            "email" => $acc->email,
+            "firstname" => $acc->first_name,
+            "lastname" => $acc->last_name,
+            "company" => $acc->company,
+            "profile" => $acc->profile,
+            "user_level" => $acc->user_level,
+        );
+    }
+
     public function recordToken($id, $token)
     {
         $this->db->where('id', $id);
