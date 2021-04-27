@@ -25,10 +25,10 @@ class Record extends Base_Controller
         $mg_email = $this->post('person_email');
         $generated = $this->generateReferenceCode($mg_email);
 
-        if ($this->Main_mdl->record_validate_data($mg_email)) {
-            $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
-            return $this->set_response($response, 422);
-        }
+        // if ($this->Main_mdl->record_validate_data($mg_email)) {
+        //     $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
+        //     return $this->set_response($response, 422);
+        // }
 
         $upload_proc = "http://api.sparkles.com.ph/uploads/emqu75bc216195070021.jpg";
         $app_data = array(
