@@ -79,7 +79,7 @@ class Auth extends Base_Controller
     public function workplace_login_post()
     {
         $data = $this->validate_inpt(array('email', 'password'), 'post');
-        $response = $this->Main_mdl->login($data['email'], $data['password']);
+        $response = $this->Main_mdl->workplace_login($data['email'], $data['password']);
         if (!$response) :
             $response = $this->response_code(422, "User Invalid", "");
             return $this->set_response($response, 422);

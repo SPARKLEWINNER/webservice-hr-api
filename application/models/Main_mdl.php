@@ -101,6 +101,7 @@ class Main_mdl extends Base_Model
                 "password" => $acc->password,
                 "user_level" => 10,
                 "profile" => $acc->profile,
+                "applying_for" => $acc->applying_for,
                 "company" => $acc->company
             );
         } else {
@@ -108,7 +109,7 @@ class Main_mdl extends Base_Model
         }
     }
 
-    public function workplace_logIN($email, $password)
+    public function workplace_login($email, $password)
     {
         $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
 
