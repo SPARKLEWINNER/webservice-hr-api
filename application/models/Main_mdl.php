@@ -117,6 +117,8 @@ class Main_mdl extends Base_Model
 
         $this->db->where('id', $acc->id);
         $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+        $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+        $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
         return array(
             "id" => $acc->id,
             "email" => $acc->email,
@@ -125,6 +127,8 @@ class Main_mdl extends Base_Model
             "company" => $acc->company,
             "profile" => $acc->profile,
             "user_level" => $acc->user_level,
+            "store_id" => $store->id,
+            "store_name" => $store->name
         );
     }
 
