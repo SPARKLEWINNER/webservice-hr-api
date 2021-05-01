@@ -878,6 +878,7 @@ class Main_mdl extends Base_Model
 
         $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls";
         $result = $this->db->query($applications_q);
+
         $appls = $result->result_array();
         $return_array = array();
         if ($result->num_rows() > 0) {
@@ -885,12 +886,10 @@ class Main_mdl extends Base_Model
                 $specific_r = array('applicant_id' => $apls['id'], 'company' => $company, 'store' => $store_id);
                 $review = $this->db->select('*')->from('reviews')->where($specific_r)->get()->row_array();
                 if (!empty($review) && $review['applicant_id'] == $apls['id']) :
-
-                    if ($review['assess_evaluation'] == 1) :
+       
+                    if (intval($review['assess_evaluation']) == 1) :
                         $store = $this->db->select('*')->from('store')->where('id', $store_id)->where('company', $company)->get()->row();
                         $job = $this->db->select('*')->from('settings')->where('id', json_decode($apls['applying_for']))->where('company', $company)->get()->row();
-
-
                         if (!empty($store) && !empty($job)) {
                             $apls['review'] = $review;
                             $apls['review_status'] = $review['review_status'];
