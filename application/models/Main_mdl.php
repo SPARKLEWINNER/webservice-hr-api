@@ -370,7 +370,7 @@ class Main_mdl extends Base_Model
 
             $status = array(0 => 5, 1 => 80, 2 => 4);
             $this->db->where('id', $data['appl_id']);
-            $this->db->update('applications', array("status" => $status[$data['status']]));
+            $this->db->update('applications', array("status" => $status[$data['status']])); // 1 : FAILED , 0 : Complete , 2 : Incomplete
 
             if ($status[$data['status']] == 5) {
                 $this->db->where('id', $data['appl_id']);
@@ -386,7 +386,7 @@ class Main_mdl extends Base_Model
                 'notice' => $record->notice,
                 'data' => $record->data,
                 'status' => $record->status,
-                'date_created' => date('Y-m-d H:i:s'),
+                'date_created' => $record->date_created,
             );
         else : return false;
         endif;
@@ -394,31 +394,71 @@ class Main_mdl extends Base_Model
 
     public function record_for_training($data)
     {
+        $record = $this->db->select('*')->from('reviews_doc')->where('appl_id', $data['appl_id'])->get()->row();
 
-        $this->db->insert('training', $data);
-        $inserted_id = $this->db->insert_id();
+        if($data['status'] === 3){
 
-        $record = $this->db->select('*')->from('training')->where('id', $inserted_id)->get()->row();
-
-        if ($this->db->affected_rows() > 0) :
-
-            $this->db->where('id', $data['appl_id']);
-            $this->db->update('applications', array("status" => 6));
-
-            $this->db->where('id', $data['appl_id']);
-            $this->db->update('reviews_doc', array("status" => 4));
-
-            return array(
-                "id" => $inserted_id,
-                'applicant_id' => $record->appl_id,
-                'author' => $record->author,
-                'company' => $record->company,
-                'notice' => $record->notice,
-                'status' => $record->status,
-                'date_created' => date('Y-m-d H:i:s'),
+            $training_data = array(
+                "appl_id" => $data['appl_id'],
+                "company" => $data['appl_company'],
+                "author" => $data['author_id'],
+                "notice" => $data['notice'],
+                "status" => $data['status'],
+                "date_created" => $data['date_created'] 
             );
-        else : return false;
-        endif;
+
+            $this->db->insert('training', $training_data);
+            $inserted_id = $this->db->insert_id();
+    
+            $record = $this->db->select('*')->from('training')->where('id', $inserted_id)->get()->row();
+    
+            if ($this->db->affected_rows() > 0) :
+    
+                $this->db->where('id', $data['appl_id']);
+                $this->db->update('applications', array("status" => 6));
+    
+                $this->db->where('id', $data['appl_id']);
+                $this->db->update('reviews_doc', array("status" => 4));
+    
+                return array(
+                    "id" => $inserted_id,
+                    'applicant_id' => $record->appl_id,
+                    'author' => $record->author,
+                    'company' => $record->company,
+                    'notice' => $record->notice,
+                    'status' => $record->status,
+                    'date_created' => $record->date_created,
+                );
+            else : return false;
+            endif;
+        }else{
+                $status = array(1 => 80, 2 => 4);
+                $record = $this->db->select('*')->from('reviews_doc')->where('appl_id', $data['appl_id'])->get()->row();
+
+                if ($this->db->affected_rows() > 0) :
+
+                    $this->db->where('id', $data['appl_id']);
+                    $this->db->update('applications', array("status" => $status[$data['status']]));
+
+                    $this->db->where('id', $data['appl_id']);
+                    $this->db->update('reviews_doc', array("status" => 4));
+                    
+                    $applicant = $this->db->select('*')->from('applications')->where('id', $data['appl_id'])->get()->row();
+
+                    return array(
+                        'applicant_id' => $applicant->id,
+                        'status' => $applicant->status,
+                        'applicant_company' => $record->appl_company,
+                        'author_id' => $record->author_id,
+                        'author_company' => $record->author_company,
+                        'notice' => $record->notice,
+                        'data' => $record->data,
+                        'doc_status' => $record->status,
+                        'date_created' => $record->date_created,
+                    );
+                else: return false;
+            endif;
+        }
     }
 
 
