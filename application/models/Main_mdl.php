@@ -399,8 +399,7 @@ class Main_mdl extends Base_Model
     public function record_for_training($data)
     {
         $record = $this->db->select('*')->from('reviews_doc')->where('appl_id', $data['appl_id'])->get()->row();
-
-        if($data['status'] === 3){
+        if(intval($data['status']) === 3){
 
             $training_data = array(
                 "appl_id" => $data['appl_id'],
