@@ -891,6 +891,7 @@ class Main_mdl extends Base_Model
                         $store = $this->db->select('*')->from('store')->where('id', $store_id)->where('company', $company)->get()->row();
                         $job = $this->db->select('*')->from('settings')->where('id', json_decode($apls['applying_for']))->where('company', $company)->get()->row();
                         if (!empty($store) && !empty($job)) {
+
                             $apls['review'] = $review;
                             $apls['review_status'] = $review['review_status'];
                             $apls['store_name'] = $store->name;
