@@ -153,15 +153,23 @@ class Main_mdl extends Base_Model
                 "id" => $acc->id,
                 "company" => $acc->company,
                 "switchable" => 0,
+                "return_url" => MEMBER_URL
             );
         } else {
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
+            $return_url = STAFF_URL;
+
+            if(intval($acc->user_level) === 5){
+                $return_url = WORKPLACE_URL;
+            }
+
             return array(
                 "id" => $acc->id,
                 "company" => $acc->company,
                 "switchable" => $acc->switchable,
+                "return_url" => $return_url
             );
         }
     }

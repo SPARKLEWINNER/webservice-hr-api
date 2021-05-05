@@ -127,6 +127,11 @@ define('PORTAL_LINK', 'http://portal.sparkles.com.ph/');
 
 define('AWS_LAMBDA_UPLOAD', 'https://vubo3l0xb9.execute-api.us-east-2.amazonaws.com/upload-api');
 define('AWS_S3_URL', 'https://oheast2-upload-s3.s3.us-east-2.amazonaws.com/');
+
+
+define("MEMBER_URL", "https://member-staging.netlify.app");
+define("STAFF_URL", "https://staff-staging.netlify.app");
+define("WORKPLACE_URL", "https://workplace-staging.netlify.app");
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');
 // define('PORTAL_LINK','https://portal-sparkles.netlify.app/');
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');

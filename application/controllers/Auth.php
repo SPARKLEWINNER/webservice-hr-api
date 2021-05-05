@@ -5,8 +5,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Auth extends Base_Controller
 {
-    public  $data = [];
-    public  $auth = false;
+    public $data = [];
+    public $auth = false;
     public $method = "";
     public $params = [];
     public $forgot_acc_path = 'emails/forgot-password';
@@ -74,8 +74,6 @@ class Auth extends Base_Controller
         endif;
     }
 
-    
-
     public function workplace_login_post()
     {
         $data = $this->validate_inpt(array('email', 'password'), 'post');
@@ -116,6 +114,7 @@ class Auth extends Base_Controller
         $data['hash'] = $data['temp'];
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['temp']);
 
+
         if (!array_key_exists("status", $result)) {
             $data['id'] = $result['id'];
             $data['company'] = $result['company'];
@@ -138,15 +137,13 @@ class Auth extends Base_Controller
                     "dynamic_template_data" => array(
                         "email" => $data['email'],
                         "help" => EMAIL_ADMIN,
-                        "portal" => "www.portal." . $data['company'] . ".com.ph", // to be change,
+                        "portal" => $result['return_url'], // to be change,
                         "title" => "Forgot Password",
                         "temp" => $data['temp']
                     )
                 )],
                 "template_id" => EMAIL_SGTEMPLATE_FORGOTPASSWORD
             );
-
-
 
             $process = $this->send_email_sg($data['email'], EMAIL_SGTEMPLATE_FORGOTPASSWORD, $email_details);
             if ($process != NULL) {
