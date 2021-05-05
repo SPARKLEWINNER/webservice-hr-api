@@ -1432,6 +1432,10 @@ class Main_mdl extends Base_Model
             $this->db->insert('users', $data);
             $inserted_id = $this->db->insert_id();
             $people = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
+            $return_url = STAFF_URL;
+            if(intval($people->user_level) === 5){
+                $return_url = WORKPLACE_URL;
+            }
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $inserted_id,
@@ -1442,6 +1446,7 @@ class Main_mdl extends Base_Model
                     "user_level" => $people->user_level,
                     "date_created" => $people->date_created,
                     "temp_password" => $temp_password,
+                    "return_url" => $return_url
                 );
             else :
                 return false;
@@ -1486,6 +1491,11 @@ class Main_mdl extends Base_Model
             $this->db->where('id', $validate_acc->id);
             $this->db->update('users', $data);
             $people = $this->db->select('*')->from('users')->where('id', $validate_acc->id)->get()->row();
+            $return_url = STAFF_URL;
+            if(intval($people->user_level) === 5){
+                $return_url === WORKPLACE_URL;
+            }
+            
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $validate_acc->id,
@@ -1496,6 +1506,7 @@ class Main_mdl extends Base_Model
                     "user_level" => $people->user_level,
                     "date_created" => $people->date_created,
                     "temp_password" => $temp_password,
+                    "return_url" => $return_url
                 );
             else :
                 return false;
