@@ -61,7 +61,7 @@ class Record extends Base_Controller
                             "email" => $response['username'],
                             "password" => $response['reference_id'],
                             "help" => EMAIL_ADMIN,
-                            "portal" => "www.portal." . $this->post('company') . ".com.ph" // to be change
+                            "portal" => $response['return_url'] 
                         )
                     )],
                     "template_id" => EMAIL_SGTEMPLATE_NEW_ACC

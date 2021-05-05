@@ -116,7 +116,7 @@ define('EMAIL_SG_ENDPOINT', 'https://api.sendgrid.com/v3/mail/send');
 define('EMAIL_SG_TOKEN', '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');
 
 /* Send Grid - Templates */
-define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');
+define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-df119a58b7614f11bd185de4e067c9f1');
 define('EMAIL_SGTEMPLATE_NEW_EMPLOYEE', 'd-7c8ed25584454e49a362ea84f1b1bbc9');
 define('EMAIL_SGTEMPLATE_EXAMRETAKE', 'd-0a238c782cbd4721bef0973f260288db');
 

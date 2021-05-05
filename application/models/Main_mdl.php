@@ -309,7 +309,8 @@ class Main_mdl extends Base_Model
                 "notification" => $record->notification,
                 "username" => $record->username,
                 "company" => $record->company,
-                "profile" => $record->profile
+                "profile" => $record->profile,
+                "return_url" => MEMBER_URL
             );
         else : return false;
         endif;
@@ -1825,6 +1826,7 @@ class Main_mdl extends Base_Model
                     "username" => $applicant->username,
                     "company" => $applicant->company,
                     "data" => $system->row()->data,
+                    "return_url" => MEMBER_URL
                 );
             } else {
                 return array(

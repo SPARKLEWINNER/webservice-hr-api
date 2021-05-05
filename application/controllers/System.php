@@ -26,8 +26,7 @@ class System extends Base_Controller{
                     "email"=> $response['username'],
                     "password" => $response['reference_id'],
                     "help" => "system@".$response['company'].".com.ph",
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
+                    "portal" => $response['return_url'] 
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
