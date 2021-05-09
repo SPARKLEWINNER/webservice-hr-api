@@ -38,7 +38,7 @@ class Logs extends Base_Controller{
                     "dynamic_template_data" => array(
                         "email"=> $data['email'],
                         "help" => EMAIL_ADMIN,
-                        "portal" =>"www.portal.".$data['company'].".com.ph", // to be change,
+                        "portal" => MEMBER_URL,
                         "title" => $decode->title,
                         "exam" => $decode->link
                     )

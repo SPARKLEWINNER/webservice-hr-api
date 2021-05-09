@@ -26,8 +26,7 @@ class System extends Base_Controller{
                     "email"=> $response['username'],
                     "password" => $response['reference_id'],
                     "help" => "system@".$response['company'].".com.ph",
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
+                    "portal" => $response['return_url'] 
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
@@ -241,8 +240,7 @@ class System extends Base_Controller{
                     "email"=> $response['email'],
                     "password" => $response['temp_password'],
                     "help" => EMAIL_ADMIN,
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.".$data['company'].".com.ph/" // to be change
+                    "portal" => $response['return_url']
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE
@@ -313,8 +311,7 @@ class System extends Base_Controller{
                     "email"=> $response['email'],
                     "password" => $response['temp_password'],
                     "help" => EMAIL_ADMIN,
-                    // "portal" =>"www.".$this->post('company').".com.ph" // to be change
-                    "portal" =>"http://portal.".$response['company'].".com.ph/" // to be change
+                    "portal" => $response['return_url']
                 )
             )],
             "template_id" => EMAIL_SGTEMPLATE_NEW_EMPLOYEE

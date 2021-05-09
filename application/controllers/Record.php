@@ -21,7 +21,7 @@ class Record extends Base_Controller
 
     public function applicant_create_post()
     {
-        // $data = $this->validate_inpt(array('data','email'), 'post');
+        $data = $this->validate_inpt(array('data','email'), 'post');
         $mg_email = $this->post('person_email');
         $generated = $this->generateReferenceCode($mg_email);
 
@@ -36,7 +36,7 @@ class Record extends Base_Controller
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
-            'profile' =>  $upload_proc['link'],
+            'profile' =>  $upload_proc,
             'date_created' => date('Y-m-d H:i:s')
         );
 
@@ -61,7 +61,7 @@ class Record extends Base_Controller
                             "email" => $response['username'],
                             "password" => $response['reference_id'],
                             "help" => EMAIL_ADMIN,
-                            "portal" => "www.portal." . $this->post('company') . ".com.ph" // to be change
+                            "portal" => $response['return_url'] 
                         )
                     )],
                     "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
@@ -104,23 +104,28 @@ class Record extends Base_Controller
         );
 
         if ($data['name']) {
+
             $isExisting = $this->Main_mdl->records_doc_pull($data['id'], $data['type']);
+
             if ($isExisting) {
+
                 if(!empty($this->post('docid'))){
                     $result = $this->Main_mdl->record_document_data_patch($app_data, $this->post('docid'), $status);
-
                     if ($result) {
-                        $this->set_response(array("status" => 200, "data" => $result),  200);
+                        return $this->set_response(array("status" => 200, "data" => $result),  200);
                     } else {
                         $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
                         return $this->set_response($response, 422);
                     }
 
+                }else{
+                    return $this->set_response(array("status" => 200, "data" => $isExisting),  200);
                 }
+
             } else {
                 $result = $this->Main_mdl->record_document_data($app_data);
                 if ($result) {
-                    $this->set_response(array("status" => 200, "data" => $result),  200);
+                    return $this->set_response(array("status" => 200, "data" => $result),  200);
                 } else {
                     $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
                     return $this->set_response($response, 422);
@@ -262,7 +267,7 @@ class Record extends Base_Controller
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {
-            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
             return $this->set_response($response, 422);
         }
     }

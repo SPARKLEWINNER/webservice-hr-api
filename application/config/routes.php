@@ -14,6 +14,9 @@ $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['patch'] = 'auth/reset';
 $route['internal/auth/validate']['post'] = 'auth/me/$1';
 
+
+$route['internal/v1/auth/login']['post'] = 'auth/workplace_login';
+
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1
 $route['internal/record/exam']['post'] = 'record/applicant_exam_create'; // step 2
@@ -96,20 +99,12 @@ $route['internal/system/update/requirements']['post'] = 'system/requirements_upd
 
 $route['internal/system/create/upload/status']['post'] = 'system/upload_status_create';
 $route['internal/system/update/upload/status']['patch'] = 'system/upload_status_update';
-/* User */
-$route['internal/user/(:any)']['get'] = 'accounts/user/$1';
+
 
 /* Supervisors */
 $route['internal/record/ts/specific/(:any)/(:any)']['get'] = 'record/applicants_ts_specific/$1/$2';
 $route['internal/record/ts/specific/reviews/(:any)/(:any)']['get'] = 'record/applicants_ts_specific_reviews/$1/$2';
 
-/** Accounts **/
-$route['internal/account/create']['post'] = 'accounts/create';
-$route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
-$route['internal/account/update']['post'] = 'accounts/user_rate';
-$route['internal/account/user/update']['patch'] = 'accounts/update_user';
-$route['internal/account/user/update/password']['patch'] = 'accounts/update_user_password';
-$route['internal/account/token/update']['patch'] = 'accounts/register_token';
 
 /* Read Document */
 $route['uploads/docs/(:any)/(:any)/(:any)'] = 'main/view_document/$1/$2/$3';
@@ -136,3 +131,15 @@ $route['internal/exams/email']['post'] = 'logs/exams_email';
 $route['internal/record/training/(:any)']['get'] = 'training/list_employee/$1'; // summation for all
 $route['internal/record/training/(:any)/(:num)']['get'] = 'training/list_employee_status/$1/$2';
 $route['internal/record/employee/specific/(:any)']['get'] = 'training/employee_specific/$1';
+
+
+
+/** Accounts **/
+$route['internal/account/create']['post'] = 'accounts/create';
+$route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
+$route['internal/account/update']['post'] = 'accounts/user_rate';
+$route['internal/account/user/update']['patch'] = 'accounts/update_user';
+$route['internal/account/user/update/credentials/(:num)']['patch'] = 'accounts/update_user_password/$1';
+$route['internal/account/token/update']['patch'] = 'accounts/register_token';
+$route['internal/user/(:any)']['get'] = 'accounts/user/$1';
+$route['internal/user/update/(:num)']['patch'] = 'accounts/user_update/$1';

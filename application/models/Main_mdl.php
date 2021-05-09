@@ -101,11 +101,35 @@ class Main_mdl extends Base_Model
                 "password" => $acc->password,
                 "user_level" => 10,
                 "profile" => $acc->profile,
+                "applying_for" => $acc->applying_for,
                 "company" => $acc->company
             );
         } else {
             return false;
         }
+    }
+
+    public function workplace_login($email, $password)
+    {
+        $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
+
+        if(!isset($acc) && !password_verify($password,  $acc->password)) return false;
+
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+        $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+        $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+        return array(
+            "id" => $acc->id,
+            "email" => $acc->email,
+            "firstname" => $acc->first_name,
+            "lastname" => $acc->last_name,
+            "company" => $acc->company,
+            "profile" => $acc->profile,
+            "user_level" => $acc->user_level,
+            "store_id" => $store->id,
+            "store_name" => $store->name
+        );
     }
 
     public function recordToken($id, $token)
@@ -129,15 +153,23 @@ class Main_mdl extends Base_Model
                 "id" => $acc->id,
                 "company" => $acc->company,
                 "switchable" => 0,
+                "return_url" => MEMBER_URL
             );
         } else {
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
+            $return_url = STAFF_URL;
+
+            if(intval($acc->user_level) === 5){
+                $return_url = WORKPLACE_URL;
+            }
+
             return array(
                 "id" => $acc->id,
                 "company" => $acc->company,
                 "switchable" => $acc->switchable,
+                "return_url" => $return_url
             );
         }
     }
@@ -277,7 +309,8 @@ class Main_mdl extends Base_Model
                 "notification" => $record->notification,
                 "username" => $record->username,
                 "company" => $record->company,
-                "profile" => $record->profile
+                "profile" => $record->profile,
+                "return_url" => MEMBER_URL
             );
         else : return false;
         endif;
@@ -350,7 +383,7 @@ class Main_mdl extends Base_Model
 
             $status = array(0 => 5, 1 => 80, 2 => 4);
             $this->db->where('id', $data['appl_id']);
-            $this->db->update('applications', array("status" => $status[$data['status']]));
+            $this->db->update('applications', array("status" => $status[$data['status']])); // 1 : FAILED , 0 : Complete , 2 : Incomplete
 
             if ($status[$data['status']] == 5) {
                 $this->db->where('id', $data['appl_id']);
@@ -366,7 +399,7 @@ class Main_mdl extends Base_Model
                 'notice' => $record->notice,
                 'data' => $record->data,
                 'status' => $record->status,
-                'date_created' => date('Y-m-d H:i:s'),
+                'date_created' => $record->date_created,
             );
         else : return false;
         endif;
@@ -374,31 +407,70 @@ class Main_mdl extends Base_Model
 
     public function record_for_training($data)
     {
+        $record = $this->db->select('*')->from('reviews_doc')->where('appl_id', $data['appl_id'])->get()->row();
+        if(intval($data['status']) === 3){
 
-        $this->db->insert('training', $data);
-        $inserted_id = $this->db->insert_id();
-
-        $record = $this->db->select('*')->from('training')->where('id', $inserted_id)->get()->row();
-
-        if ($this->db->affected_rows() > 0) :
-
-            $this->db->where('id', $data['appl_id']);
-            $this->db->update('applications', array("status" => 6));
-
-            $this->db->where('id', $data['appl_id']);
-            $this->db->update('reviews_doc', array("status" => 4));
-
-            return array(
-                "id" => $inserted_id,
-                'applicant_id' => $record->appl_id,
-                'author' => $record->author,
-                'company' => $record->company,
-                'notice' => $record->notice,
-                'status' => $record->status,
-                'date_created' => date('Y-m-d H:i:s'),
+            $training_data = array(
+                "appl_id" => $data['appl_id'],
+                "company" => $data['appl_company'],
+                "author" => $data['author_id'],
+                "notice" => $data['notice'],
+                "status" => $data['status'],
+                "date_created" => $data['date_created'] 
             );
-        else : return false;
-        endif;
+
+            $this->db->insert('training', $training_data);
+            $inserted_id = $this->db->insert_id();
+    
+            $record = $this->db->select('*')->from('training')->where('id', $inserted_id)->get()->row();
+    
+            if ($this->db->affected_rows() > 0) :
+    
+                $this->db->where('id', $data['appl_id']);
+                $this->db->update('applications', array("status" => 6));
+    
+                $this->db->where('id', $data['appl_id']);
+                $this->db->update('reviews_doc', array("status" => 4));
+    
+                return array(
+                    "id" => $inserted_id,
+                    'applicant_id' => $record->appl_id,
+                    'author' => $record->author,
+                    'company' => $record->company,
+                    'notice' => $record->notice,
+                    'status' => $record->status,
+                    'date_created' => $record->date_created,
+                );
+            else : return false;
+            endif;
+        }else{
+                $status = array(1 => 80, 2 => 4);
+                $record = $this->db->select('*')->from('reviews_doc')->where('appl_id', $data['appl_id'])->get()->row();
+
+                if ($this->db->affected_rows() > 0) :
+
+                    $this->db->where('id', $data['appl_id']);
+                    $this->db->update('applications', array("status" => $status[$data['status']]));
+
+                    $this->db->where('id', $data['appl_id']);
+                    $this->db->update('reviews_doc', array("status" => 4));
+                    
+                    $applicant = $this->db->select('*')->from('applications')->where('id', $data['appl_id'])->get()->row();
+
+                    return array(
+                        'applicant_id' => $applicant->id,
+                        'status' => $applicant->status,
+                        'applicant_company' => $record->appl_company,
+                        'author_id' => $record->author_id,
+                        'author_company' => $record->author_company,
+                        'notice' => $record->notice,
+                        'data' => $record->data,
+                        'doc_status' => $record->status,
+                        'date_created' => $record->date_created,
+                    );
+                else: return false;
+            endif;
+        }
     }
 
 
@@ -814,6 +886,7 @@ class Main_mdl extends Base_Model
 
         $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls";
         $result = $this->db->query($applications_q);
+
         $appls = $result->result_array();
         $return_array = array();
         if ($result->num_rows() > 0) {
@@ -821,13 +894,12 @@ class Main_mdl extends Base_Model
                 $specific_r = array('applicant_id' => $apls['id'], 'company' => $company, 'store' => $store_id);
                 $review = $this->db->select('*')->from('reviews')->where($specific_r)->get()->row_array();
                 if (!empty($review) && $review['applicant_id'] == $apls['id']) :
-
-                    if ($review['assess_evaluation'] == 1) :
+       
+                    if (intval($review['assess_evaluation']) == 1) :
                         $store = $this->db->select('*')->from('store')->where('id', $store_id)->where('company', $company)->get()->row();
                         $job = $this->db->select('*')->from('settings')->where('id', json_decode($apls['applying_for']))->where('company', $company)->get()->row();
-
-
                         if (!empty($store) && !empty($job)) {
+
                             $apls['review'] = $review;
                             $apls['review_status'] = $review['review_status'];
                             $apls['store_name'] = $store->name;
@@ -1212,20 +1284,27 @@ class Main_mdl extends Base_Model
         endif;
     }
 
+    public function user_update_details($data, $id){
+        $arr = array(
+            "first_name" => $data['firstname'],
+            "last_name" => $data['lastname'],
+            "email" => $data['email'],
+        );
+
+        $this->db->where('id', $id);
+        $this->db->update('users', $arr);
+        if ($this->db->affected_rows() > 0) :
+            return $data;
+        else :
+            return false;
+        endif;
+    }
+
 
     public function update_user_password($id, $passwords)
     {
 
-        $acc = $this->db->select('password,id,email,first_name,last_name,profile,product_id')->from('users')->where('id', $id)->get()->row();
-        $woocom_meta = $this->db->select('meta_value')->from('wp_postmeta')->where('meta_key', '_price')->where('post_id', $acc->product_id)->get()->row();
-        $woocom_details = "SELECT p.*, ( SELECT guid FROM wp_posts WHERE id = m.meta_value ) AS imgurl,  (SELECT meta_value FROM wp_postmeta pm WHERE meta_key='_wp_attachment_metadata' AND pm.post_id=m.meta_value ) AS imgdetails FROM wp_posts p
-        LEFT JOIN  wp_postmeta m ON(p.id = m.post_id AND m.meta_key =  '_thumbnail_id' ) WHERE p.post_type =  'product' AND p.id= {$acc->product_id}";
-        $woo_details = $this->db->query($woocom_details);
-
-        if ($woo_details->num_rows() > 0) {
-            $woo_details = $woo_details->result()[0];
-        }
-
+        $acc = $this->db->select('password,id,email,first_name,last_name,user_level')->from('users')->where('id', $id)->get()->row();
         $grab_password =  $acc->password;
         $grab_email =  $acc->email;
         $id = $acc->id;
@@ -1245,12 +1324,10 @@ class Main_mdl extends Base_Model
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $id,
-                    "email" => $grab_email,
-                    "firstname" => $woo_details->post_title,
-                    "lastname" => " ",
-                    "profile" => $woo_details->imgurl,
-                    "product_id" => $acc->product_id,
-                    "rate" => $woocom_meta->meta_value,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "user_level" => $acc->user_level
                 );
             else :
                 return $this->response_code(204, "User unable to change current password", "");
@@ -1355,6 +1432,10 @@ class Main_mdl extends Base_Model
             $this->db->insert('users', $data);
             $inserted_id = $this->db->insert_id();
             $people = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
+            $return_url = STAFF_URL;
+            if(intval($people->user_level) === 5){
+                $return_url = WORKPLACE_URL;
+            }
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $inserted_id,
@@ -1365,6 +1446,7 @@ class Main_mdl extends Base_Model
                     "user_level" => $people->user_level,
                     "date_created" => $people->date_created,
                     "temp_password" => $temp_password,
+                    "return_url" => $return_url
                 );
             else :
                 return false;
@@ -1409,6 +1491,11 @@ class Main_mdl extends Base_Model
             $this->db->where('id', $validate_acc->id);
             $this->db->update('users', $data);
             $people = $this->db->select('*')->from('users')->where('id', $validate_acc->id)->get()->row();
+            $return_url = STAFF_URL;
+            if(intval($people->user_level) === 5){
+                $return_url === WORKPLACE_URL;
+            }
+            
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $validate_acc->id,
@@ -1419,6 +1506,7 @@ class Main_mdl extends Base_Model
                     "user_level" => $people->user_level,
                     "date_created" => $people->date_created,
                     "temp_password" => $temp_password,
+                    "return_url" => $return_url
                 );
             else :
                 return false;
@@ -1749,6 +1837,7 @@ class Main_mdl extends Base_Model
                     "username" => $applicant->username,
                     "company" => $applicant->company,
                     "data" => $system->row()->data,
+                    "return_url" => MEMBER_URL
                 );
             } else {
                 return array(

@@ -1,0 +1,21 @@
+@baseurl=http://localhost/webservice-hr-api/
+@token=CODEX@123
+
+### Login
+POST {{baseurl}}internal/auth/login
+content-type: application/json
+x-api-key: {{token}}
+
+{
+    "email": "emquintos.sparkles@gmail.com",
+    "password": "EMQUE801A"
+}
+###
+
+POST {{baseurl}}internal/auth/forgot
+content-type: application/json
+x-api-key: {{token}}
+
+{
+    "email": "emquintos.sparkles@gmail.com"
+}

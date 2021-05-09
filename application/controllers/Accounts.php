@@ -101,20 +101,13 @@ class Accounts extends Base_Controller
         
     }
     
-     public function update_user_password_patch(){
+     public function update_user_password_patch($id = null){
 
-        if(empty($this->patch('id'))) {
-            $this->response_return($this->response_code(400,""));
-            return false; 
-        }
-        
         if(empty($this->patch('old')) && empty($this->patch('new'))) {
             $this->response_return($this->response_code(400,""));
             return false;
         }
         
-
-        $id = $this->patch('id');
         $oldPassword = $this->patch('old');
         $newPassword = $this->patch('new');
 
@@ -161,7 +154,23 @@ class Accounts extends Base_Controller
         }
         
     }
-    
 
+    public function user_update_patch($id = null){
 
+        if(empty($id)){
+            $this->response_return($this->response_code(400,""));
+            return false;
+        }
+
+        $data = $this->validate_inpt(array('email', 'firstname', 'lastname'), 'patch');
+        
+        $result = $this->Main_mdl->user_update_details($data, $id);
+        if ($result) {
+            $this->set_response(array("status" => 200, "data" => $result),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" =>  "Bad Request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
 }

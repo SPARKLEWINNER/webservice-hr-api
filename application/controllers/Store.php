@@ -25,7 +25,7 @@ class Store extends Base_Controller{
     public function review_create_post(){
         $data = $this->validate_inpt(array('company','id', 'reviewer', 'store_assess','review_status'), 'post');
         $response = $this->Main_mdl->record_review_store_data($data);
-        if(!isset($response['status'])){
+        if(!$response){
             return $this->set_response($response, 422);
         }else{
             // $this->send_email($mg_email,$this->new_acc_path, $this->post('company'), EMAIL_NEW_APPLICANT,array($response,$generated));
