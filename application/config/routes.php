@@ -16,6 +16,7 @@ $route['internal/auth/validate']['post'] = 'auth/me/$1';
 
 
 $route['internal/v1/auth/login']['post'] = 'auth/workplace_login';
+$route['internal/v2/auth/login']['post'] = 'auth/member_login';
 
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1

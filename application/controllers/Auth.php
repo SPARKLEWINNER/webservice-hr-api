@@ -94,6 +94,26 @@ class Auth extends Base_Controller
         endif;
     }
 
+    public function member_login_post()
+    {
+        $data = $this->validate_inpt(array('email', 'password'), 'post');
+        $response = $this->Main_mdl->workplace_login($data['email'], $data['password']);
+        if (!$response) :
+            $response = $this->response_code(422, "User Invalid", "");
+            return $this->set_response($response, 422);
+        else :
+            $data = $response;
+            $response['timestamp'] = date("Y-m-d H:i:s");
+            $response['token'] = AUTHORIZATION::generateToken($data);
+
+            if ($data['user_level'] == 5) {
+                $response['route'] = "supervisor/";
+            }
+
+            $this->set_response(array("status" => 200, "data" => $response), 200);
+        endif;
+    }
+
     public function logout_post()
     {
         if ($this->auth_request() === false) return $this->response_return($this->response_code(401, ""));
