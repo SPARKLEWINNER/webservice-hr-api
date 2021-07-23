@@ -130,8 +130,17 @@ define('AWS_S3_URL', 'https://oheast2-upload-s3.s3.us-east-2.amazonaws.com/');
 
 
 define("MEMBER_URL", "https://member-staging.netlify.app");
+define("MEMBER_URL_SYZYGY", "https://member.syzygy.com.ph");
+define("MEMBER_URL_7STAR", "https://member.7star.com.ph");
+
 define("STAFF_URL", "https://staff-staging.netlify.app");
+define("STAFF_URL_SYZYGY", "https://staff.syzygy.com.ph");
+define("STAFF_URL_7STAR", "https://staff.7star.com.ph");
+
 define("WORKPLACE_URL", "https://workplace-staging.netlify.app");
+define("WORKPLACE_URL_SYZYGY", "https://workplace.syzygy.com.ph");
+define("WORKPLACE_URL_7STAR", "https://workplace.7star.com.ph");
+
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');
 // define('PORTAL_LINK','https://portal-sparkles.netlify.app/');
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');
