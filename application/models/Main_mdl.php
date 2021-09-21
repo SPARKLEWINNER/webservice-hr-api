@@ -729,7 +729,7 @@ class Main_mdl extends Base_Model
 
     public function record_weeks_pull($company, $weeks)
     {
-        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK AND YEAR(date_created) = 2021 OR status = 0";
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK AND YEAR(date_created) = 2021 AND status = 0";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
