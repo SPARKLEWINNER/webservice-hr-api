@@ -145,8 +145,7 @@ class Auth extends Base_Controller
 
             $email_details = array(
                 "from" => array(
-                    //"email" => "Reset Password <no-reply@" . $result['company'] . ".com.ph>"
-                    "email" => "Reset Password <no-reply@sparkles.com.ph>"
+                    "email" => "Reset Password <no-reply@" . $result['company'] . ".com.ph>"
                 ),
                 "personalizations" => [array(
                     "to" => [array(
