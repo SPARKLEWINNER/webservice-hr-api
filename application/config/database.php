@@ -10,7 +10,7 @@ $database = "";
 $username = "";
 $password = "";
 
-if ($_SERVER['HTTP_HOST'] == "localhost") :
+if ($_SERVER['HTTP_HOST'] == "localhost:8080") :
 	$hostname = "localhost";
 	$database = "sparkles";
 	$username = "root";

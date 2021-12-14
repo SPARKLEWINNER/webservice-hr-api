@@ -228,12 +228,10 @@ class Main_mdl extends Base_Model
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
         if (!$acc) {
             $applicant = $this->db->select('id,username,company,password,token')->from('applications')->where('username', $data['email'])->get()->row();
-
             if ($applicant) {
-
+                
                 if ($applicant->token === "" || empty($applicant->token)) return $this->response_code(204, "Invalid token", "");
                 if ($data['hash'] ==  $applicant->token) :
-
                     $update = array(
                         "password" => password_hash($data['password'], PASSWORD_DEFAULT),
                         "token" => ""
@@ -254,7 +252,6 @@ class Main_mdl extends Base_Model
                 return $this->response_code(204, "User Invalid", "");
             }
         } else {
-
             if ($acc->token === "" || empty($acc->token)) return $this->response_code(204, "Invalid token", "");
 
             if ($data['hash'] ==  $acc->token) :

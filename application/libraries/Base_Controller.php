@@ -250,7 +250,6 @@ class Base_Controller extends REST_Controller{
                 }
             }
         }
-
         return $data;
     }
 
@@ -317,6 +316,7 @@ class Base_Controller extends REST_Controller{
 
         $output = curl_exec($ch);
         curl_close($ch);
+        echo $output;
         return json_decode($output,TRUE);
     }
 

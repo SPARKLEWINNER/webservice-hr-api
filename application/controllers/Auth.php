@@ -133,8 +133,6 @@ class Auth extends Base_Controller
         $data['temp'] = $this->generate_password()['temp_password'];
         $data['hash'] = $data['temp'];
         $result = $this->Main_mdl->retrieveUser($data['email'], $data['temp']);
-
-
         if (!array_key_exists("status", $result)) {
             $data['id'] = $result['id'];
             $data['company'] = $result['company'];
@@ -147,7 +145,8 @@ class Auth extends Base_Controller
 
             $email_details = array(
                 "from" => array(
-                    "email" => "Reset Password <no-reply@" . $data['company'] . ".com.ph>"
+                    //"email" => "Reset Password <no-reply@" . $result['company'] . ".com.ph>"
+                    "email" => "Reset Password <no-reply@sparkles.com.ph>"
                 ),
                 "personalizations" => [array(
                     "to" => [array(
@@ -164,8 +163,8 @@ class Auth extends Base_Controller
                 )],
                 "template_id" => EMAIL_SGTEMPLATE_FORGOTPASSWORD
             );
-
             $process = $this->send_email_sg($data['email'], EMAIL_SGTEMPLATE_FORGOTPASSWORD, $email_details);
+
             if ($process != NULL) {
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);
@@ -177,9 +176,9 @@ class Auth extends Base_Controller
         }
     }
 
-    public function reset_patch()
+    public function reset_post()
     {
-        $data = $this->validate_inpt(array('hash', 'email', 'password'), 'patch');
+        $data = $this->validate_inpt(array('hash', 'email', 'password'), 'post');
         $result = $this->Main_mdl->resetUser($data);
         if (!array_key_exists("status", $result)) {
             $data['id'] = $result['id'];
