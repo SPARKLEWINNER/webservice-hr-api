@@ -96,7 +96,6 @@ class Auth extends Base_Controller
 
     public function member_login_post()
     {
-        echo $_SERVER['HTTP_HOST'] == "localhost"
         $data = $this->validate_inpt(array('email', 'password'), 'post');
         $response = $this->Main_mdl->member_login($data['email'], $data['password']);
         if (!$response) :
