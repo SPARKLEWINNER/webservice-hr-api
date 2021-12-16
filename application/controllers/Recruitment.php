@@ -170,4 +170,19 @@ class Recruitment extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+    public function list_applicants_search_get($company = NULL, $number = 0)
+    {
+        if (empty($company) && empty($number)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_search_pull($company, $number);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
 }

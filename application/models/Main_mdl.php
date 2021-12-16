@@ -699,9 +699,22 @@ class Main_mdl extends Base_Model
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
 
+    public function record_search_pull($company, $year)
+    {
+        $query = "SELECT * FROM `applications` where YEAR(date_created) = '${year}' ORDER BY id DESC";
+        $result = $this->db->query($query);
+        $arr_app = [];
+        foreach ($result->result_array() as $k => $app) {
+            if ($app['company'] == $company) {
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
+    }
+
     public function record_day_pull($company, $days)
     {
-        $query = "SELECT * FROM `applications` where date_created  >= DATE(NOW()) - INTERVAL {$days} DAY OR status = 0 ORDER BY id DESC";
+        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) ORDER BY id DESC";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
