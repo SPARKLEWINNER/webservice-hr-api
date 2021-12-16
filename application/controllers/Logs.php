@@ -26,6 +26,17 @@ class Logs extends Base_Controller{
 
         if($response){
             $decode = json_decode($response['exams'][0]['meta_value']);
+            $_url = MEMBER_URL;
+            switch($data['company']){
+                case '7star':
+                    $_url = MEMBER_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $_url = MEMBER_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
             $email_details = array(
                 "from" => array(
                     "email" => "Exam Link <no-reply@".$data['company'].".com.ph>"
@@ -38,7 +49,7 @@ class Logs extends Base_Controller{
                     "dynamic_template_data" => array(
                         "email"=> $data['email'],
                         "help" => EMAIL_ADMIN,
-                        "portal" => MEMBER_URL,
+                        "portal" => $_url,
                         "title" => $decode->title,
                         "exam" => $decode->link
                     )

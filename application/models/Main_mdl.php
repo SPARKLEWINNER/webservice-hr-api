@@ -132,7 +132,17 @@ class Main_mdl extends Base_Model
 
         if (!$acc) { // not employee
             $acc = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
-
+            $_url = MEMBER_URL;
+            switch($acc->company){
+                case '7star':
+                    $_url = MEMBER_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $_url = MEMBER_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
             if (!$acc) return $this->response_code(204, "User invalid", "");
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
@@ -141,16 +151,36 @@ class Main_mdl extends Base_Model
                 "id" => $acc->id,
                 "company" => $acc->company,
                 "switchable" => 0,
-                "return_url" => MEMBER_URL
+                "return_url" => $_url
             );
         } else {
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
             $return_url = STAFF_URL;
+            switch($acc->company){
+                case '7star':
+                    $return_url = STAFF_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $return_url = STAFF_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
 
             if (intval($acc->user_level) === 5) {
                 $return_url = WORKPLACE_URL;
+                switch($acc->company){
+                    case '7star':
+                        $return_url = WORKPLACE_URL_7STAR;
+                        break;
+                    case 'syzygy':
+                        $return_url = WORKPLACE_URL_SYZYGY;
+                        break;
+                    default:
+                        break;
+                }
             }
 
             return array(
@@ -198,12 +228,10 @@ class Main_mdl extends Base_Model
         $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
         if (!$acc) {
             $applicant = $this->db->select('id,username,company,password,token')->from('applications')->where('username', $data['email'])->get()->row();
-
             if ($applicant) {
-
+                
                 if ($applicant->token === "" || empty($applicant->token)) return $this->response_code(204, "Invalid token", "");
                 if ($data['hash'] ==  $applicant->token) :
-
                     $update = array(
                         "password" => password_hash($data['password'], PASSWORD_DEFAULT),
                         "token" => ""
@@ -224,7 +252,6 @@ class Main_mdl extends Base_Model
                 return $this->response_code(204, "User Invalid", "");
             }
         } else {
-
             if ($acc->token === "" || empty($acc->token)) return $this->response_code(204, "Invalid token", "");
 
             if ($data['hash'] ==  $acc->token) :
@@ -284,6 +311,17 @@ class Main_mdl extends Base_Model
         $inserted_id = $this->db->insert_id();
 
         $record = $this->db->select('*')->from('applications')->where('id', $inserted_id)->get()->row();
+        $_url = MEMBER_URL;
+        switch($record->company){
+            case '7star':
+                $_url = MEMBER_URL_7STAR;
+                break;
+            case 'syzygy':
+                $_url = MEMBER_URL_SYZYGY;
+                break;
+            default:
+                break;
+        }
 
         if ($this->db->affected_rows() > 0) :
             return array(
@@ -298,7 +336,7 @@ class Main_mdl extends Base_Model
                 "username" => $record->username,
                 "company" => $record->company,
                 "profile" => $record->profile,
-                "return_url" => MEMBER_URL
+                "return_url" => $_url
             );
         else : return false;
         endif;
@@ -688,7 +726,7 @@ class Main_mdl extends Base_Model
 
     public function record_weeks_pull($company, $weeks)
     {
-        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK OR status = 0";
+        $query = "SELECT * FROM `applications` where date_created < now() - interval {$weeks} WEEK AND YEAR(date_created) = 2021 AND status = 0";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
@@ -942,7 +980,7 @@ class Main_mdl extends Base_Model
     public function record_exam_logs_pull($company)
     {
 
-        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 2 month AND  `company` = '{$company}' ORDER BY `id`";
+        $applicants = "SELECT * FROM `applications` WHERE `date_created` >= now()-interval 40 day AND `company` = '{$company}' ORDER BY `id`";
         $result = $this->db->query($applicants);
         if ($result->num_rows() > 0) {
             $app_res = $result->result_array();
@@ -1435,9 +1473,31 @@ class Main_mdl extends Base_Model
             $inserted_id = $this->db->insert_id();
             $people = $this->db->select('*')->from('users')->where('id', $inserted_id)->get()->row();
             $return_url = STAFF_URL;
+            switch($people->company){
+                case '7star':
+                    $return_url = STAFF_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $return_url = STAFF_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
+
             if (intval($people->user_level) === 5) {
                 $return_url = WORKPLACE_URL;
+                switch($people->company){
+                    case '7star':
+                        $return_url = WORKPLACE_URL_7STAR;
+                        break;
+                    case 'syzygy':
+                        $return_url = WORKPLACE_URL_SYZYGY;
+                        break;
+                    default:
+                        break;
+                }
             }
+
             if ($this->db->affected_rows() > 0) :
                 return array(
                     "id" => $inserted_id,
@@ -1494,8 +1554,29 @@ class Main_mdl extends Base_Model
             $this->db->update('users', $data);
             $people = $this->db->select('*')->from('users')->where('id', $validate_acc->id)->get()->row();
             $return_url = STAFF_URL;
+            switch($people->company){
+                case '7star':
+                    $return_url = STAFF_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $return_url = STAFF_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
+
             if (intval($people->user_level) === 5) {
                 $return_url === WORKPLACE_URL;
+                switch($people->company){
+                    case '7star':
+                        $return_url = WORKPLACE_URL_7STAR;
+                        break;
+                    case 'syzygy':
+                        $return_url = WORKPLACE_URL_SYZYGY;
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if ($this->db->affected_rows() > 0) :
@@ -1833,13 +1914,25 @@ class Main_mdl extends Base_Model
 
         if ($applicant->num_rows() > 0) {
             $applicant = $applicant->row();
+            $_url = MEMBER_URL;
+            switch($applicant->company){
+                case '7star':
+                    $_url = MEMBER_URL_7STAR;
+                    break;
+                case 'syzygy':
+                    $_url = MEMBER_URL_SYZYGY;
+                    break;
+                default:
+                    break;
+            }
+
             if ($system->num_rows() > 0) {
                 return array(
                     "reference_id" => $applicant->reference_id,
                     "username" => $applicant->username,
                     "company" => $applicant->company,
                     "data" => $system->row()->data,
-                    "return_url" => MEMBER_URL
+                    "return_url" => $_url
                 );
             } else {
                 return array(
