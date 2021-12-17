@@ -142,6 +142,9 @@ class Auth extends Base_Controller
             if ($result['switchable'] == 1) {
                 $data['company'] = json_decode($result['company'])->company[0];
             }
+            if ($result['company'][0] === "{") {
+                $result['company'] = "7star";
+            }
 
             $email_details = array(
                 "from" => array(
