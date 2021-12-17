@@ -128,7 +128,7 @@ class Main_mdl extends Base_Model
 
     public function retrieveUser($email, $password)
     {
-        $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable')->from('users')->where('email', $email)->get()->row();
+        $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable,user_level')->from('users')->where('email', $email)->get()->row();
 
         if (!$acc) { // not employee
             $acc = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
@@ -168,7 +168,6 @@ class Main_mdl extends Base_Model
                 default:
                     break;
             }
-
             if (intval($acc->user_level) === 5) {
                 $return_url = WORKPLACE_URL;
                 switch($acc->company){
