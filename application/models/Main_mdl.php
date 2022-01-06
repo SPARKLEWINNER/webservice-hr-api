@@ -2119,4 +2119,48 @@ class Main_mdl extends Base_Model
         }
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
+
+    public function update_user_mobile($email, $mobile)
+    {
+        $acc = $this->db->select('id,email,first_name,last_name')->from('users')->where('email', $email)->get()->row();
+        $getMobile = $this->db->select('email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+        if (!$acc) :
+            return $this->response_code(204, "User invalid", "");
+        else :
+            $grab_email =  $acc->email;
+            $id =  $acc->id;
+            if ($getMobile) :
+                return $this->response_code(204, "Mobile already in use", "");
+            else :
+                $data = array(
+                    "mobile" => $mobile
+                );
+                $this->db->where('id', $id);
+                $this->db->update('users', $data);
+                if ($this->db->affected_rows() > 0) :
+                    return $this->response_code(200, "Mobile no. successfully updated", "");
+                else :
+                    return $this->response_code(204, "User unable to change mobile no.", "");
+                endif;
+            endif;
+        endif;
+    }
+
+    public function check_mobile($mobile)
+    {
+        $getMobile = $this->db->select('id,mobile,email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+        if ($getMobile) :
+            return array(
+                "status" => 200,
+                "id" => $getMobile->id,
+                "first_name" => $getMobile->first_name,
+                "email" => $getMobile->email,
+            );
+        else :
+            return $this->response_code(204, "Mobile no. not registered", "");
+        endif;
+    }
+
+
+
 }
