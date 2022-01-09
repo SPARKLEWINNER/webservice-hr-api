@@ -2163,19 +2163,82 @@ class Main_mdl extends Base_Model
 
     public function update_otp($mobile, $otp)
     {
+        
         $getMobile = $this->db->select('id,mobile,email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
-
-        if ($getMobile) :
-            $this->db->where('id', $getMobile->id);
-            $updateOTP = $this->db->update('users', array("otp" => $otp));
-            if ($updateOTP) :
-                return $this->response_code(200, "Success", "");
-            else :
-                return $this->response_code(204, "Something went wrong please contact your administrator", "");
-            endif;
+        $this->db->where('id', $getMobile->id);
+        $updateOTP = $this->db->update('users', array("otp" => $otp));
+        if($updateOTP) :
+            $_SESSION['time'] = $_SERVER["REQUEST_TIME"];
+            return array(
+                "status" => 200,
+                "Message" => "success",
+                "Time" => $_SESSION['time']
+            );
         else :
-            return $this->response_code(204, "Mobile no. not registered", "");
+            return $this->response_code(204, "Invalid OTP", "");
         endif;
+    }
+
+    public function validate_otp($mobile, $otp, $time)
+    {
+        $timestamp =  $_SERVER["REQUEST_TIME"];
+        if ($timestamp - $time > 300) {
+            return $this->response_code(204, "OTP Expire", "");
+        }     
+        $acc = $this->db->select('*')->from('users')->where('mobile', $mobile)->where('otp', $otp)->get()->row();
+        if (empty($acc)) {
+            $checkMobile = $this->db->select('mobile')->from('users')->where('mobile', $mobile)->get()->row();
+            if (empty($checkMobile)) {
+                return $this->response_code(204, "Mobile no. not registered", "");
+            }
+            else {
+                return $this->response_code(204, "Invalid OTP", "");
+            }
+        }
+        else {
+            $this->db->where('id', $acc->id);
+            $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+            if ($acc->user_level == 3) {
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                    "switchable" => $acc->switchable
+                );
+            } else {
+
+                if ($acc->user_level == 5) {
+                    $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+                    $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+                    return array(
+                        "id" => $acc->id,
+                        "email" => $acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level,
+                        "store_id" => $store->id,
+                        "store_name" => $store->name
+                    );
+                } else {
+                    return array(
+                        "id" => $acc->id,
+                        "email" => $acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level,
+                    );
+                }
+            }    
+        }
+ 
     }
 
 
