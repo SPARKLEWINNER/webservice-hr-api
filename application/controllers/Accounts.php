@@ -211,33 +211,48 @@ class Accounts extends Base_Controller
         }
         else {
             $otp = random_int(100000, 999999);
+            $updateOTP = $this->Main_mdl->update_otp($mobile, $otp);
+            $ptn = "/^0/";  // Regex
+            $str = $mobile; //Your input, perhaps $_POST['textbox'] or whatever
+            $rpltxt = "63";  // Replacement string
+            $formattedMobile = preg_replace($ptn, $rpltxt, $str);
             $curl = curl_init();
-            
+            var_dump($formattedMobile);
+            $data = array(
+              'api_key' => SMS_KEY,
+              'api_secret' => SMS_SECRET,
+              'text' => "Hello! ".$response['first_name']." Here is your OTP: ".$otp." Have a great day ahead.",
+              'to' => $formattedMobile,
+              'from' => "APEX"
+            );
+
+            #Send SMS
             curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://www.smson.ph/api/v1/send-sms",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => array('message' => 'Hello '.$response['first_name'].' from Apex! Here is your 6 digit one time password(OTP) for phone verification'.$otp,'phone_number' => $mobile),
-            CURLOPT_HTTPHEADER => array(
-                "SmsOn-Auth:".SMS_ON_AUTH,
-                "SmsOn-ApiKey:".SMS_ON_TOKEN
+                CURLOPT_URL => "https://api.movider.co/v1/sms",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($data),
+                CURLOPT_HTTPHEADER => array(
+                  "Content-Type: application/x-www-form-urlencoded",
+                  "cache-control: no-cache"
                 ),
             ));
-
-            $smsResponse = curl_exec($curl);
-            $err = curl_error($curl);
+            
+            $smsSendResponse = curl_exec($curl);
+            $sendingErr = curl_error($curl);
 
             curl_close($curl);
-
-            if ($err) {
-                $this->set_response("cURL Error #:" . $err,  204);
+            
+            if ($sendingErr) {
+              $this->set_response("cURL Error #:" . $sendingErr, 204);
             } else {
-               $this->set_response($smsResponse,  200);
+              $updateOTP = $this->Main_mdl->update_otp($mobile, $otp);
+              if ($updateOTP['status'] == 200) :
+                  return $this->set_response($updateOTP['message'], 200);
+              else :
+                  return $this->set_response($updateOTP['message'], 204);
+              endif;
             }
         }
         

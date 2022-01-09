@@ -117,8 +117,8 @@ define('EMAIL_SG_TOKEN', 'SG.8TEOkDfBTPW4RzQLAX6PUg.XUwF0iXC3HyyR8wRQ1ob1d6hZ_TO
 
 /* SMSON */
 
-define('SMS_ON_TOKEN', '2y10Kff4yRSoAaBr6hIme5dVPuHlXeAqmIafMJW4NzCOrOkMIUOKuPxAi');
-define('SMS_ON_AUTH', 'ZW1xdWludG9zLnNwYXJrbGVzQGdtYWlsLmNvbTptaWd1ZWwyMw==');
+define('SMS_KEY', '23JFgZwUnzZkkxtOHmPZ8TxeDQJ');
+define('SMS_SECRET', 'ga7oMAoBgtGe51PF4PWjvrxBmrpGI8CH4Fx5dAsD');
 
 /* Send Grid - Templates */
 define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');

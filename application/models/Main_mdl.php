@@ -2161,6 +2161,23 @@ class Main_mdl extends Base_Model
         endif;
     }
 
+    public function update_otp($mobile, $otp)
+    {
+        $getMobile = $this->db->select('id,mobile,email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+
+        if ($getMobile) :
+            $this->db->where('id', $getMobile->id);
+            $updateOTP = $this->db->update('users', array("otp" => $otp));
+            if ($updateOTP) :
+                return $this->response_code(200, "Success", "");
+            else :
+                return $this->response_code(204, "Something went wrong please contact your administrator", "");
+            endif;
+        else :
+            return $this->response_code(204, "Mobile no. not registered", "");
+        endif;
+    }
+
 
 
 }
