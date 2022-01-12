@@ -2123,12 +2123,14 @@ class Main_mdl extends Base_Model
     public function update_user_mobile($email, $mobile)
     {
         $acc = $this->db->select('id,email,first_name,last_name')->from('users')->where('email', $email)->get()->row();
-        $getMobile = $this->db->select('email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+        
         if (!$acc) :
             return $this->response_code(204, "User invalid", "");
         else :
             $grab_email =  $acc->email;
             $id =  $acc->id;
+            $getMobile = $this->db->select('email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+            var_dump($getMobile);
             if ($getMobile) :
                 return $this->response_code(204, "Mobile already in use", "");
             else :

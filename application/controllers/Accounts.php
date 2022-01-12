@@ -210,7 +210,7 @@ class Accounts extends Base_Controller
         }
         else {
             $otp = random_int(100000, 999999);
-            $updateOTP = $this->Main_mdl->update_otp($mobile, $otp);
+            
             $ptn = "/^0/";  // Regex
             $str = $mobile; //Your input, perhaps $_POST['textbox'] or whatever
             $rpltxt = "63";  // Replacement string
