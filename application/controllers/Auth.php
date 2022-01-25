@@ -145,7 +145,6 @@ class Auth extends Base_Controller
             if ($result['company'][0] === "{") {
                 $result['company'] = "7star";
             }
-
             $email_details = array(
                 "from" => array(
                     "email" => "Reset Password <no-reply@" . $result['company'] . ".com.ph>"

@@ -131,9 +131,9 @@ class Main_mdl extends Base_Model
         $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable,user_level')->from('users')->where('email', $email)->get()->row();
 
         if (!$acc) { // not employee
-            $acc = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
-            $_url = MEMBER_URL;
-            switch($acc->company){
+            $accApplicant = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
+            /*$_url = MEMBER_URL;*/
+            switch($accApplicant->company){
                 case '7star':
                     $_url = MEMBER_URL_7STAR;
                     break;
@@ -157,7 +157,7 @@ class Main_mdl extends Base_Model
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
-            $return_url = STAFF_URL;
+            //$return_url = STAFF_URL;
             switch($acc->company){
                 case '7star':
                     $return_url = STAFF_URL_7STAR;
@@ -2130,7 +2130,6 @@ class Main_mdl extends Base_Model
             $grab_email =  $acc->email;
             $id =  $acc->id;
             $getMobile = $this->db->select('email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
-            var_dump($getMobile);
             if ($getMobile) :
                 return $this->response_code(204, "Mobile already in use", "");
             else :
