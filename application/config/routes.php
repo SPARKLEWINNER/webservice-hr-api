@@ -27,6 +27,7 @@ $route['internal/v2/auth/login']['post'] = 'auth/member_login';
 
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1
+$route['internal/record/v2/create']['post'] = 'record/applicant_create_v2'; // step 1 version 2
 $route['internal/record/exam']['post'] = 'record/applicant_exam_create'; // step 2
 $route['internal/record/upload/documents']['post'] = 'record/applicant_document_create'; // step 5
 $route['internal/record/documents/(:any)']['get'] = 'record/applicant_documents/$1'; // step 5.5

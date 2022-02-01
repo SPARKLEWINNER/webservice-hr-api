@@ -146,7 +146,10 @@ define("WORKPLACE_URL", "https://workplace-staging.netlify.app");
 define("WORKPLACE_URL_SYZYGY", "https://workplace.syzygy.com.ph");
 define("WORKPLACE_URL_7STAR", "https://workplace.7star.com.ph");
 
-define("CURRENT_YEAR", 2021);
+
+define("AWS_PROFILE_URI", "https://oheast2-upload-s3.s3.us-east-2.amazonaws.com/");
+
+define("CURRENT_YEAR", 2022);
 
 // define('PORTAL_LINK','http://localhost:3000/webservice-hr-portal/');
 // define('PORTAL_LINK','https://portal-sparkles.netlify.app/');
