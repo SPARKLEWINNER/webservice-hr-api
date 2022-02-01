@@ -83,6 +83,64 @@ class Record extends Base_Controller
         }
     }
 
+    public function applicant_create_v2_post()
+    {
+        $data = $this->validate_inpt(array('data','email'), 'post');
+        $mg_email = $this->post('person_email');
+        $generated = $this->generateReferenceCode($mg_email);
+
+        if ($this->Main_mdl->record_validate_data($mg_email)) {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
+            return $this->set_response($response, 422);
+        }
+
+        $app_data = array(
+            'username' =>  $this->post('person_email'),
+            'data' => json_encode($this->post()),
+            'company' => $this->post('company'),
+            'reference_id' => $generated,
+            'profile' =>  AWS_PROFILE_URI."".$this->post('pref_image'),
+            'date_created' => date('Y-m-d H:i:s')
+        );
+        
+
+        $response = $this->Main_mdl->record_data($app_data);
+        if (!isset($response['status'])) {
+            $this->appl_logs($app_data['username'], "APPLICANT", "FAILED", json_encode($app_data), 0, $this->post('company'));
+            return $this->response_code(422, array("status" => 422, "message" => "Failed to Submit Form application"), "");
+        } else {
+            $this->appl_logs($app_data['username'], "APPLICANT", "SUCCESS", json_encode($app_data), 1, $this->post('company'));
+            $email_details = array(
+                "from" => array(
+                    "email" => ucfirst($this->post('company')) . " - Recruitment Account <no-reply@" . $this->post('company') . ".com.ph>",
+                ),
+                "personalizations" => [array(
+                    "to" => [array(
+                        "email" => $response['username']
+                    )],
+                    "subject" => EMAIL_NEW_APPLICANT,
+                    "dynamic_template_data" => array(
+                        "email" => $response['username'],
+                        "password" => $response['reference_id'],
+                        "help" => EMAIL_ADMIN,
+                        "portal" => $response['return_url'] 
+                    )
+                )],
+                "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
+            );
+
+
+            $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
+            if ($is_mailed == NULL) {
+                $this->email_logs('NEWAPPLICANT', $response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details), $this->post('company'));
+                $this->set_response(array("status" => 200, "data" => $response),  200);
+            } else {
+                $this->email_logs('NEWAPPLICANT', $response['reference_id'], $response['username'], 0, "FAILED", json_encode($email_details), $this->post('company'));
+            }
+        }
+
+    }
+
     public function applicant_document_create_post()
     {
 
