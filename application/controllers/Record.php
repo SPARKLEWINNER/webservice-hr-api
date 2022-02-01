@@ -107,9 +107,7 @@ class Record extends Base_Controller
         if ($data['name']) {
 
             $isExisting = $this->Main_mdl->records_doc_pull($data['id'], $data['type']);
-
             if ($isExisting) {
-
                 if(!empty($this->post('docid'))){
                     $result = $this->Main_mdl->record_document_data_patch($app_data, $this->post('docid'), $status);
                     if ($result) {
@@ -118,11 +116,16 @@ class Record extends Base_Controller
                         $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
                         return $this->set_response($response, 422);
                     }
-
                 }else{
-                    return $this->set_response(array("status" => 200, "data" => $isExisting),  200);
+                    $result = $this->Main_mdl->record_document_data($app_data);
+                    if ($result) {
+                        return $this->set_response(array("status" => 200, "data" => $result),  200);
+                    } else {
+                        $response = $this->response_code(422, array("status" => 422, "message" =>  "Server upload error"));
+                        return $this->set_response($response, 422);
+                    }
+                    /*return $this->set_response(array("status" => 200, "data" => $isExisting),  200);*/
                 }
-
             } else {
                 $result = $this->Main_mdl->record_document_data($app_data);
                 if ($result) {

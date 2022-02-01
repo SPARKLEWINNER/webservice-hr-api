@@ -131,9 +131,9 @@ class Main_mdl extends Base_Model
         $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable,user_level')->from('users')->where('email', $email)->get()->row();
 
         if (!$acc) { // not employee
-            $acc = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
-            $_url = MEMBER_URL;
-            switch($acc->company){
+            $accApplicant = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
+            /*$_url = MEMBER_URL;*/
+            switch($accApplicant->company){
                 case '7star':
                     $_url = MEMBER_URL_7STAR;
                     break;
@@ -157,7 +157,7 @@ class Main_mdl extends Base_Model
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
-            $return_url = STAFF_URL;
+            //$return_url = STAFF_URL;
             switch($acc->company){
                 case '7star':
                     $return_url = STAFF_URL_7STAR;
@@ -2119,4 +2119,129 @@ class Main_mdl extends Base_Model
         }
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
+
+    public function update_user_mobile($email, $mobile)
+    {
+        $acc = $this->db->select('id,email,first_name,last_name')->from('users')->where('email', $email)->get()->row();
+        
+        if (!$acc) :
+            return $this->response_code(204, "User invalid", "");
+        else :
+            $grab_email =  $acc->email;
+            $id =  $acc->id;
+            $getMobile = $this->db->select('email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+            if ($getMobile) :
+                return $this->response_code(204, "Mobile already in use", "");
+            else :
+                $data = array(
+                    "mobile" => $mobile
+                );
+                $this->db->where('id', $id);
+                $this->db->update('users', $data);
+                if ($this->db->affected_rows() > 0) :
+                    return $this->response_code(200, "Mobile no. successfully updated", "");
+                else :
+                    return $this->response_code(204, "User unable to change mobile no.", "");
+                endif;
+            endif;
+        endif;
+    }
+
+    public function check_mobile($mobile)
+    {
+        $getMobile = $this->db->select('id,mobile,email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+        if ($getMobile) :
+            return array(
+                "status" => 200,
+                "id" => $getMobile->id,
+                "first_name" => $getMobile->first_name,
+                "email" => $getMobile->email,
+            );
+        else :
+            return $this->response_code(204, "Mobile no. not registered", "");
+        endif;
+    }
+
+    public function update_otp($mobile, $otp)
+    {
+        
+        $getMobile = $this->db->select('id,mobile,email,first_name,last_name')->from('users')->where('mobile', $mobile)->get()->row();
+        $this->db->where('id', $getMobile->id);
+        $updateOTP = $this->db->update('users', array("otp" => $otp));
+        if($updateOTP) :
+            $_SESSION['time'] = $_SERVER["REQUEST_TIME"];
+            return array(
+                "status" => 200,
+                "Message" => "success",
+                "Time" => $_SESSION['time']
+            );
+        else :
+            return $this->response_code(204, "Invalid OTP", "");
+        endif;
+    }
+
+    public function validate_otp($mobile, $otp, $time)
+    {
+        $timestamp =  $_SERVER["REQUEST_TIME"];
+        if ($timestamp - $time > 300) {
+            return $this->response_code(204, "OTP Expire", "");
+        }     
+        $acc = $this->db->select('*')->from('users')->where('mobile', $mobile)->where('otp', $otp)->get()->row();
+        if (empty($acc)) {
+            $checkMobile = $this->db->select('mobile')->from('users')->where('mobile', $mobile)->get()->row();
+            if (empty($checkMobile)) {
+                return $this->response_code(204, "Mobile no. not registered", "");
+            }
+            else {
+                return $this->response_code(204, "Invalid OTP", "");
+            }
+        }
+        else {
+            $this->db->where('id', $acc->id);
+            $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+            if ($acc->user_level == 3) {
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                    "switchable" => $acc->switchable
+                );
+            } else {
+
+                if ($acc->user_level == 5) {
+                    $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+                    $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+                    return array(
+                        "id" => $acc->id,
+                        "email" => $acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level,
+                        "store_id" => $store->id,
+                        "store_name" => $store->name
+                    );
+                } else {
+                    return array(
+                        "id" => $acc->id,
+                        "email" => $acc->email,
+                        "firstname" => $acc->first_name,
+                        "lastname" => $acc->last_name,
+                        "company" => $acc->company,
+                        "profile" => $acc->profile,
+                        "user_level" => $acc->user_level,
+                    );
+                }
+            }    
+        }
+ 
+    }
+
+
+
 }

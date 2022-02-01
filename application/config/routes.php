@@ -13,6 +13,13 @@ $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['post'] = 'auth/reset';
 $route['internal/auth/validate']['post'] = 'auth/me/$1';
+$route['internal/auth/mobile']['post'] = 'auth/mobile';
+
+/** Mobile Registration **/
+
+$route['internal/account/mobile']['post'] = 'accounts/mobile';
+$route['internal/account/otp_send']['post'] = 'accounts/otp';
+$route['internal/account/otp_validate']['post'] = 'accounts/validateOtp';
 
 
 $route['internal/v1/auth/login']['post'] = 'auth/workplace_login';

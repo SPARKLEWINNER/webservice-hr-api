@@ -115,6 +115,11 @@ define('EMAIL_FORGOT_PASSWORD', 'Forgot Password');
 define('EMAIL_SG_ENDPOINT', 'https://api.sendgrid.com/v3/mail/send');
 define('EMAIL_SG_TOKEN', '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');
 
+/* SMSON */
+
+define('SMS_KEY', '23JFgZwUnzZkkxtOHmPZ8TxeDQJ');
+define('SMS_SECRET', 'ga7oMAoBgtGe51PF4PWjvrxBmrpGI8CH4Fx5dAsD');
+
 /* Send Grid - Templates */
 define('EMAIL_SGTEMPLATE_NEW_ACC', 'd-fe50c5b5224042f1b1b0638b8ff21b08');
 define('EMAIL_SGTEMPLATE_NEW_EMPLOYEE', 'd-7c8ed25584454e49a362ea84f1b1bbc9');
