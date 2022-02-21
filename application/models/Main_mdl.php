@@ -132,7 +132,7 @@ class Main_mdl extends Base_Model
 
         if (!$acc) { // not employee
             $accApplicant = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
-            /*$_url = MEMBER_URL;*/
+            $_url = "";
             switch($accApplicant->company){
                 case '7star':
                     $_url = MEMBER_URL_7STAR;
@@ -157,7 +157,7 @@ class Main_mdl extends Base_Model
             $update = array("password" => $password, "token" => $password);
             $this->db->where('id', $acc->id);
             $this->db->update('users', $update);
-            //$return_url = STAFF_URL;
+            $return_url = "";
             switch($acc->company){
                 case '7star':
                     $return_url = STAFF_URL_7STAR;
