@@ -165,7 +165,6 @@ class Auth extends Base_Controller
                 "template_id" => EMAIL_SGTEMPLATE_FORGOTPASSWORD
             );
             $process = $this->send_email_sg($data['email'], EMAIL_SGTEMPLATE_FORGOTPASSWORD, $email_details);
-
             if ($process != NULL) {
                 $response = $this->response_code(422, "Mailing", "");
                 return $this->set_response($response, 422);

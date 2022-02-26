@@ -77,6 +77,8 @@ $route['internal/record/specific/reviews/documents/(:any)/(:any)']['get'] = 'rec
 $route['internal/record/specific/documents/(:any)/(:any)']['get'] = 'record/applicant_document_lists/$1/$2';
 
 $route['internal/record/bypass']['patch'] = 'record/review_bypass_record';
+$route['internal/record/update_store/(:any)/(:any)/(:any)']['get'] = 'record/update_applicant_store/$1/$2/$3';
+
 
 
 

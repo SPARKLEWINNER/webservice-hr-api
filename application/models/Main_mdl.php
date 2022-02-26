@@ -129,7 +129,7 @@ class Main_mdl extends Base_Model
     public function retrieveUser($email, $password)
     {
         $acc = $this->db->select('id,email,first_name,last_name,profile,company,switchable,user_level')->from('users')->where('email', $email)->get()->row();
-
+        
         if (!$acc) { // not employee
             $accApplicant = $this->db->select('id,username,company')->from('applications')->where('username', $email)->get()->row();
             $_url = "";
@@ -2239,7 +2239,22 @@ class Main_mdl extends Base_Model
                 }
             }    
         }
- 
+    }
+
+    public function get_store_assessment_record($company, $id, $store)
+    {
+
+        $query = "SELECT store, store_assess FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
+    public function update_store_assessment_record($company, $id, $store, $store_assess)
+    {   
+        $update = array("store" => $store, "store_assess" => $store_assess);
+        $this->db->where('applicant_id', $id, 'company', $company);
+        $result = $this->db->update('reviews', $update);
+        return ($result);
     }
 
 
