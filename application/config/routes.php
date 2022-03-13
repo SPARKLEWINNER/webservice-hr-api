@@ -9,11 +9,15 @@ $route['internal/deploy'] = 'main/deploy';
 
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
+$route['internal/auth/googlelogin']['post'] = 'auth/googlelogin';
+$route['internal/auth/facebook_login']['post'] = 'auth/facebooklogin';
 $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['post'] = 'auth/reset';
 $route['internal/auth/validate']['post'] = 'auth/me/$1';
 $route['internal/auth/mobile']['post'] = 'auth/mobile';
+$route['internal/v1/auth/login']['post'] = 'auth/workplace_login';
+$route['internal/v2/auth/login']['post'] = 'auth/member_login';
 
 /** Mobile Registration **/
 
@@ -21,9 +25,8 @@ $route['internal/account/mobile']['post'] = 'accounts/mobile';
 $route['internal/account/otp_send']['post'] = 'accounts/otp';
 $route['internal/account/otp_validate']['post'] = 'accounts/validateOtp';
 
-
-$route['internal/v1/auth/login']['post'] = 'auth/workplace_login';
-$route['internal/v2/auth/login']['post'] = 'auth/member_login';
+/** Facebook account link **/
+$route['internal/account/facebook']['post'] = 'accounts/updateFb';
 
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1

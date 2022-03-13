@@ -2257,6 +2257,128 @@ class Main_mdl extends Base_Model
         return ($result);
     }
 
+    public function google_login($email)
+    {
+        $acc = $this->db->select('*')->from('users')->where('email', $email)->get()->row();
+        if (!isset($acc)) return $this->response_code(204, "User invalid", "");
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+
+        if ($acc->user_level == 3) {
+            return array(
+                "id" => $acc->id,
+                "email" => $acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+                "switchable" => $acc->switchable
+            );
+        } else {
+
+            if ($acc->user_level == 5) {
+                $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+                $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                    "store_id" => $store->id,
+                    "store_name" => $store->name
+                );
+            } else {
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                );
+            }
+        }
+    }
+
+    public function facebook_login($id)
+    {
+        $acc = $this->db->select('*')->from('users')->where('facebook_id', $id)->get()->row();
+        if (!isset($acc)) return $this->response_code(204, "User invalid", "");
+        $this->db->where('id', $acc->id);
+        $this->db->update('users', array("last_login" => date('Y-m-d H:i:s')));
+
+        if ($acc->user_level == 3) {
+            return array(
+                "id" => $acc->id,
+                "email" => $acc->email,
+                "firstname" => $acc->first_name,
+                "lastname" => $acc->last_name,
+                "company" => $acc->company,
+                "profile" => $acc->profile,
+                "user_level" => $acc->user_level,
+                "switchable" => $acc->switchable
+            );
+        } else {
+
+            if ($acc->user_level == 5) {
+                $asg = $this->db->select('*')->from('assigning')->where('emp_id', $acc->id)->get()->row();
+                $store = $this->db->select('*')->from('store')->where('id', $asg->store_id)->get()->row();
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                    "store_id" => $store->id,
+                    "store_name" => $store->name
+                );
+            } else {
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email,
+                    "firstname" => $acc->first_name,
+                    "lastname" => $acc->last_name,
+                    "company" => $acc->company,
+                    "profile" => $acc->profile,
+                    "user_level" => $acc->user_level,
+                );
+            }
+        }
+    }
+
+    public function updateFb($email, $fb)
+    {
+        $acc = $this->db->select('id,email,first_name,last_name')->from('users')->where('email', $email['email'])->get()->row();
+        if (!$acc) :
+            return $this->response_code(204, "User not found", "");
+        else :
+            $grab_email =  $acc->email;
+            $id =  $acc->id;
+            $getFbId = $this->db->select('email,first_name,last_name')->from('users')->where('facebook_id', $fb['id'])->get()->row();
+            if ($getFbId) :
+                return $this->response_code(204, "facebook account already in use", $grab_email);
+            else :
+                $data = array(
+                    "facebook_id" => $fb['id']
+                );
+                $this->db->where('id', $id);
+                $this->db->update('users', $data);
+                if ($this->db->affected_rows() > 0) :
+                    return $this->response_code(200, "Facebook account successfully Linked", "");
+                else :
+                    return $this->response_code(204, "Unable to link Facebook Account.", "");
+                endif;
+            endif;
+        endif;
+    }
+
 
 
 }
