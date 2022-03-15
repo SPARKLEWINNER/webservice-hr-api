@@ -319,7 +319,7 @@ class Auth extends Base_Controller
         $response = $this->Main_mdl->google_login($data['email']);
         if ($response === FALSE) :
             $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
-            return $this->set_response($fbResponse, 422);
+            return $this->set_response($response, 422);
         else :
             if (!array_key_exists("status", $response)) {
                 $data = $response;
@@ -363,6 +363,113 @@ class Auth extends Base_Controller
             } else {
                 $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
                 return $this->set_response($response, 422);
+            }
+        endif;
+    }
+    public function googlememberlogin_post()
+    {   
+        $data = $this->validate_inpt(array('email'), 'post');
+        $response = $this->Main_mdl->google_member_login($data['email']);
+        if ($response === FALSE) :
+            $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
+            return $this->set_response($response, 422);
+        else :
+            if (!array_key_exists("status", $response)) {
+                $data = $response;
+                $response['timestamp'] = date("Y-m-d H:i:s");
+                $response['token'] = AUTHORIZATION::generateToken($data);
+
+                if ($data['user_level'] == 2) {
+                    $response['route'] = "employee/";
+                }
+
+                if ($data['user_level'] == 3) {
+                    $response['route'] = "admin/";
+                }
+
+                if ($data['user_level'] == 4) {
+                    $response['route'] = "hr/";
+                }
+
+                if ($data['user_level'] == 5) {
+                    $response['route'] = "supervisor/";
+                }
+
+                if ($data['user_level'] == 6) {
+                    $response['route'] = "hr/";
+                }
+
+                if ($data['user_level'] == 7) {
+                    $response['route'] = "finance/";
+                }
+
+                if ($data['user_level'] == 8) {
+                    $response['route'] = "training/";
+                }
+
+                if ($data['user_level'] == 10) {
+                    $response['route'] = "applicant/";
+                }
+
+                // $this->Main_mdl->recordToken($data['id'],$response['token']);
+                $this->set_response(array("status" => 200, "data" => $response), 200);
+            } else {
+                $response = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
+                return $this->set_response($response, 422);
+            }
+        endif;
+    }
+
+    public function memberFacebooklogin_post()
+    {   
+        $data = $this->validate_inpt(array('id'), 'post');
+        $fbResponse = $this->Main_mdl->applicant_facebook_login($data['id']);
+        if ($fbResponse === FALSE) :
+            $fbResponse = $this->response_code(422, "User Invalid", "");
+            return $this->set_response($fbResponse, 422);
+        else :
+            if (!array_key_exists("status", $fbResponse)) {
+                $data = $fbResponse;
+                $fbResponse['timestamp'] = date("Y-m-d H:i:s");
+                $fbResponse['token'] = AUTHORIZATION::generateToken($data);
+
+                if ($data['user_level'] == 2) {
+                    $fbResponse['route'] = "employee/";
+                }
+
+                if ($data['user_level'] == 3) {
+                    $fbResponse['route'] = "admin/";
+                }
+
+                if ($data['user_level'] == 4) {
+                    $fbResponse['route'] = "hr/";
+                }
+
+                if ($data['user_level'] == 5) {
+                    $fbResponse['route'] = "supervisor/";
+                }
+
+                if ($data['user_level'] == 6) {
+                    $fbResponse['route'] = "hr/";
+                }
+
+                if ($data['user_level'] == 7) {
+                    $fbResponse['route'] = "finance/";
+                }
+
+                if ($data['user_level'] == 8) {
+                    $fbResponse['route'] = "training/";
+                }
+
+                if ($data['user_level'] == 10) {
+                    $fbResponse['route'] = "applicant/";
+                }
+
+                // $this->Main_mdl->recordToken($data['id'],$response['token']);
+                $this->set_response(array("status" => 200, "data" => $fbResponse), 200);
+            } else {
+                $fbResponse = $this->response_code(422, array("status" => 422, "message" => "Invalid Credentials"), "");
+                return $this->set_response($fbResponse, 422);
             }
         endif;
     }

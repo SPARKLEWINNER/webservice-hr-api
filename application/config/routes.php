@@ -10,7 +10,9 @@ $route['internal/deploy'] = 'main/deploy';
 /** Authentication **/
 $route['internal/auth/login']['post'] = 'auth/login';
 $route['internal/auth/googlelogin']['post'] = 'auth/googlelogin';
+$route['internal/auth/googlememberlogin']['post'] = 'auth/googlememberlogin';
 $route['internal/auth/facebook_login']['post'] = 'auth/facebooklogin';
+$route['internal/auth/applicant_facebook_login']['post'] = 'auth/memberFacebooklogin';
 $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['post'] = 'auth/reset';
@@ -27,6 +29,7 @@ $route['internal/account/otp_validate']['post'] = 'accounts/validateOtp';
 
 /** Facebook account link **/
 $route['internal/account/facebook']['post'] = 'accounts/updateFb';
+$route['internal/account/applicantFacebook']['post'] = 'accounts/updateApplicantFb';
 
 /** Applicant - Record **/
 $route['internal/record/create']['post'] = 'record/applicant_create'; // step 1

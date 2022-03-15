@@ -2304,7 +2304,30 @@ class Main_mdl extends Base_Model
             }
         }
     }
-
+    public function google_member_login($email) {
+        $statement = array('username' => $email);
+        $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+        if ($acc) {
+            return array(
+                "id" => $acc->id,
+                "applicant_id" => $acc->applicant_id,
+                "reference_id" => $acc->reference_id,
+                "date_created" => $acc->date_created,
+                "data" => $acc->data,
+                "account_status" => $acc->status,
+                "reviewer" => $acc->reviewer,
+                "notification" => $acc->notification,
+                "username" => $acc->username,
+                "password" => $acc->password,
+                "user_level" => 10,
+                "profile" => $acc->profile,
+                "applying_for" => $acc->applying_for,
+                "company" => $acc->company
+            );
+        } else {
+            return false;
+        }
+    }
     public function facebook_login($id)
     {
         $acc = $this->db->select('*')->from('users')->where('facebook_id', $id)->get()->row();
@@ -2353,6 +2376,32 @@ class Main_mdl extends Base_Model
         }
     }
 
+    public function applicant_facebook_login($id)
+    {
+        $statement = array('facebook_id' => $id);
+        $acc = $this->db->select('*')->from('applications')->where($statement)->get()->row();
+        if ($acc) {
+            return array(
+                "id" => $acc->id,
+                "applicant_id" => $acc->applicant_id,
+                "reference_id" => $acc->reference_id,
+                "date_created" => $acc->date_created,
+                "data" => $acc->data,
+                "account_status" => $acc->status,
+                "reviewer" => $acc->reviewer,
+                "notification" => $acc->notification,
+                "username" => $acc->username,
+                "password" => $acc->password,
+                "user_level" => 10,
+                "profile" => $acc->profile,
+                "applying_for" => $acc->applying_for,
+                "company" => $acc->company
+            );
+        } else {
+            return false;
+        }
+    }
+
     public function updateFb($email, $fb)
     {
         $acc = $this->db->select('id,email,first_name,last_name')->from('users')->where('email', $email['email'])->get()->row();
@@ -2370,6 +2419,32 @@ class Main_mdl extends Base_Model
                 );
                 $this->db->where('id', $id);
                 $this->db->update('users', $data);
+                if ($this->db->affected_rows() > 0) :
+                    return $this->response_code(200, "Facebook account successfully Linked", "");
+                else :
+                    return $this->response_code(204, "Unable to link Facebook Account.", "");
+                endif;
+            endif;
+        endif;
+    }
+
+    public function updateApplicantFb($email, $fb)
+    {
+        $acc = $this->db->select('id,username')->from('applications')->where('username', $email['email'])->get()->row();
+        if (!$acc) :
+            return $this->response_code(204, "User not found", "");
+        else :
+            $grab_email =  $acc->username;
+            $id =  $acc->id;
+            $getFbId = $this->db->select('username')->from('applications')->where('facebook_id', $fb['id'])->get()->row();
+            if ($getFbId) :
+                return $this->response_code(204, "facebook account already in use", $grab_email);
+            else :
+                $data = array(
+                    "facebook_id" => $fb['id']
+                );
+                $this->db->where('id', $id);
+                $this->db->update('applications', $data);
                 if ($this->db->affected_rows() > 0) :
                     return $this->response_code(200, "Facebook account successfully Linked", "");
                 else :

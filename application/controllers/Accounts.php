@@ -324,4 +324,18 @@ class Accounts extends Base_Controller
         }
         
     }
+    public function updateApplicantFb_post($email = NULL, $id = NULL)
+    {
+        $email = $this->post($email);
+        $id = $this->post($id);
+        $data = $this->validate_inpt(array('id', 'email'), 'post');
+        $response = $this->Main_mdl->updateApplicantFb($email, $id);
+        if ($response["status"] === 204) {
+            $this->set_response(array("status" => $response["status"], "message" => $response["message"]));
+        }
+        else {
+            $this->set_response(array("status" => 200, "data" => $response));
+        }
+        
+    }
 }
