@@ -30,14 +30,14 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
 
-        //$upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
-        $upload_proc = "sample";
+        $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
+        //$upload_proc = "sample";
         $app_data = array(
             'username' =>  $this->post('person_email'),
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
-            //'profile' =>  $upload_proc['link'],
+            'profile' =>  $upload_proc['link'],
             'date_created' => date('Y-m-d H:i:s')
         );
         
@@ -448,4 +448,19 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+
+    public function applicant_store_get($company = NULL, $id = NULL)
+    {
+        if (empty($company) && empty($id)) {
+            $this->response_return($this->response_code(400, "Invalid parameters"));
+            return false;
+        }
+
+        $response = $this->Main_mdl->get_store_assessment_record($company, $id);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            return $this->set_response(array("status" => 422, "message" => "Company or applicant not found"),  200);
+        }
+    }   
 }
