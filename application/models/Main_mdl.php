@@ -751,7 +751,7 @@ class Main_mdl extends Base_Model
 
     public function record_day_pull($company, $days)
     {
-        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) ORDER BY id DESC";
+        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
@@ -2241,10 +2241,10 @@ class Main_mdl extends Base_Model
         }
     }
 
-    public function get_store_assessment_record($company, $id, $store)
+    public function get_store_assessment_record($company, $id)
     {
 
-        $query = "SELECT store, store_assess FROM `reviews` WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1";
+        $query = "SELECT store, (SELECT name from store b where b.id = a.store) as store_name, store_assess FROM `reviews` a WHERE `company` = '{$company}' AND `applicant_id` = '{$id}' LIMIT 1";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
@@ -2452,6 +2452,204 @@ class Main_mdl extends Base_Model
                 endif;
             endif;
         endif;
+    }
+
+    public function humanRelationsPost($data)
+    {
+        if ($data['status'] == 2) {
+            $id = $this->db->select('username, status')->from('applications')->where('id', $data['applicant_id'])->get()->row();
+            $this->db->where('id', $data['applicant_id']);
+            $updateStatus = array(
+                "returned" => 1
+            );
+            $updateResponse = $this->db->update('applications', $updateStatus);
+            return $this->response_code(200, "Success", "");    
+        }
+        else {
+            $this->db->insert('human_relations', $data);
+            if ($this->db->affected_rows() > 0) :
+                $id = $this->db->select('username, status')->from('applications')->where('id', $data['applicant_id'])->get()->row();
+                $this->db->where('id', $data['applicant_id']);
+                $updateStatus = array(
+                    "status" => 6
+                );
+                $updateResponse = $this->db->update('applications', $updateStatus);
+                return $this->response_code(200, "Success", "");
+            else : return $this->response_code(204, "Something went wrong", "");
+            endif;    
+        }
+        
+    }
+
+    public function humanRelationsGet($storeId, $company)
+    {
+        $query = "SELECT * FROM human_relations WHERE store_id = {$storeId} AND company = '{$company}'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->result_array();
+        } else {
+            return false;
+        }
+    }
+
+    public function specificStoreGet($id)
+    {
+        $personnelStore = $this->db->select('store_id')->from('human_relations')->where('applicant_id', $id)->get()->row();
+        $storeId = $personnelStore->store_id;
+        $storeName = $this->db->select('name')->from('store')->where('id', $storeId)->get()->row();
+        if ($storeName) {
+            return $storeName;
+        } else {
+            return false;
+        }
+    }
+
+    public function update_store_deployment($id, $store, $date, $hrName, $hrEmail)
+    {   
+        $update = array("store_id" => $store, "date_of_transfer" => $date);
+        $this->db->where('applicant_id', $id);
+        $result = $this->db->update('human_relations', $update);
+        if ($result) {
+            $acc = $this->db->select('*')->from('human_relations')->where('applicant_id', $id)->get()->row();
+            $storeName = $this->db->select('name')->from('store')->where('id', $acc->store_id)->get()->row();
+            $action = "Update store deployment of ". $acc->applicant_name . " to " . $storeName->name;
+            $data = array(
+                'action' => $action,
+                'apex_personnel_name' => $hrName,
+                'apex_personnel_email' => $hrEmail,
+                'date' => date('Y-m-d'),
+            );
+            $this->db->insert('personnel_logs', $data);
+            return ($acc);
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function update_status_deployment($hrName, $hrEmail, $id, $status, $startDate, $endDate)
+    {   
+        $update = array("status" => $status, "start_date" => $startDate, "end_date" => $endDate, "date" => NULL);
+        $this->db->where('applicant_id', $id);
+        $result = $this->db->update('human_relations', $update);
+        if ($result) {
+            $acc = $this->db->select('*')->from('human_relations')->where('applicant_id', $id)->get()->row();
+            $action = "Update status deployment of ". $acc->applicant_name . " to " . $status;
+            $data = array(
+                'action' => $action,
+                'apex_personnel_name' => $hrName,
+                'apex_personnel_email' => $hrEmail,
+                'date' => date('Y-m-d'),
+            );
+            $this->db->insert('personnel_logs', $data);
+            return ($acc);
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function update_status_deploymentV2($hrName, $hrEmail, $id, $status, $date, $hr)
+    {   
+        $update = array("status" => $status, "date" => $date, "hr" => $hr, "start_date" => NULL, "end_date" => NULL);
+        $this->db->where('applicant_id', $id);
+        $result = $this->db->update('human_relations', $update);
+        if ($result) {
+            $acc = $this->db->select('*')->from('human_relations')->where('applicant_id', $id)->get()->row();
+            $action = "Update status deployment of ". $acc->applicant_name . " to " . $status;
+            $data = array(
+                'action' => $action,
+                'apex_personnel_name' => $hrName,
+                'apex_personnel_email' => $hrEmail,
+                'date' => date('Y-m-d')
+            );
+            $this->db->insert('personnel_logs', $data);
+            return ($acc);
+        }
+        else {
+            return false;
+        }
+        
+        return ($acc);
+    }
+
+    public function sanctions_create($data, $hrData)
+    {
+        $this->db->insert('sanctions', $data);
+        $inserted_id = $this->db->insert_id();
+        $acc = $this->db->select('*')->from('human_relations')->where('id', $inserted_id)->get()->row();
+        if ($this->db->affected_rows() > 0) :
+            $action = "Created a " . $data['sanction'] ." for ". $acc->applicant_name;
+            $logsData = array(
+                'action' => $action,
+                'apex_personnel_name' => $hrData['hrName'],
+                'apex_personnel_email' => $hrData['hrEmail'],
+                'date' => date('Y-m-d'),
+            );
+            $this->db->insert('personnel_logs', $logsData);
+            return $this->response_code(200, "Success", "");
+        else : return false;
+        endif;
+    }
+
+    public function sanctions_get($id)
+    {
+        $query = "SELECT * FROM sanctions WHERE applicant_id = {$id}";
+        $sanctions = $this->db->query($query);
+        if ($sanctions->num_rows() > 0) {
+            return $sanctions->result_array();
+        } else {
+            return false;
+        }
+    }
+
+    public function transfer_training($id, $status) 
+    {
+        if ($status == 1) {
+            $update = array("status" => 80);
+            $this->db->where('id', $id);
+            $result = $this->db->update('applications', $update);
+            if ($result) {
+                return $this->response_code(200, "Success", "");
+            }
+            else {
+                return false;
+            }
+        } 
+        else if ($status == 2) {
+            $update = array("status" => 4);
+            $this->db->where('id', $id);
+            $result = $this->db->update('applications', $update);
+            if ($result) {
+                return $this->response_code(200, "Success", "");
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            $update = array("returned" => null);
+            $this->db->where('id', $id);
+            $result = $this->db->update('applications', $update);
+            if ($result) {
+                return $this->response_code(200, "Success", "");
+            }
+            else {
+                return false;
+            }
+        }
+        
+    }
+
+    public function personnel_logs_get()
+    {
+        $query = "SELECT * FROM personnel_logs";
+        $sanctions = $this->db->query($query);
+        if ($sanctions->num_rows() > 0) {
+            return $sanctions->result_array();
+        } else {
+            return false;
+        }
     }
 
 }

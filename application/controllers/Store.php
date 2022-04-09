@@ -183,5 +183,46 @@ class Store extends Base_Controller{
 
     }
 
+    public function specific_store_get($id = NULL){
+
+        if(empty($id)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->specificStoreGet($id);
+        
+        if($response){
+            return $this->set_response(array("status" => 200, "store_name" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
+
+    public function update_personnel_store_post(){
+
+        $id = $this->post('id');
+        $store = $this->post('storeId');
+        $date = $this->post('date');
+        $hrName = $this->post('hrName');
+        $hrEmail = $this->post('hrEmail');
+
+        if(empty($id) && empty($store) && empty($date)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->update_store_deployment($id, $store, $date, $hrName, $hrEmail);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
+
 
 }

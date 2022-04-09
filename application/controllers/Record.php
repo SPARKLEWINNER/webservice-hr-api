@@ -463,4 +463,53 @@ class Record extends Base_Controller
             return $this->set_response(array("status" => 422, "message" => "Company or applicant not found"),  200);
         }
     }   
+
+    public function sanctions_post()
+    { 
+        $data = array(
+            'applicant_id' =>  $this->post('aplid'),
+            'sanction' => $this->post('sanction'),
+            'section' => $this->post('section'),
+            'remarks' => $this->post('remarks'),
+            'file' => AWS_S3_URL . $this->post('name'),
+            'hr' => $this->post('hr'),
+        );
+        $hrData = array(
+            'hrName' => $this->post('hrName'),
+            'hrEmail' => $this->post('hrEmail')
+        );
+        $response = $this->Main_mdl->sanctions_create($data, $hrData);
+        if($response){
+            return $this->set_response(array("status" => 200, "message" => "success"),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
+
+    public function sanctions_list_get($id)
+    { 
+        $response = $this->Main_mdl->sanctions_get($id);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
+
+    public function personnel_logs_list_get()
+    { 
+        $response = $this->Main_mdl->personnel_logs_get();
+        
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
 }

@@ -185,4 +185,16 @@ class Recruitment extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+    public function transfer_training_get($id, $status)
+    {
+        $response = $this->Main_mdl->transfer_training($id, $status);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "message" => "success"),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+
 }

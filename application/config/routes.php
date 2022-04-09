@@ -64,10 +64,13 @@ $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2
 $route['internal/stores/(:any)']['get'] = 'store/list_stores/$1';
 $route['internal/store/(:num)/(:any)']['get'] = 'store/store_details/$1/$2'; // admin
 $route['internal/stores/accounts/(:any)']['get'] = 'store/list_stores_accounts/$1'; // ts accounts
+$route['internal/store/name/(:any)']['get'] = 'store/specific_store/$1'; // ts accounts
 
 
 $route['internal/stores/dtr/list/(:any)/(:any)']['get'] = 'system/list_dtr/$1/$2';
 $route['internal/stores/wage/(:any)/(:any)']['get'] = 'system/list_wage/$1/$2';
+
+$route['internal/store/applicant/(:any)/(:any)']['get'] = 'record/applicant_store/$1/$2';
 
 /* Finance */
 $route['internal/wage/create']['post'] = 'finance/wage_create_record';
@@ -161,3 +164,13 @@ $route['internal/account/user/update/credentials/(:num)']['patch'] = 'accounts/u
 $route['internal/account/token/update']['patch'] = 'accounts/register_token';
 $route['internal/user/(:any)']['get'] = 'accounts/user/$1';
 $route['internal/user/update/(:num)']['patch'] = 'accounts/user_update/$1';
+
+/** Human Relations **/
+$route['internal/hr/create']['post'] = 'training/human_relations';
+$route['internal/hr/personnel/(:any)/(:any)']['get'] = 'training/list_human_relations/$1/$2';
+$route['internal/personnel/store']['post'] = 'store/update_personnel_store';
+$route['internal/personnel/status']['post'] = 'training/update_personnel_status';
+$route['internal/personnel/sanctions']['post'] = 'record/sanctions';
+$route['internal/personnel/sanctions_list/(:any)']['get'] = 'record/sanctions_list/$1';
+$route['internal/personnel/transfer/(:any)/(:any)']['get'] = 'recruitment/transfer_training/$1/$2';
+$route['internal/personnel/logs']['get'] = 'record/personnel_logs_list';
