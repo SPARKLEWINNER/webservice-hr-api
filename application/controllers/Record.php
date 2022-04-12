@@ -473,6 +473,7 @@ class Record extends Base_Controller
             'remarks' => $this->post('remarks'),
             'file' => AWS_S3_URL . $this->post('name'),
             'hr' => $this->post('hr'),
+            'date' => date('Y-m-d')
         );
         $hrData = array(
             'hrName' => $this->post('hrName'),

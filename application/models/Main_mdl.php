@@ -2577,14 +2577,15 @@ class Main_mdl extends Base_Model
     {
         $this->db->insert('sanctions', $data);
         $inserted_id = $this->db->insert_id();
-        $acc = $this->db->select('*')->from('human_relations')->where('id', $inserted_id)->get()->row();
+        $acc = $this->db->select('*')->from('sanctions')->where('id', $inserted_id)->get()->row();
+        $personnel = $this->db->select('*')->from('human_relations')->where('applicant_id', $acc->applicant_id)->get()->row();
         if ($this->db->affected_rows() > 0) :
-            $action = "Created a " . $data['sanction'] ." for ". $acc->applicant_name;
+            $action = "Created a " . $data['sanction'] ." for ". $personnel->applicant_name;
             $logsData = array(
                 'action' => $action,
                 'apex_personnel_name' => $hrData['hrName'],
                 'apex_personnel_email' => $hrData['hrEmail'],
-                'date' => date('Y-m-d'),
+                'date' => date('Y-m-d H:i:s')
             );
             $this->db->insert('personnel_logs', $logsData);
             return $this->response_code(200, "Success", "");
