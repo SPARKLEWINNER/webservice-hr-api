@@ -38,7 +38,7 @@ $route['internal/record/exam']['post'] = 'record/applicant_exam_create'; // step
 $route['internal/record/upload/documents']['post'] = 'record/applicant_document_create'; // step 5
 $route['internal/record/documents/(:any)']['get'] = 'record/applicant_documents/$1'; // step 5.5
 $route['internal/record/documents/uploaded/(:any)/(:any)']['get'] = 'record/applicant_document_lists/$1/$2'; // step 5.1 - admin
-
+$route['internal/record/update/(:any)']['post'] = 'record/update_applicant_details/$1';
 
 /* Recruitment */
 $route['internal/record/review_app']['post'] = 'recruitment/review_create';

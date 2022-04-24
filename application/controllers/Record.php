@@ -513,4 +513,35 @@ class Record extends Base_Controller
         }
 
     }
+
+    public function update_applicant_details_post($id = NULL, $data = NULL)
+    {
+        if (empty($id) && empty($data)) {
+            $this->response_return($this->response_code(400, "Invalid parameters"));
+            return false;
+        }
+        $firstName = $this->post('firstName');
+        $oldFirstName = $this->post('oldFirstName');
+        $oldMiddleName = $this->post('oldMiddleName');
+        $middleName = $this->post('middleName');
+        $oldLastName = $this->post('oldLastName');
+        $lastName = $this->post('lastName');
+        $response = $this->Main_mdl->get_user_record($id);
+        $updatedRecord = str_replace($oldFirstName, $firstName, $response[0]['data']);
+        $updatedRecord2 = str_replace($oldMiddleName, $middleName, $updatedRecord); 
+        $updatedRecord3 = str_replace($oldLastName, $lastName, $updatedRecord2);
+          
+        if ($response) {
+            $updateResponse = $this->Main_mdl->update_user_record($id, $updatedRecord3);
+            if ($updateResponse) {
+                return $this->set_response(array("status" => 200, "message" => "success"),  200);
+            } else {
+                return $this->set_response(array("status" => 422, "message" => "Company or applicant not found"),  200);
+            }
+           
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Company or applicant not found"));
+            return $this->set_response($response, 422);
+        }
+    }
 }

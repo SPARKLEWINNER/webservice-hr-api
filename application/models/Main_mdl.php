@@ -2653,4 +2653,20 @@ class Main_mdl extends Base_Model
         }
     }
 
+    public function get_user_record($id)
+    {
+
+        $query = "SELECT data FROM `applications` a WHERE `id` = '{$id}' LIMIT 1";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
+    public function update_user_record($id, $data)
+    {   
+        $update = array("data" => $data);
+        $this->db->where('id', $id);
+        $result = $this->db->update('applications', $update);
+        return ($result);
+    }
+
 }
