@@ -544,4 +544,77 @@ class Record extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+
+    public function update_applicant_phone_post($id = NULL, $data = NULL)
+    {
+        if (empty($id) && empty($data)) {
+            $this->response_return($this->response_code(400, "Invalid parameters"));
+            return false;
+        }
+        $phone = $this->post('phone');
+        $oldPhone = $this->post('oldPhone');
+        $response = $this->Main_mdl->get_user_record($id);
+        $updatedRecord = str_replace($oldPhone, $phone, $response[0]['data']);
+          
+        if ($response) {
+            $updateResponse = $this->Main_mdl->update_user_record($id, $updatedRecord);
+            if ($updateResponse) {
+                return $this->set_response(array("status" => 200, "message" => "success"),  200);
+            } else {
+                return $this->set_response(array("status" => 422, "message" => "Company or applicant not found"),  200);
+            }
+           
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Company or applicant not found"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function update_applicant_gov_post($id = NULL, $data = NULL)
+    {
+        if (empty($id) && empty($data)) {
+            $this->response_return($this->response_code(400, "Invalid parameters"));
+            return false;
+        }
+        $tin = $this->post('tin');
+        $oldTin = $this->post('oldTin');
+        $phil = $this->post('phil');
+        $oldPhil = $this->post('oldPhil');
+        $sss = $this->post('sss');
+        $oldSss = $this->post('oldSss');
+        $pagibig = $this->post('pagibig');
+        $oldPagibig = $this->post('oldPagibig');
+        $response = $this->Main_mdl->get_user_record($id);
+        $updatedRecord = str_replace($oldTin, $tin, $response[0]['data']);
+        $updatedRecord2 = str_replace($oldPhil, $phil, $updatedRecord); 
+        $updatedRecord3 = str_replace($oldSss, $sss, $updatedRecord2);
+        $updatedRecord4 = str_replace($oldPagibig, $pagibig, $updatedRecord3);
+          
+        if ($response) {
+            $updateResponse = $this->Main_mdl->update_user_record($id, $updatedRecord4);
+            if ($updateResponse) {
+                return $this->set_response(array("status" => 200, "message" => "success"),  200);
+            } else {
+                return $this->set_response(array("status" => 422, "message" => "Company or applicant not found"),  200);
+            }
+           
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Company or applicant not found"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function personnel_get($id = NULL)
+    { 
+        $response = $this->Main_mdl->personnel_get($id);
+        
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+
+    }
+
 }

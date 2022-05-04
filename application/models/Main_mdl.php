@@ -2494,11 +2494,17 @@ class Main_mdl extends Base_Model
 
     public function specificStoreGet($id)
     {
-        $personnelStore = $this->db->select('store_id')->from('human_relations')->where('applicant_id', $id)->get()->row();
+        $personnelStore = $this->db->select('store_id, old_store')->from('human_relations')->where('applicant_id', $id)->get()->row();
         $storeId = $personnelStore->store_id;
+        $oldStoreId = $personnelStore->old_store;
         $storeName = $this->db->select('name')->from('store')->where('id', $storeId)->get()->row();
+        $oldStoreName = $this->db->select('name')->from('store')->where('id', $oldStoreId)->get()->row();
+        $data = array(
+            "storeName" => $storeName,
+            "oldStoreName" => $oldStoreName
+        );
         if ($storeName) {
-            return $storeName;
+            return $data;
         } else {
             return false;
         }
@@ -2506,7 +2512,8 @@ class Main_mdl extends Base_Model
 
     public function update_store_deployment($id, $store, $date, $hrName, $hrEmail)
     {   
-        $update = array("store_id" => $store, "date_of_transfer" => $date);
+        $oldStore = $this->db->select('store_id')->from('human_relations')->where('applicant_id', $id)->get()->row();
+        $update = array("store_id" => $store, "date_of_transfer" => $date, "old_store" => $oldStore->store_id);
         $this->db->where('applicant_id', $id);
         $result = $this->db->update('human_relations', $update);
         if ($result) {
@@ -2667,6 +2674,17 @@ class Main_mdl extends Base_Model
         $this->db->where('id', $id);
         $result = $this->db->update('applications', $update);
         return ($result);
+    }
+
+    public function personnel_get($id)
+    {
+        $query = "SELECT * FROM `human_relations` WHERE `applicant_id` = '{$id}' LIMIT 1";
+        $personnel = $this->db->query($query);
+        if ($personnel->num_rows() > 0) {
+            return $personnel->result_array();
+        } else {
+            return false;
+        }
     }
 
 }
