@@ -2524,7 +2524,7 @@ class Main_mdl extends Base_Model
                 'action' => $action,
                 'apex_personnel_name' => $hrName,
                 'apex_personnel_email' => $hrEmail,
-                'date' => date('Y-m-d'),
+                'date' => date('Y-m-d h:i:sa'),
             );
             $this->db->insert('personnel_logs', $data);
             return ($acc);
