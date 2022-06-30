@@ -766,7 +766,7 @@ class Main_mdl extends Base_Model
     public function record_documents_pull($company, $status)
     {
 
-        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC";
+        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC LIMIT 2000";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
