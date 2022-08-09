@@ -766,7 +766,7 @@ class Main_mdl extends Base_Model
     public function record_documents_pull($company, $status)
     {
 
-        $query = "SELECT * FROM `applications` where `status` = '{$status}' ORDER BY id DESC LIMIT 2000";
+        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
