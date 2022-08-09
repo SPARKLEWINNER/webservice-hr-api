@@ -63,7 +63,7 @@ $route['internal/system/update/store/account']['post'] = 'store/store_new_passwo
 $route['internal/record/review_store_app']['post'] = 'store/review_create'; // ts
 
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2'; // ts
-$route['internal/stores/(:any)']['get'] = 'store/list_stores/$1';
+$route['internal/stores/(:any)/(:any)']['get'] = 'store/list_stores/$1/$2';
 $route['internal/store/(:num)/(:any)']['get'] = 'store/store_details/$1/$2'; // admin
 $route['internal/stores/accounts/(:any)']['get'] = 'store/list_stores_accounts/$1'; // ts accounts
 $route['internal/store/name/(:any)']['get'] = 'store/specific_store/$1'; // ts accounts
@@ -79,7 +79,7 @@ $route['internal/wage/create']['post'] = 'finance/wage_create_record';
 $route['internal/wage/assign']['post'] = 'finance/wage_assign_record';
 $route['internal/wages/(:any)']['get'] = 'finance/list_wages/$1';
 
-$route['internal/record/documents/(:any)/(:num)']['get'] = 'record/applicants_specific_reviews_documents/$1/$2'; // with filter (day/weekly) && no. of days
+$route['internal/record/documents/(:any)/(:num)/(:num)']['get'] = 'record/applicants_specific_reviews_documents/$1/$2/$3'; // with filter (day/weekly) && no. of days
 $route['internal/record/documents/specific/notices/(:num)']['get'] = 'record/applicants_specific_documents/$1';
 
 $route['internal/record/specific/(:any)/(:any)']['get'] = 'record/applicants_specific/$1/$2';

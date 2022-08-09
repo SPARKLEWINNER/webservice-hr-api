@@ -115,14 +115,14 @@ class Store extends Base_Controller{
         }
     }
 
-    public function list_stores_get($company = NULL){
+    public function list_stores_get($company = NULL, $user = 0){
 
         if(empty($company)){
             $this->response_return($this->response_code (400,""));
             return false;
         }
 
-        $response = $this->Main_mdl->record_stores_pull($company);
+        $response = $this->Main_mdl->record_stores_pull($company, $user);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         }else{

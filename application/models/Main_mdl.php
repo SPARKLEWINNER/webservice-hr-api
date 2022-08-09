@@ -763,15 +763,14 @@ class Main_mdl extends Base_Model
     }
 
     /* Documents */
-    public function record_documents_pull($company, $status)
+    public function record_documents_pull($company, $status, $user)
     {
-
-        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
-        $result = $this->db->query($query);
-        $arr_app = [];
-        foreach ($result->result_array() as $k => $app) {
-            $arr_app[$k] = $app;
-            if ($app['company'] == $company) {
+        if ($user === "8") {
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' ORDER BY id DESC";
+            $result = $this->db->query($query);
+            $arr_app = [];
+            foreach ($result->result_array() as $k => $app) {
+                $arr_app[$k] = $app;
                 $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
                 $reviews = $this->db->query($reviews_query);
                 if ($reviews->num_rows() > 0) {
@@ -781,8 +780,29 @@ class Main_mdl extends Base_Model
                         }
                     }
                 }
-            }
+                
+            }  
         }
+        else {
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
+            $result = $this->db->query($query);
+            $arr_app = [];
+            foreach ($result->result_array() as $k => $app) {
+                $arr_app[$k] = $app;
+                if ($app['company'] == $company) {
+                    $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
+                    $reviews = $this->db->query($reviews_query);
+                    if ($reviews->num_rows() > 0) {
+                        foreach ($reviews->result_array() as $kk => $kv) {
+                            if ($kv['appl_id'] == $app['id']) {
+                                $arr_app[$k]['reviews'][] = $reviews->result_array();
+                            }
+                        }
+                    }
+                }
+            }    
+        }
+        
 
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
@@ -888,12 +908,19 @@ class Main_mdl extends Base_Model
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 
-    public function record_stores_pull($company)
+    public function record_stores_pull($company,$user)
     {
-
-        $query = "SELECT * FROM `store` WHERE `company` = '{$company}' ORDER BY `name` ASC";
-        $result = $this->db->query($query);
-        return ($result->num_rows() > 0) ? $result->result_array() : false;
+        if ($user === "8") {
+            $query = "SELECT * FROM `store` ORDER BY `name` ASC";
+            $result = $this->db->query($query);
+            return ($result->num_rows() > 0) ? $result->result_array() : false;
+        }
+        else {
+            $query = "SELECT * FROM `store` WHERE `company` = '{$company}' ORDER BY `name` ASC";
+            $result = $this->db->query($query);
+            return ($result->num_rows() > 0) ? $result->result_array() : false;    
+        }
+        
     }
 
     public function record_stores_account_pull($company)

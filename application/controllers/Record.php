@@ -319,7 +319,7 @@ class Record extends Base_Controller
 
     // Documents 
 
-    public function applicants_specific_reviews_documents_get($company = NULL, $status = 0)
+    public function applicants_specific_reviews_documents_get($company = NULL, $status = 0, $user = 0)
     {
 
         if (empty($company)) {
@@ -327,7 +327,7 @@ class Record extends Base_Controller
             return false;
         }
 
-        $response = $this->Main_mdl->record_documents_pull($company, $status);
+        $response = $this->Main_mdl->record_documents_pull($company, $status, $user);
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {
