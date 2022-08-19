@@ -65,7 +65,7 @@ $route['internal/record/review_store_app']['post'] = 'store/review_create'; // t
 $route['internal/stores/ts/(:num)/(:any)']['get'] = 'store/list_applicants/$1/$2'; // ts
 $route['internal/stores/(:any)/(:any)']['get'] = 'store/list_stores/$1/$2';
 $route['internal/store/(:num)/(:any)']['get'] = 'store/store_details/$1/$2'; // admin
-$route['internal/stores/accounts/(:any)']['get'] = 'store/list_stores_accounts/$1'; // ts accounts
+$route['internal/store/accounts/(:any)']['get'] = 'store/list_stores_accounts/$1'; // ts accounts
 $route['internal/store/name/(:any)']['get'] = 'store/specific_store/$1'; // ts accounts
 
 
@@ -177,3 +177,6 @@ $route['internal/personnel/sanctions_list/(:any)']['get'] = 'record/sanctions_li
 $route['internal/personnel/transfer/(:any)/(:any)']['get'] = 'recruitment/transfer_training/$1/$2';
 $route['internal/personnel/logs']['get'] = 'record/personnel_logs_list';
 $route['internal/personnel/(:any)']['get'] = 'record/personnel/$1';
+$route['internal/personnel/specific/(:any)']['get'] = 'training/list_specific_employee/$1';
+$route['internal/applicant/specific/(:any)/(:any)']['get'] = 'training/list_specific_applicant/$1/$2';
+$route['internal/documents/specific/(:any)/(:any)/(:any)/(:any)']['get'] = 'record/applicants_documents_specific/$1/$2/$3/$4';

@@ -140,6 +140,39 @@ class Training extends Base_Controller
         }
     }
 
+    public function list_specific_employee_get($name = NULL)
+    {
+
+        if (empty($name)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->personnel_specific_get($name);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found"));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function list_specific_applicant_get($name = NULL, $company = NULL)
+    {
+
+        if (empty($name)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->applicant_specific_get($name, $company);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found"));
+            return $this->set_response($response, 422);
+        }
+    }
     /*public function sanctions_post()
     { 
         $data = array(

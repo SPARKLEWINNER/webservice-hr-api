@@ -751,7 +751,7 @@ class Main_mdl extends Base_Model
 
     public function record_day_pull($company, $days)
     {
-        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC";
+        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC LIMIT 1000";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
@@ -2510,7 +2510,7 @@ class Main_mdl extends Base_Model
 
     public function humanRelationsGet($storeId, $company)
     {
-        $query = "SELECT * FROM human_relations WHERE store_id = {$storeId} AND company = '{$company}'";
+        $query = "SELECT * FROM human_relations WHERE store_id = {$storeId}";
         $result = $this->db->query($query);
         if ($result->num_rows() > 0) {
             return $result->result_array();
@@ -2712,6 +2712,71 @@ class Main_mdl extends Base_Model
         } else {
             return false;
         }
+    }
+
+    public function personnel_specific_get($name)
+    {
+        $query = 'SELECT * FROM `human_relations`';
+        $result = $this->db->select('*')->from('human_relations')->like('applicant_name', $name)->get();
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
+    public function applicant_specific_get($name, $company)
+    {   
+        
+        $result = $result = $this->db->select('*')->from('applications')->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
+        $this->db->group_end();
+        $arr_app = [];
+        foreach ($result->result_array() as $k => $app) {
+            if ($app['company'] === $company) {
+                $arr_app[] = $app;
+            }
+        }
+        return ($result->num_rows() > 0) ? $arr_app : false;
+    }
+
+    public function record_documents_specific_pull($company, $status, $user, $name)
+    {
+        $intStatus = intval($status);
+        if ($user === "8") {
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
+            $arr_app = [];
+            foreach ($result->result_array() as $k => $app) {
+                $arr_app[$k] = $app;
+                $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
+                $reviews = $this->db->query($reviews_query);
+                if ($reviews->num_rows() > 0) {
+                    foreach ($reviews->result_array() as $kk => $kv) {
+                        if ($kv['appl_id'] == $app['id']) {
+                            $arr_app[$k]['reviews'][] = $reviews->result_array();
+                        }
+                    }
+                }
+                
+            }  
+        }
+        else {
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
+            $result = $this->db->query($query);
+            $arr_app = [];
+            foreach ($result->result_array() as $k => $app) {
+                $arr_app[$k] = $app;
+                if ($app['company'] == $company) {
+                    $reviews_query = "SELECT * FROM `reviews_doc` WHERE `appl_id` = {$app['id']} ";
+                    $reviews = $this->db->query($reviews_query);
+                    if ($reviews->num_rows() > 0) {
+                        foreach ($reviews->result_array() as $kk => $kv) {
+                            if ($kv['appl_id'] == $app['id']) {
+                                $arr_app[$k]['reviews'][] = $reviews->result_array();
+                            }
+                        }
+                    }
+                }
+            }    
+        }
+        
+
+        return ($result->num_rows() > 0) ? $arr_app : false;
     }
 
 }

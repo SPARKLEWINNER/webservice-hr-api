@@ -116,7 +116,6 @@ class Store extends Base_Controller{
     }
 
     public function list_stores_get($company = NULL, $user = 0){
-
         if(empty($company)){
             $this->response_return($this->response_code (400,""));
             return false;
@@ -133,7 +132,6 @@ class Store extends Base_Controller{
     }
 
     public function list_stores_accounts_get($company = NULL){
-
         if(empty($company)){
             $this->response_return($this->response_code (400,""));
             return false;
