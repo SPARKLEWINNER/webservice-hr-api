@@ -766,7 +766,7 @@ class Main_mdl extends Base_Model
     public function record_documents_pull($company, $status, $user)
     {
         if ($user === "8") {
-            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' ORDER BY id DESC";
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' ORDER BY id DESC LIMIT 1000";
             $result = $this->db->query($query);
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
@@ -784,7 +784,7 @@ class Main_mdl extends Base_Model
             }  
         }
         else {
-            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC LIMIT 1000";
             $result = $this->db->query($query);
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
@@ -2728,9 +2728,7 @@ class Main_mdl extends Base_Model
         $this->db->group_end();
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
-            if ($app['company'] === $company) {
-                $arr_app[] = $app;
-            }
+            $arr_app[] = $app;
         }
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
@@ -2756,8 +2754,8 @@ class Main_mdl extends Base_Model
             }  
         }
         else {
-            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
-            $result = $this->db->query($query);
+            //$query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->where('company', $company)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
                 $arr_app[$k] = $app;
@@ -2777,6 +2775,96 @@ class Main_mdl extends Base_Model
         
 
         return ($result->num_rows() > 0) ? $arr_app : false;
+    }
+
+    public function record_applicants_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications`";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` WHERE company = '${company}' ";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
+    }
+
+    public function record_personnel_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `human_relations`";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `human_relations` WHERE company = '${company}'";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
+    }
+
+    public function record_completed_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` where status = '5'";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` WHERE status = '5' AND company = '${company}'";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
+    }
+
+    public function record_pending_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` where status = 4";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` WHERE status = 4 AND company = '${company}'";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
+    }
+
+    public function record_examination_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` where status = 0";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` WHERE status = 0 AND company = '${company}'";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
+    }
+
+    public function record_store_review_count_pull($company, $user)
+    {
+        if ($user === "8") {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` where status = 3";
+            $result = $this->db->query($query);
+        }
+        else {
+            $query = "SELECT COUNT(*) AS 'count' FROM `applications` WHERE status = 3 AND company = '${company}'";
+            $result = $this->db->query($query);
+        }
+        
+        
+       return $result->result_array();
     }
 
 }

@@ -634,4 +634,124 @@ class Record extends Base_Controller
         }
     }
 
+    public function applicants_specific_search_documents_get($company = NULL, $status = 0, $user = 0, $name = NULL)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_documents_specific_pull($company, $status, $user, $name);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function applicants_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_applicants_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function personnel_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_personnel_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function complete_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_completed_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function pending_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_pending_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function examination_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_examination_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function store_review_count_get($company = NULL, $user = 0)
+    {
+
+        if (empty($company)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_completed_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+    
+
 }
