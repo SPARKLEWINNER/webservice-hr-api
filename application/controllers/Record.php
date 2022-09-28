@@ -744,7 +744,7 @@ class Record extends Base_Controller
             return false;
         }
 
-        $response = $this->Main_mdl->record_completed_count_pull($company, $user);
+        $response = $this->Main_mdl->record_store_review_count_pull($company, $user);
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {

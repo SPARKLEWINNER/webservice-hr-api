@@ -2724,7 +2724,7 @@ class Main_mdl extends Base_Model
     public function applicant_specific_get($name, $company)
     {   
         
-        $result = $result = $this->db->select('*')->from('applications')->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
+        $result = $result = $this->db->select('*')->from('applications')->where('status <=', 5)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->order_by("date_created", "asc")->get();
         $this->db->group_end();
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
@@ -2737,7 +2737,7 @@ class Main_mdl extends Base_Model
     {
         $intStatus = intval($status);
         if ($user === "8") {
-            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->order_by("date_created", "asc")->get();
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
                 $arr_app[$k] = $app;
@@ -2755,7 +2755,7 @@ class Main_mdl extends Base_Model
         }
         else {
             //$query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
-            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->where('company', $company)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->get();
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->where('company', $company)->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->order_by("date_created", "asc")->get();
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
                 $arr_app[$k] = $app;
