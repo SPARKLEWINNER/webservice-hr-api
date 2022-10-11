@@ -634,9 +634,9 @@ class Record extends Base_Controller
         }
     }
 
-    public function applicants_specific_search_documents_get($company = NULL, $status = 0, $user = 0, $name = NULL)
+    public function applicants_specific_search_documents_post($company = NULL, $status = 0, $user = 0)
     {
-
+        $name = $this->post('name');
         if (empty($company)) {
             $this->response_return($this->response_code(400, ""));
             return false;
@@ -745,6 +745,17 @@ class Record extends Base_Controller
         }
 
         $response = $this->Main_mdl->record_store_review_count_pull($company, $user);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function record_for_extraction_get()
+    {
+        $response = $this->Main_mdl->record_for_extraction_pull();
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {
