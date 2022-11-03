@@ -12,14 +12,18 @@ $password = "";
 
 if ($_SERVER['HTTP_HOST'] == "localhost:8080") :
 	$hostname = "localhost";
-	$database = "sparkles";
+	$database = "web_api";
 	$username = "root";
 	$password = ""; //macos mysql
 else:
-	$hostname = "localhost";
+	/*$hostname = "localhost";
 	$database = "webapi_portal";
 	$username = "webapi_livedev";
-	$password = "qj5FHv6d4So2";
+	$password = "qj5FHv6d4So2";*/
+	$hostname = "localhost";
+	$database = "web_api";
+	$username = "root";
+	$password = ""; //macos mysql
 endif;
 
 $db['default'] = array(

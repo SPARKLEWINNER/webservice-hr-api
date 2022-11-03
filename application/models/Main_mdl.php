@@ -2725,20 +2725,19 @@ class Main_mdl extends Base_Model
     public function applicant_specific_get($name, $company)
     {   
         
-        $result = $result = $this->db->select('*')->from('applications')->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->where('status <=', 5)->order_by("date_created", "asc")->get();
-        $this->db->group_end();
+        $result = $result = $this->db->select('*')->from('applications')->where('status <=', 5)->group_start()->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->group_end()->order_by("date_created", "desc")->get();
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
             $arr_app[] = $app;
         }
         return ($result->num_rows() > 0) ? $arr_app : false;
     }
-
+    
     public function record_documents_specific_pull($company, $status, $user, $name)
     {
         $intStatus = intval($status);
         if ($user === "8") {
-            $result = $result = $this->db->select('*')->from('applications')->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->where('status', $intStatus)->order_by("date_created", "desc")->get();
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->group_start()->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->group_end()->order_by("date_created", "desc")->get();
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
                 $arr_app[$k] = $app;
@@ -2756,7 +2755,7 @@ class Main_mdl extends Base_Model
         }
         else {
             //$query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' AND company = '${company}' ORDER BY id DESC";
-            $result = $result = $this->db->select('*')->from('applications')->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->where('status', $intStatus)->where('company', $company)->order_by("date_created", "desc")->get();
+            $result = $result = $this->db->select('*')->from('applications')->where('status', $intStatus)->group_start()->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->where('company', $company)->group_end()->order_by("date_created", "desc")->get();
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
                 $arr_app[$k] = $app;
@@ -2870,7 +2869,7 @@ class Main_mdl extends Base_Model
 
     public function record_for_extraction_pull()
     {
-        $query = "SELECT data FROM `applications` WHERE company = 'syzygy' AND `date_created` between '2022-08-01' AND '2022-08-31'";
+        $query = "SELECT data FROM `applications` WHERE company = 'syzygy' AND `date_created` between '2022-10-01' AND '2022-10-31'";
 
         $result = $this->db->query($query);
         var_dump($result->result_array());
