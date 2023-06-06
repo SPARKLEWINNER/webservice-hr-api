@@ -341,9 +341,9 @@ class Main_mdl extends Base_Model
         endif;
     }
 
-    public function record_validate_data($email)
+    public function record_validate_data($email, $company)
     {
-        $query = "SELECT * FROM applications WHERE username = '{$email}'";
+        $query = "SELECT * FROM applications WHERE username = '{$email}' AND company = '{$company}'";
         $result = $this->db->query($query);
         return ($result->num_rows() > 0) ? true : false;
     }
@@ -2725,7 +2725,7 @@ class Main_mdl extends Base_Model
     public function applicant_specific_get($name, $company)
     {   
         
-        $result = $result = $this->db->select('*')->from('applications')->where('status <=', 5)->group_start()->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->group_end()->order_by("date_created", "desc")->get();
+        $result = $result = $this->db->select('*')->from('applications')->where('status <=', 5)->where('company', $company)->group_start()->like('data', 'fname":"'.$name)->or_like('data', 'lname":"'.$name)->group_end()->order_by("date_created", "desc")->get();
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
             $arr_app[] = $app;

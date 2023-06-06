@@ -21,23 +21,24 @@ class Record extends Base_Controller
 
     public function applicant_create_post()
     {
-        $data = $this->validate_inpt(array('data','email'), 'post');
+        $data = $this->validate_inpt(array('data','email', 'company'), 'post');
+        $company = $this->post('company');
         $mg_email = $this->post('person_email');
         $generated = $this->generateReferenceCode($mg_email);
 
-        if ($this->Main_mdl->record_validate_data($mg_email)) {
+        if ($this->Main_mdl->record_validate_data($mg_email, $company)) {
             $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
             return $this->set_response($response, 422);
         }
 
-        $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);
-        //$upload_proc = "sample";
+/*        $upload_proc = $this->upload_profile($_FILES['pref_image'], $generated);*/
+        $upload_proc = "sample";
         $app_data = array(
             'username' =>  $this->post('person_email'),
             'data' => json_encode($this->post()),
             'company' => $this->post('company'),
             'reference_id' => $generated,
-            'profile' =>  $upload_proc['link'],
+            /*'profile' =>  $upload_proc['link'],*/
             'date_created' => date('Y-m-d H:i:s')
         );
         
@@ -86,11 +87,12 @@ class Record extends Base_Controller
 
     public function applicant_create_v2_post()
     {
-        $data = $this->validate_inpt(array('data','email'), 'post');
+        $data = $this->validate_inpt(array('data','email', 'company'), 'post');
         $mg_email = $this->post('person_email');
+        $company = $this->post('company');
         $generated = $this->generateReferenceCode($mg_email);
 
-        if ($this->Main_mdl->record_validate_data($mg_email)) {
+        if ($this->Main_mdl->record_validate_data($mg_email, $company)) {
             $response = $this->response_code(422, array("status" => 422, "message" => "Email already exists."), "");
             return $this->set_response($response, 422);
         }
@@ -527,9 +529,9 @@ class Record extends Base_Controller
         $oldLastName = $this->post('oldLastName');
         $lastName = $this->post('lastName');
         $response = $this->Main_mdl->get_user_record($id);
-        $updatedRecord = str_replace($oldFirstName, $firstName, $response[0]['data']);
-        $updatedRecord2 = str_replace($oldMiddleName, $middleName, $updatedRecord); 
-        $updatedRecord3 = str_replace($oldLastName, $lastName, $updatedRecord2);
+        $updatedRecord = str_replace('"person_fname":"'.$oldFirstName.'"', '"person_fname":"'.$firstName.'"', $response[0]['data']);
+        $updatedRecord2 = str_replace('"person_mname":"'.$oldMiddleName.'"', '"person_mname":"'.$middleName.'"', $updatedRecord); 
+        $updatedRecord3 = str_replace('"person_lname":"'.$oldLastName.'"', '"person_lname":"'.$lastName.'"', $updatedRecord2);
           
         if ($response) {
             $updateResponse = $this->Main_mdl->update_user_record($id, $updatedRecord3);
