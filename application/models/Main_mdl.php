@@ -949,7 +949,7 @@ class Main_mdl extends Base_Model
     public function records_store_people_pull($company, $store_id)
     {
 
-        $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls";
+        $applications_q = "SELECT *, apls.reference_id as gen_id FROM applications apls where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH)";
         $result = $this->db->query($applications_q);
 
         $appls = $result->result_array();
@@ -2511,7 +2511,7 @@ class Main_mdl extends Base_Model
     public function humanRelationsGet($storeId, $company)
     {
         /*$query = "SELECT * FROM human_relations WHERE store_id = {$storeId} GROUP BY applicant_id";*/
-        $result = $this->db->select('*')->from('human_relations')->where('store_Id', $storeId)->group_by('applicant_id')->get();
+        $result = $this->db->select('*')->from('human_relations')->where('store_Id', $storeId)->get();
         /*$result = $this->db->query($query);*/
         if ($result->num_rows() > 0) {
             return $result->result_array();
@@ -2718,7 +2718,7 @@ class Main_mdl extends Base_Model
     public function personnel_specific_get($name)
     {
         $query = 'SELECT * FROM `human_relations`';
-        $result = $this->db->select('*')->from('human_relations')->like('applicant_name', $name)->group_by('applicant_id')->get();
+        $result = $this->db->select('*')->from('human_relations')->like('applicant_name', $name)->get();
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 

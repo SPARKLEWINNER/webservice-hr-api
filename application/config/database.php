@@ -16,14 +16,10 @@ if ($_SERVER['HTTP_HOST'] == "localhost:8080") :
 	$username = "root";
 	$password = ""; //macos mysql
 else:
-	/*$hostname = "localhost";
+	$hostname = "localhost";
 	$database = "webapi_portal";
 	$username = "webapi_livedev";
-	$password = "qj5FHv6d4So2";*/
-	$hostname = "localhost";
-	$database = "web_api";
-	$username = "root";
-	$password = ""; //macos mysql
+	$password = "qj5FHv6d4So2";
 endif;
 
 $db['default'] = array(
