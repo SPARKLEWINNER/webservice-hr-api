@@ -93,7 +93,7 @@ if ($_SERVER['HTTP_HOST'] == "localhost") {
     // define('DEFAULT_URI','http://api.sparkles.com.ph/');
     define('DEFAULT_URI', 'http://localhost/webservice-hr-api/');
 } else {
-    define('DEFAULT_URI', 'http://api.sparkles.com.ph/');
+    define('DEFAULT_URI', 'http://apex.sparkles.com.ph/');
     // define('DEFAULT_URI','http://staging.api.sparkles.com.ph/');
 
 }

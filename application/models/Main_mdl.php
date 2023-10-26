@@ -751,7 +751,7 @@ class Main_mdl extends Base_Model
 
     public function record_day_pull($company, $days)
     {
-        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC LIMIT 1000";
+        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC LIMIT 100";
         $result = $this->db->query($query);
         $arr_app = [];
         foreach ($result->result_array() as $k => $app) {
@@ -766,7 +766,7 @@ class Main_mdl extends Base_Model
     public function record_documents_pull($company, $status, $user)
     {
         if ($user === "8") {
-            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' ORDER BY id DESC LIMIT 1000";
+            $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status = '${status}' ORDER BY id DESC LIMIT 100";
             $result = $this->db->query($query);
             $arr_app = [];
             foreach ($result->result_array() as $k => $app) {
@@ -2869,10 +2869,9 @@ class Main_mdl extends Base_Model
 
     public function record_for_extraction_pull()
     {
-        $query = "SELECT data FROM `applications` WHERE company = 'syzygy' AND `date_created` between '2022-10-01' AND '2022-10-31'";
+        $query = "SELECT applications.data, applications.username, (SELECT name FROM store WHERE id = reviews.store) AS store FROM applications INNER JOIN reviews ON applications.id = reviews.applicant_id WHERE applications.company = 'syzygy' AND applications.status = 5";
 
         $result = $this->db->query($query);
-        var_dump($result->result_array());
-       return $result->result_array();
+        return $result->result_array();
     }
 }

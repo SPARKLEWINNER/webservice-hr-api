@@ -132,14 +132,14 @@ class Record extends Base_Controller
                 "template_id" => EMAIL_SGTEMPLATE_NEW_ACC
             );
 
-
-            $is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
+            $this->set_response(array("status" => 200, "data" => $response),  200);
+            /*$is_mailed = $this->send_email_sg($this->post('company'), EMAIL_NEW_APPLICANT, $email_details);
             if ($is_mailed == NULL) {
                 $this->email_logs('NEWAPPLICANT', $response['reference_id'], $response['username'], 0, "SUCCESS", json_encode($email_details), $this->post('company'));
                 $this->set_response(array("status" => 200, "data" => $response),  200);
             } else {
                 $this->email_logs('NEWAPPLICANT', $response['reference_id'], $response['username'], 0, "FAILED", json_encode($email_details), $this->post('company'));
-            }
+            }*/
         }
 
     }
@@ -758,8 +758,21 @@ class Record extends Base_Controller
     public function record_for_extraction_get()
     {
         $response = $this->Main_mdl->record_for_extraction_pull();
+        $data = array();
         if ($response) {
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
+            for ($i=0; $i < count($response) ; $i++) { 
+                $json_data = json_decode($response[$i]['data']);
+                $newData = new stdClass(); // Create a new stdClass object
+                $newData->first_name = $json_data->person_fname;
+                $newData->middle_name = $json_data->person_mname;
+                $newData->last_name = $json_data->person_lname;
+                $newData->mobile = $json_data->person_contact_no_mob;
+                $newData->email = $json_data->person_email;
+                $newData->store = $response[$i]['store'];
+                array_push($data, $newData);
+
+            };
+            return $this->set_response($data,  200);
         } else {
             $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
             return $this->set_response($response, 422);
