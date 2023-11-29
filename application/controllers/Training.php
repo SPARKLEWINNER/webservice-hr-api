@@ -157,15 +157,17 @@ class Training extends Base_Controller
         }
     }
 
-    public function list_specific_applicant_get($name = NULL, $company = NULL)
+    public function list_specific_applicant_post($name = NULL, $company = NULL)
     {
+        $postedName = $this->post('name');
+        $postedCompany = $this->post('company');
 
-        if (empty($name)) {
+        if (empty($postedName)) {
             $this->response_return($this->response_code(400, ""));
             return false;
         }
 
-        $response = $this->Main_mdl->applicant_specific_get($name, $company);
+        $response = $this->Main_mdl->applicant_specific_get($postedName, $postedCompany);
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
         } else {

@@ -71,7 +71,7 @@ class Store extends Base_Controller{
         
         $acc_data = array(
             "email" =>  $this->post('email'),
-            "first_name" =>  $this->post('store_type'),
+            "first_name" =>  $data['name'],
             "last_name" => $data['name'],
             "user_level" => $this->post('type'),
             "company" => $data['company'],
