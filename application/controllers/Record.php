@@ -779,5 +779,71 @@ class Record extends Base_Controller
         }
     }
     
+    public function failed_applicants_get($company = NULL)
+    {
+        $response = $this->Main_mdl->record_for_fail_applicants_pull($company);
+        $data = array();
+        if ($response) {
+            for ($i=0; $i < count($response) ; $i++) { 
+                $json_data = json_decode($response[$i]['data']);
+                $newData = new stdClass(); // Create a new stdClass object
+                $newData->applicant_id = $response[$i]['id'];
+                if (isset($json_data->person_fname)) {
+                    $newData->first_name = $json_data->person_fname;
+                };
+                if (isset($json_data->person_mname)) {
+                    $newData->middle_name = $json_data->person_mname;
+                };
+                if (isset($json_data->last_name)) {
+                    $newData->person_lname = $json_data->person_lname;
+                };
+                if (isset($json_data->person_contact_no_mob)) {
+                    $newData->person_contact_no_mob = $json_data->person_contact_no_mob;
+                };
+                $newData->email = $response[$i]['username'];
+                $newData->date_applied = $response[$i]['date_created'];
+                array_push($data, $newData);
+
+            };
+            return $this->set_response($data,  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function update_applicant_status_get($id = NULL, $status = NULL)
+    {
+        $response = $this->Main_mdl->update_status_fail_applicants_pull($id, $status);
+        if ($response) {
+            return $this->set_response(array("status" => 200, "message" => "success"),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
+
+    public function get_active_applicants_get()
+    {
+        $response = $this->Main_mdl->get_applicants_pull();
+        $data = array();
+        if ($response) {
+            for ($i=0; $i < count($response) ; $i++) {
+                $json_data = json_decode($response[$i]['data']);
+                $newData = new stdClass();
+                $newData->employee_name = $json_data->person_fname . " " .$json_data->person_lname;
+                if (isset($json_data) && isset($json_data->person_birthdate)) {
+                    $newData->birthdate = $json_data->person_birthdate;
+                } else {
+                    $newData->birthdate = null;
+                }
+                array_push($data, $newData);
+            }
+            return $this->set_response(array("status" => 200, "message" => "success", "data" => $data),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "No data found."));
+            return $this->set_response($response, 422);
+        }
+    }
 
 }

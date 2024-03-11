@@ -2874,4 +2874,26 @@ class Main_mdl extends Base_Model
         $result = $this->db->query($query);
         return $result->result_array();
     }
+
+    public function record_for_fail_applicants_pull($company)
+    {
+        $query = "SELECT * FROM `applications` WHERE status = 80 AND company = '${company}'";
+        $result = $this->db->query($query);
+        return $result->result_array();
+    }
+
+    public function update_status_fail_applicants_pull($id, $status)
+    {
+        $query = "UPDATE `applications` SET `status` = '${status}' WHERE id = '${id}'";
+        $result = $this->db->query($query);
+        return $result;
+    }
+
+    public function get_applicants_pull()
+    {
+        $query = "SELECT applications.data, applications.username, applications.username FROM applications WHERE applications.company = 'syzygy' AND applications.status >= 5";
+
+        $result = $this->db->query($query);
+        return $result->result_array();
+    }
 }

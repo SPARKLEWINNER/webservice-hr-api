@@ -41,6 +41,8 @@ $route['internal/record/documents/uploaded/(:any)/(:any)']['get'] = 'record/appl
 $route['internal/record/update/(:any)']['post'] = 'record/update_applicant_details/$1';
 $route['internal/phone/update/(:any)']['post'] = 'record/update_applicant_phone/$1';
 $route['internal/gov/update/(:any)']['post'] = 'record/update_applicant_gov/$1';
+$route['internal/applicants/failed/(:any)']['get'] = 'record/failed_applicants/$1';
+$route['internal/applicants/update/status/(:any)/(:any)']['get'] = 'record/update_applicant_status/$1/$2';
 
 /* Recruitment */
 $route['internal/record/review_app']['post'] = 'recruitment/review_create';
@@ -187,3 +189,4 @@ $route['internal/pending/count/(:any)/(:any)']['get'] = 'record/pending_count/$1
 $route['internal/examination/count/(:any)/(:any)']['get'] = 'record/examination_count/$1/$2';
 $route['internal/store/review/count/(:any)/(:any)']['get'] = 'record/store_review_count/$1/$2';
 $route['internal/record']['get'] = 'record/record_for_extraction';
+$route['internal/active/users']['get'] = 'record/get_active_applicants';
