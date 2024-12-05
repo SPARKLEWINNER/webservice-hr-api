@@ -161,6 +161,7 @@ $route['internal/record/employee/specific/(:any)']['get'] = 'training/employee_s
 
 /** Accounts **/
 $route['internal/account/create']['post'] = 'accounts/create';
+$route['internal/account/v2/create']['post'] = 'accounts/create_v2';
 $route['internal/account/show/(:num)/(:num)']['get'] = 'accounts/user/$1/$2';
 $route['internal/account/update']['post'] = 'accounts/user_rate';
 $route['internal/account/user/update']['patch'] = 'accounts/update_user';
