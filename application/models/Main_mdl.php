@@ -501,7 +501,6 @@ class Main_mdl extends Base_Model
 
     public function record_applying_for($job_id, $applicant_id)
     {
-
         $result = $this->db->select('*')->from('applications')->where('id', $applicant_id)->get()->row();
         if ($this->db->affected_rows() > 0) :
             if ($result->applying_for == 0) {
@@ -1246,6 +1245,35 @@ class Main_mdl extends Base_Model
     /** Accounts **/
 
     public function new_user($data)
+    {
+
+        $validate_email = "SELECT * FROM users WHERE email = '{$data['email']}'";
+        $result_vd = $this->db->query($validate_email);
+
+        if ($result_vd->num_rows() > 0) {
+            return $this->response_code(204, "Email already exist", "");
+        } else {
+            $this->db->insert('users', $data);
+            $inserted_id = $this->db->insert_id();
+
+            $record = $this->db->select('id,first_name,last_name,email,profile,date_created,filename')->from('users')->where('id', $inserted_id)->get()->row();
+
+            if ($this->db->affected_rows() > 0) :
+                return array(
+                    "id" => $this->db->insert_id(),
+                    "first_name" => $record->first_name,
+                    "last_name" => $record->last_name,
+                    "email" => $record->email,
+                    "profile" => $record->profile,
+                    "filename" => $record->filename,
+                    "date_created" => $record->date_created,
+                );
+            else : return false;
+            endif;
+        }
+    }
+
+    public function new_user_v2($data)
     {
 
         $validate_email = "SELECT * FROM users WHERE email = '{$data['email']}'";

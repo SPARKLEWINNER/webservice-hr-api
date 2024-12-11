@@ -61,6 +61,36 @@ class Accounts extends Base_Controller
         
     }
 
+    
+    public function create_v2_post(){
+  
+        if(empty($this->post())) {
+            $this->response_return($this->response_code(400,""));
+            return false;
+        }
+
+        $data = array(
+            'email' => $this->post('email'),
+            'password' => password_hash($this->post('password'), PASSWORD_DEFAULT),
+            'first_name' => $this->post('firstname'),
+            'last_name' => $this->post('lastname'),
+            'company' => $this->post('company'),
+            'date_created' => date('Y-m-d H:i:s')
+        );
+
+        $response = $this->Main_mdl->new_user_v2($data);
+
+        if($response === FALSE || (isset($response['status']) && $response['status'] === 204)) {
+            return $this->set_response($response, 422);
+        }else{
+            // $this->send_email_sg($mg_email,$this->new_acc_path, EMAIL_NEW_APPLICANT,array($data,$password));
+            return $this->set_response($response,  200); 
+        }
+
+       
+        
+    }
+
 
    public function update_user_patch(){
     
