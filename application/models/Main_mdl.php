@@ -276,6 +276,27 @@ class Main_mdl extends Base_Model
         }
     }
 
+    public function resetUserPassword($data)
+    {
+        $acc = $this->db->select('id,email,first_name,last_name,profile,token')->from('users')->where('email', $data['email'])->get()->row();
+        if ($acc) {
+                $update = array(
+                    "password" => password_hash($data['password'], PASSWORD_DEFAULT),
+                    "token" => ""
+                );
+                $this->db->where('id', $acc->id);
+                $this->db->update('users', $update);
+
+                return array(
+                    "id" => $acc->id,
+                    "email" => $acc->email
+                );
+
+        } else {
+            return $this->response_code(204, "User Invalid", "");
+        }
+    }
+
     /** Exams **/
 
     public function exam_data($data)

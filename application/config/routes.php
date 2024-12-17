@@ -16,6 +16,7 @@ $route['internal/auth/applicant_facebook_login']['post'] = 'auth/memberFacebookl
 $route['internal/auth/logout']['post'] = 'auth/logout';
 $route['internal/auth/forgot']['post'] = 'auth/forgot';
 $route['internal/auth/reset']['post'] = 'auth/reset';
+$route['internal/auth/reset_pass']['post'] = 'auth/reset_pass';
 $route['internal/auth/validate']['post'] = 'auth/me/$1';
 $route['internal/auth/mobile']['post'] = 'auth/mobile';
 $route['internal/v1/auth/login']['post'] = 'auth/workplace_login';
