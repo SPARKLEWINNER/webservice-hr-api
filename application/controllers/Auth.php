@@ -197,6 +197,27 @@ class Auth extends Base_Controller
         }
     }
 
+    public function reset_pass_post()
+    {
+        $data = $this->validate_inpt(array('hash', 'email', 'password'), 'post');
+        $result = $this->Main_mdl->resetUserPassword($data);
+        if (!array_key_exists("status", $result)) {
+            $data['id'] = $result['id'];
+            $data['timestamp'] = date("Y-m-d H:i:s");
+            $data['token'] = AUTHORIZATION::generateToken($data);
+
+            if (!$result) {
+                $response = $this->response_code(422, "Invalid token", "");
+                return $this->set_response($response, 422);
+            }
+
+            $this->set_response($data,  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "User Invalid"), "");
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function token_get()
     {
         $tokenData = array();
