@@ -117,6 +117,8 @@ class Recruitment extends Base_Controller
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->record_pull($company);
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -135,6 +137,8 @@ class Recruitment extends Base_Controller
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->record_status_pull($company, $status);
         if ($response) {
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -152,10 +156,13 @@ class Recruitment extends Base_Controller
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         if (empty($type)) {
             $this->response_return($this->response_code(400, ""));
             return false;
         }
+        
 
         if ($type == "day" || $type == "days") {
             $response = $this->Main_mdl->record_day_pull($company, $number);
@@ -176,6 +183,8 @@ class Recruitment extends Base_Controller
             $this->response_return($this->response_code(400, ""));
             return false;
         }
+
+        $company = str_replace("%20"," ",$company);
 
         $response = $this->Main_mdl->record_search_pull($company, $number);
         if ($response) {

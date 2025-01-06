@@ -354,6 +354,8 @@ class System extends Base_Controller{
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->system_record_dtr_list($company,$store_id);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -369,6 +371,8 @@ class System extends Base_Controller{
             $this->response_return($this->response_code (400,""));
             return false;
         }
+
+        $company = str_replace("%20"," ",$company);
 
         $response = $this->Main_mdl->system_record_wage_list($store_id,$company);
         if($response){
@@ -390,6 +394,8 @@ class System extends Base_Controller{
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->system_people_pull($company);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -405,6 +411,8 @@ class System extends Base_Controller{
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->system_people_specific_pull($company,$id);
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -419,6 +427,8 @@ class System extends Base_Controller{
             $this->response_return($this->response_code (400,""));
             return false;
         }
+
+        $company = str_replace("%20"," ",$company);
 
         $response = $this->Main_mdl->system_jobs_pull($company,$id,"jobs");
 
@@ -436,6 +446,8 @@ class System extends Base_Controller{
             return false;
         }
 
+        $company = str_replace("%20"," ",$company);
+
         $response = $this->Main_mdl->system_jobs_specific_pull($company,$job_id,"jobs");
         if($response){
             return $this->set_response(array("status" => 200, "data" => $response),  200);
@@ -450,6 +462,8 @@ class System extends Base_Controller{
             $this->response_return($this->response_code (400,""));
             return false;
         }
+
+        $company = str_replace("%20"," ",$company);
 
         $response = $this->Main_mdl->system_record_payroll($company,$store_id);
         if($response){
