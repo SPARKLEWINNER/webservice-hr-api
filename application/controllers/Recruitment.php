@@ -156,7 +156,7 @@ class Recruitment extends Base_Controller
             return false;
         }
 
-        $company = str_replace("%20"," ",$company);
+        $company = str_replace("-"," ",$company);
 
         if (empty($type)) {
             $this->response_return($this->response_code(400, ""));
