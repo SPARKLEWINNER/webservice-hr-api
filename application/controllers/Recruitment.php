@@ -177,6 +177,37 @@ class Recruitment extends Base_Controller
             return $this->set_response($response, 422);
         }
     }
+
+    public function list_applicants_datecreated_post($type = NULL, $number = 0)
+    {
+        $data = $this->validate_inpt(array('data','email', 'company'), 'post');
+        $company = $this->post('company');
+
+        if (empty($number)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+
+        if (empty($type)) {
+            $this->response_return($this->response_code(400, ""));
+            return false;
+        }
+        
+
+        if ($type == "day" || $type == "days") {
+            $response = $this->Main_mdl->record_day_pull($company, $number);
+        } else {
+            $response = $this->Main_mdl->record_weeks_pull($company, $number);
+        }
+
+        if ($response) {
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        } else {
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function list_applicants_search_get($company = NULL, $number = 0)
     {
         if (empty($company) && empty($number)) {
