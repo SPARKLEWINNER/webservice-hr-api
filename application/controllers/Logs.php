@@ -104,6 +104,25 @@ class Logs extends Base_Controller{
         }
     }
 
+    /* post */
+    public function email_record_post(){
+        $data = $this->validate_inpt(array('email'), 'post');
+        $email = $this->post('email');
+
+        if(empty($email)){
+            $this->response_return($this->response_code (400,""));
+            return false;
+        }
+
+        $response = $this->Main_mdl->record_email_pull($email);
+        if($response){
+            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        }else{
+            $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
+            return $this->set_response($response, 422);
+        }
+    }
+
     public function list_logs_record_get($company = NULL){
         if(empty($company)){
             $this->response_return($this->response_code (400,""));

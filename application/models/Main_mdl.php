@@ -1011,6 +1011,14 @@ class Main_mdl extends Base_Model
         return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 
+    public function record_email_pull($email)
+    {
+
+        $query = "SELECT * FROM `users` WHERE `email` = '{$email}'";
+        $result = $this->db->query($query);
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
+    }
+
     public function record_logs_pull($company, $type)
     {
         if ($type != null) {
