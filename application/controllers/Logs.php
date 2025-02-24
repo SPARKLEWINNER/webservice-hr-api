@@ -115,8 +115,8 @@ class Logs extends Base_Controller{
         }
 
         $response = $this->Main_mdl->record_email_pull($email);
-        if($response){
-            return $this->set_response(array("status" => 200, "data" => $response),  200);
+        if(isset($response[0]) && $response[0]['email'] == $email){
+            return $this->set_response(array("status" => 200, "message" => "Email already exist"),  200);
         }else{
             $response = $this->response_code(422, array("status" => 422, "message" => "Unable to process your request"));
             return $this->set_response($response, 422);
