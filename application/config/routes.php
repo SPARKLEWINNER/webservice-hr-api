@@ -56,6 +56,7 @@ $route['internal/record/(:any)']['get'] = 'recruitment/list_applicants/$1'; // s
 $route['internal/record/(:any)/(:num)']['get'] = 'recruitment/list_applicants_status/$1/$2'; // with filter (day/weekly) && no. of days
 $route['internal/record/search/(:any)/(:num)']['get'] = 'recruitment/list_applicants_search/$1/$2';
 $route['internal/record/sort/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated/$1/$2/$3';
+$route['internal/record/sort/(:any)/(:num)']['post'] = 'recruitment/list_applicants_datecreated/$1/$2';
 $route['internal/record/pool/(:any)/(:any)/(:num)']['get'] = 'recruitment/list_applicants_datecreated_get/$1/$2/$3';
 
 $route['internal/record/document/update']['post'] = 'record/applicant_document_archive';
