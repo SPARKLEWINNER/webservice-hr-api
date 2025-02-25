@@ -145,6 +145,7 @@ $route['internal/record/payroll/get/(:any)/(:any)']['get'] = 'system/payroll_rec
 
 /* Logs */
 $route['internal/emails/(:any)']['get'] = 'logs/list_email_records/$1';
+$route['internal/email/check']['post'] = 'logs/email_record';
 $route['internal/logs/(:any)']['get'] = 'logs/list_logs_record/$1';
 $route['internal/application/logs/(:any)']['get'] = 'logs/list_applicants_record/$1';
 $route['internal/activity/logs/(:any)']['get'] = 'logs/activity_record/$1';
