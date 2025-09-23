@@ -37,7 +37,7 @@ class Recruitment extends Base_Controller
 
     public function review_create_post()
     {
-        $data = $this->validate_inpt(array('data', 'company', 'id', 'reviewer', 'assess_evaluation', 'store', 'refernce_id'), 'post');
+        $data = $this->validate_inpt(array('data', 'company', 'id', 'reviewer', 'assess_evaluation', 'remarks', 'store', 'refernce_id'), 'post');
         $mg_id = $this->post('id');
 
 
@@ -47,6 +47,7 @@ class Recruitment extends Base_Controller
             'company' => $this->post('company'),
             'recruitment_reviewer' => $this->post('reviewer'),
             'assess_evaluation' => $this->post('assess_evaluation'),
+            'remarks' => $this->post('remarks'),
             'store' => $this->post('store'),
             'reference_id' => $this->post('refernce_id'),
             'date_created' => date('Y-m-d H:i:s')
