@@ -771,15 +771,18 @@ class Main_mdl extends Base_Model
 
     public function record_day_pull($company, $days)
     {
-        $query = "SELECT * FROM `applications` where date_created >= DATE_ADD(NOW(), INTERVAL -3 MONTH) AND status <= 5 ORDER BY id DESC LIMIT 100";
-        $result = $this->db->query($query);
-        $arr_app = [];
-        foreach ($result->result_array() as $k => $app) {
-            if ($app['company'] == $company) {
-                $arr_app[] = $app;
-            }
-        }
-        return ($result->num_rows() > 0) ? $arr_app : false;
+        $days = (int) $days;
+        if ($days < 1) return false;
+
+        $query = "SELECT * FROM `applications`
+            WHERE `company` = ?
+            AND `date_created` >= DATE_SUB(NOW(), INTERVAL {$days} DAY)
+            AND `status` <= 5
+            ORDER BY `id` DESC
+            LIMIT 100";
+        $result = $this->db->query($query, array($company));
+
+        return ($result->num_rows() > 0) ? $result->result_array() : false;
     }
 
     /* Documents */
